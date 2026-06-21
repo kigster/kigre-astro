@@ -663,6 +663,10 @@ button:focus-visible {
   display: grid;
   grid-template-columns: 1fr 256px;
   gap: 0;
+  /* relative so the sidebar can be absolutely pinned (and slid off) when the
+     reader collapses it; grid-template-columns animates the article re-flow */
+  position: relative;
+  transition: grid-template-columns 0.32s ease;
 }
 .article {
   /* min-width:0 lets wide <pre> blocks scroll inside the column instead of
@@ -846,8 +850,16 @@ button:focus-visible {
   max-height: calc(100vh - 130px);
   overflow-y: auto;
   scrollbar-width: thin;
+  /* animates the slide-out / slide-in when collapsed (see sb-collapsed rules) */
+  transition:
+    transform 0.32s ease,
+    opacity 0.25s ease;
 }
 .panel .pt {
+  /* row: the "// recent posts" label on the left, collapse chevron on the right */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-family: var(--font-mono);
   font-size: 13px; /* ~20% larger than the old 11px, for legibility (all themes) */
   color: var(--y1);
@@ -1371,5 +1383,145 @@ button:focus-visible {
   }
   .oss:nth-child(odd) {
     border-right: 0;
+  }
+}
+
+/* ============================================================
+   Global UI scale — device-class "browser zoom"
+   ------------------------------------------------------------
+   The design system mixes px with rem/em units, so bumping the
+   root font-size alone would leave every px value untouched. CSS
+   `zoom` scales the whole layout box — text, images, spacing —
+   exactly like the browser's own Cmd-+, and re-flows instead of
+   clipping. Media queries are evaluated against the *unzoomed*
+   viewport, so each device class is keyed off the real screen
+   width before the scale is applied.
+     • Phones  (≤760px)         → 100% (native)
+     • Desktop (mouse, >760px)  → 120%
+     • Tablets (touch, >760px)  → 140%  (e.g. iPad Pro)
+   ============================================================ */
+@media (max-width: 760px) {
+  :root {
+    zoom: 1;
+  }
+}
+@media (min-width: 761px) {
+  :root {
+    zoom: 1.2;
+  }
+}
+/* a coarse pointer on a roomy screen is a tablet — bump to 140%. This rule
+   follows the desktop one, so it wins on touch devices (iPad &c.). */
+@media (min-width: 761px) and (pointer: coarse) {
+  :root {
+    zoom: 1.4;
+  }
+}
+
+/* ============================================================
+   Collapsible "recent posts" sidebar (post pages)
+   ------------------------------------------------------------
+   A chevron in the panel header slides the sidebar off to the
+   right and hands the freed space back to the article; a small
+   fixed tab on the screen edge slides it in again. The state
+   lives in localStorage ("sidebar-collapsed") and is applied to
+   <html class="sb-collapsed"> before first paint (BaseLayout head
+   script), so there's no flash and the slide only animates on a
+   real click. The <html> class is the single source of truth.
+   ============================================================ */
+.panel-collapse {
+  flex: 0 0 auto;
+  margin-left: 10px;
+  width: 26px;
+  height: 26px;
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.panel-collapse:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+
+/* re-open tab: a vertical pill pinned to the right screen edge, shown only
+   while collapsed. Clicking it (and nothing else) restores the sidebar. */
+.panel-reopen {
+  position: fixed;
+  top: 120px;
+  right: 0;
+  z-index: 90;
+  display: none; /* flipped to flex by the sb-collapsed rule below */
+  align-items: center;
+  gap: 8px;
+  padding: 14px 7px;
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--hair);
+  border-right: 0;
+  border-radius: 10px 0 0 10px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  writing-mode: vertical-rl; /* stacks the "Recent" label vertically */
+  transition:
+    color 0.15s ease,
+    padding-right 0.15s ease;
+}
+.panel-reopen:hover {
+  color: var(--fg);
+  padding-right: 11px; /* nudges out on hover to invite the click */
+}
+.panel-reopen svg {
+  writing-mode: horizontal-tb; /* keep the chevron upright */
+}
+
+/* --- collapsed state (class on <html>) --- */
+html.sb-collapsed .post {
+  grid-template-columns: 1fr 0; /* article reclaims the freed track */
+}
+html.sb-collapsed .article {
+  border-right: 0;
+  padding-right: 0;
+}
+html.sb-collapsed .panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 256px; /* keep its real width while it slides past the edge */
+  transform: translateX(110%); /* off to the right, clipped by overflow-x */
+  opacity: 0;
+  pointer-events: none;
+}
+html.sb-collapsed .panel-reopen {
+  display: flex;
+}
+
+/* on phones the sidebar already stacks below the article, so the collapse
+   affordance is moot — hide it and keep the panel visible regardless of any
+   stored collapsed state */
+@media (max-width: 760px) {
+  .panel-collapse,
+  .panel-reopen {
+    display: none !important;
+  }
+  html.sb-collapsed .post {
+    grid-template-columns: 1fr;
+  }
+  html.sb-collapsed .panel {
+    position: static;
+    transform: none;
+    opacity: 1;
+    pointer-events: auto;
   }
 }
