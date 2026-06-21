@@ -1,0 +1,1274 @@
+/* ============================================================
+   kig.re — Editorial Index design system
+   ============================================================ */
+
+/* --- fonts: funky sans body, heavy sans headings, mono accents --- */
+@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@400;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap");
+/* Fantasque Sans Mono for code (self-hosted fallback chain to Cascadia) */
+
+/* Regular */
+@font-face {
+  font-family: "Fantasque Sans Mono";
+  src: url("/assets/fonts/FantasqueSansMono-Bold.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+/* Italic */
+@font-face {
+  font-family: "Fantasque Sans Mono";
+  src: url("/assets/fonts/FantasqueSansMono-Italic.otf") format("opentype");
+  font-weight: 400;
+  font-style: italic;
+}
+
+/* Bold */
+@font-face {
+  font-family: "Fantasque Sans Mono";
+  src: url("/assets/fonts/FantasqueSansMono-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+}
+
+/* Bold Italic */
+@font-face {
+  font-family: "Fantasque Sans Mono";
+  src: url("/assets/fonts/FantasqueSansMono-BoldItalic.otf") format("opentype");
+  font-weight: 700;
+  font-style: italic;
+}
+
+:root {
+  --o1: #ff5f00;
+  --o2: #ff8c00;
+  --y1: #ffc300;
+  --y2: #ffd400;
+  --grad: linear-gradient(
+    95deg,
+    var(--o1),
+    var(--o2) 40%,
+    var(--y1) 80%,
+    var(--y2)
+  );
+  --font-body: "Space Grotesk", system-ui, sans-serif;
+  --font-head: "Archivo Black", "Archivo", sans-serif;
+  --font-mono:
+    "Fantasque Sans Mono", "Cascadia Code", "JetBrains Mono", ui-monospace,
+    monospace;
+  --maxw: 1080px;
+}
+
+:root,
+[data-theme="noir"] {
+  --bg: #140c02;
+  --fg: #fff8ec;
+  --panel: #1d1305;
+  --hair: #3a2a10;
+  --muted: #b89a68;
+  --muted2: #8a6a38;
+}
+[data-theme="light"] {
+  --bg: #fffcf5; /* brightened toward white (was #fdf6e6); rest untouched */
+  --fg: #1a1206;
+  --panel: #fff3dc;
+  --hair: #e6d6b4;
+  --muted: #7a5e2e;
+  --muted2: #a98a52;
+}
+
+/* --- extra accent themes (dropdown) ---
+   Each sets the four accent stops (which feed --grad) plus a coordinated dark
+   surface. Palettes 1 & 3 end on a cool stop, giving a warm→cool gradient. */
+
+/* Azure — palette-forward: navy page, gold headers, sage sidebar, terracotta accents */
+[data-theme="azure"] {
+  --o1: #e87f24;
+  --o2: #e5ba41;
+  --y1: #d1855c;
+  --y2: #94a378;
+  --bg: #2d3c59;
+  --fg: #f4f1e8;
+  --panel: #26334d; /* code/callout surface, a touch darker than --bg */
+  --hair: #45567a;
+  --muted: #aeb9cd;
+  --muted2: #8290ab;
+  --grad: linear-gradient(95deg, #e5ba41, #d1855c 55%, #e5ba41);
+}
+/* headers feature the palette's gold, prominently (not a subtle gradient tint) */
+[data-theme="azure"] :is(.ghead h1, .page h1, .article h1) {
+  color: #e5ba41;
+}
+[data-theme="azure"] :is(.ghead h1 em, .page h1 em) {
+  background: none;
+  -webkit-text-fill-color: #e5ba41;
+  color: #e5ba41;
+}
+/* sidebar: sage block with dark text so it reads on the light-green surface */
+[data-theme="azure"] .panel {
+  background: #94a378;
+  color: #233047;
+  padding: 26px 24px;
+  border-radius: 14px;
+}
+[data-theme="azure"] .panel .pt {
+  color: #d1855c; /* sidebar header — terracotta */
+  font-weight: 800; /* extra bold so the low-contrast terracotta stays legible */
+}
+[data-theme="azure"] .panel .ritem {
+  border-bottom-color: #7e8c63;
+}
+[data-theme="azure"] .panel .ritem .rn {
+  color: #2d3c59;
+}
+[data-theme="azure"] .panel .ritem h3 {
+  color: #1f2b40;
+}
+[data-theme="azure"] .panel .ritem .rd {
+  color: #44502f;
+}
+
+/* Dark Glass — the house orange (FF5F00 FF8C00 FFC300 FFD400) on dark, with a
+   frosted-glass sidebar, brightened admonitions, and a shiny gradient on headers */
+[data-theme="dark-glass"] {
+  --o1: #ff5f00;
+  --o2: #ff8c00;
+  --y1: #ffc300;
+  --y2: #ffd400;
+  --bg: #140c02;
+  --fg: #fff8ec;
+  --panel: #1d1305;
+  --hair: #3a2a10;
+  --muted: #b89a68;
+  --muted2: #8a6a38;
+}
+/* admonitions: background brightened ~20% so callouts pop on the dark surface */
+[data-theme="dark-glass"] .markdown-alert {
+  background: color-mix(in srgb, var(--panel), #fff 20%);
+}
+/* sidebar: frosted dark glass with a hint of orange, 70% transparent */
+[data-theme="dark-glass"] .panel {
+  background: rgba(48, 24, 6, 0.3);
+  backdrop-filter: blur(10px) saturate(140%);
+  -webkit-backdrop-filter: blur(10px) saturate(140%);
+  border: 1px solid rgba(255, 140, 0, 0.18);
+  border-radius: 14px;
+  padding: 26px 24px;
+}
+/* headers: a shiny glass sweep — a bright band travels across the orange text */
+[data-theme="dark-glass"] :is(.ghead h1, .page h1, .article h1),
+[data-theme="dark-glass"] :is(.ghead h1 em, .page h1 em) {
+  background: linear-gradient(
+    110deg,
+    #ff5f00 0%,
+    #ff8c00 30%,
+    #fffefb 47%,
+    #ffe9c8 53%,
+    #ff8c00 70%,
+    #ffd400 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
+  animation: glass-shine 7s ease-in-out infinite;
+}
+@keyframes glass-shine {
+  0% {
+    background-position: 120% 0;
+  }
+  100% {
+    background-position: -120% 0;
+  }
+}
+
+/* Light Earth — LIGHT theme: cream page, brown headers + sidebar, sage-green accent
+   (Color Hunt F7F1DE B0BA99 9D6638 4E220F) */
+[data-theme="light-earth"] {
+  --o1: #9d6638;
+  --o2: #9d6638;
+  --y1: #9d6638; /* eyebrow labels — brown reads on cream */
+  --y2: #b0ba99;
+  --bg: #f7f1de; /* main background */
+  --fg: #4e220f; /* body text — dark brown on cream */
+  --panel: #ece2c4; /* code/callout surface (NOT the sidebar) — a darker tan */
+  --hair: #e0d4b2;
+  --muted: #8a6a48;
+  --muted2: #a8895f;
+  --grad: linear-gradient(95deg, #9d6638, #b0ba99 60%, #9d6638);
+}
+/* main headers in brown (9D6638), prominently */
+[data-theme="light-earth"] :is(.ghead h1, .page h1, .article h1) {
+  color: #9d6638;
+}
+[data-theme="light-earth"] :is(.ghead h1 em, .page h1 em) {
+  background: none;
+  -webkit-text-fill-color: #9d6638;
+  color: #9d6638;
+}
+/* sidebar: brown block (9D6638) with cream text so items stay legible */
+[data-theme="light-earth"] .panel {
+  background: #9d6638;
+  color: #f7f1de;
+  padding: 26px 24px;
+  border-radius: 14px;
+}
+[data-theme="light-earth"] .panel .pt {
+  color: #4e220f; /* sidebar header — darkest brown */
+}
+[data-theme="light-earth"] .panel .ritem {
+  border-bottom-color: #b07f50;
+}
+[data-theme="light-earth"] .panel .ritem .rn {
+  color: #4e220f;
+}
+[data-theme="light-earth"] .panel .ritem h3 {
+  color: #fbf6e8;
+}
+[data-theme="light-earth"] .panel .ritem .rd {
+  color: #e6d4bf;
+}
+
+/* Light Forest — vivid theme: teal page, pink headers, yellow sidebar, blue accents
+   (Color Hunt FF0052 FFD400 00C68D 0055DA) */
+[data-theme="light-forest"] {
+  --o1: #ff0052;
+  --o2: #ff0052;
+  --y1: #ff0052; /* eyebrow labels */
+  --y2: #1e527f99;
+  --bg: #00c68d5c; /* main background — teal */
+  --fg: #06241b; /* body text — near-black green on teal */
+  --panel: #c9f3e6; /* code/callout surface — light mint (NOT the sidebar) */
+  --hair: #00a87a;
+  --muted: #0a3d2e;
+  --muted2: #0d5a42;
+  --grad: linear-gradient(95deg, #ff0052, #ffd400 50%, #0055da);
+}
+/* main headers in hot pink (FF0052) */
+[data-theme="light-forest"] :is(.ghead h1, .page h1, .article h1) {
+  color: #ff0052;
+}
+[data-theme="light-forest"] :is(.ghead h1 em, .page h1 em) {
+  background: none;
+  -webkit-text-fill-color: #ff0052;
+  color: #ff0052;
+}
+/* sidebar: yellow block (FFD400) with dark text */
+[data-theme="light-forest"] .panel {
+  background: #ffe30085;
+  color: #0a2a22;
+  padding: 26px 24px;
+  border-radius: 14px;
+}
+[data-theme="light-forest"] .panel .pt {
+  color: #0055da; /* sidebar header — blue */
+}
+[data-theme="light-forest"] .panel .ritem {
+  border-bottom-color: #ffe30085;
+}
+[data-theme="light-forest"] .panel .ritem .rn {
+  color: #7a5b00;
+}
+[data-theme="light-forest"] .panel .ritem h3 {
+  color: #0055da; /* sidebar post titles — blue (white on hover, via base rule) */
+}
+[data-theme="light-forest"] .panel .ritem .rd {
+  color: #6b5200;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.6;
+}
+a {
+  color: inherit;
+}
+a:focus-visible,
+button:focus-visible {
+  outline: 2px solid var(--o2);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+.wrap {
+  max-width: var(--maxw);
+  margin: 0 auto;
+  padding: 0 32px;
+}
+
+/* --- fixed top header (shared) --- */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  background: color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter: saturate(160%) blur(10px);
+  -webkit-backdrop-filter: saturate(160%) blur(10px);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.2s ease;
+}
+.site-header.scrolled {
+  border-bottom-color: var(--hair);
+}
+
+/* --- top nav (shared) --- */
+.nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 26px 0;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.nav .logo {
+  font-family: var(--font-head);
+  font-size: 26px;
+  letter-spacing: -0.04em;
+  text-decoration: none;
+}
+.nav .logo b {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.nav .links {
+  display: flex;
+  gap: 22px;
+  align-items: center;
+}
+.nav .links a {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.nav .links a:hover {
+  color: var(--fg);
+}
+.nav .links a.active {
+  color: var(--fg);
+}
+/* scroll-to-top arrow: lives in the nav, hidden until the page scrolls */
+.scroll-top {
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-4px);
+  transition:
+    opacity 0.2s ease,
+    transform 0.2s ease,
+    visibility 0.2s ease,
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.scroll-top.visible {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.scroll-top:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+
+/* Pagefind searchbox: map its --pf-* knobs onto the site palette so it
+   follows the active theme and matches the nav's pill aesthetic */
+.pf-search {
+  --pf-background: var(--panel);
+  --pf-text: var(--fg);
+  --pf-text-secondary: var(--muted);
+  --pf-text-muted: var(--muted2);
+  --pf-border: var(--hair);
+  --pf-border-focus: var(--o2);
+  --pf-hover: color-mix(in srgb, var(--o2) 14%, transparent);
+  --pf-mark: var(--o2);
+  --pf-outline-focus: var(--o2);
+  --pf-border-radius: 999px;
+  --pf-input-height: 34px;
+  --pf-input-font-size: 13px;
+  --pf-searchbox-max-width: 200px;
+  --pf-searchbox-dropdown-max-height: 60vh;
+  font-family: var(--font-mono);
+}
+/* the dropdown results panel reads better with the site's heading font */
+.pf-search [class*="result-title"] {
+  font-family: var(--font-head);
+}
+/* keep the input compact but give the results room so titles don't over-wrap
+   (the component pins the dropdown to the 200px input width, so force it wider) */
+.pf-search .pf-searchbox-dropdown {
+  width: 360px !important;
+  max-width: 80vw !important;
+  /* the input is a pill (999px); the results panel should not inherit that —
+     gently rounded top, square bottom */
+  border-radius: 10px 10px 0 0 !important;
+}
+
+/* theme dropdown: native select, restyled to match the nav */
+.theme-select {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: transparent;
+  /* caret as an inline SVG (a fixed muted tone — background images can't use currentColor) */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23998866' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  background-size: 13px;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  border-radius: 999px;
+  height: 34px;
+  padding: 0 28px 0 13px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.theme-select:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+/* the popup list is OS-rendered; keep its colors legible regardless of theme */
+.theme-select option {
+  background: var(--panel);
+  color: var(--fg);
+}
+
+/* --- footer --- */
+.site-footer {
+  border-top: 1px solid var(--hair);
+  margin-top: 60px;
+  padding: 30px 0 50px;
+  color: var(--muted2);
+  font-size: 13px;
+}
+.site-footer .ft-row {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+.site-footer a {
+  color: var(--muted);
+  text-decoration: none;
+}
+.site-footer a:hover {
+  color: var(--fg);
+}
+.site-footer .mono {
+  font-family: var(--font-mono);
+}
+
+/* ============ HOMEPAGE / INDEX ============ */
+.ghead {
+  padding: 18px 0 26px;
+  border-bottom: 1px solid var(--hair);
+}
+.ghead .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--y1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.ghead h1 {
+  font-family: var(--font-head);
+  font-size: clamp(34px, 6vw, 68px);
+  line-height: 0.92;
+  letter-spacing: -0.035em;
+  margin-top: 14px;
+}
+.ghead h1 em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.ghead .sub {
+  margin-top: 16px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted2);
+}
+
+.idx {
+  padding: 0 0 40px;
+}
+.row {
+  display: grid;
+  grid-template-columns: 74px 1fr;
+  gap: 24px;
+  align-items: start;
+  padding: 26px 8px;
+  border-bottom: 1px solid var(--hair);
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+}
+/* mid contains the floated thumbnail, so it must establish a block formatting
+   context (flow-root) to grow around it and not let the float spill into the
+   next row */
+.row .mid {
+  display: flow-root;
+}
+.row .mid .meta {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.row .num {
+  font-family: var(--font-head);
+  font-size: 34px;
+  line-height: 1;
+  color: var(--hair);
+  transition: color 0.25s;
+}
+.row .mid .cat {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--o2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.row .mid h2 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: clamp(20px, 2.6vw, 27px);
+  letter-spacing: -0.015em;
+  margin-top: 6px;
+  line-height: 1.05;
+  transition: transform 0.25s;
+}
+.row .mid p {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 8px;
+  max-width: 64ch;
+  line-height: 1.5;
+}
+.row .date {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted2);
+  white-space: nowrap;
+}
+/* thumbnail floats to the right of the text, which wraps around it */
+.row .thumb {
+  float: right;
+  margin-left: 20px;
+  margin-bottom: 8px;
+  width: 150px;
+  aspect-ratio: 5 / 4;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--panel);
+}
+.row .thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* crop overflow so every thumb matches regardless of source */
+  display: block;
+  transition: transform 0.3s;
+}
+.row:hover .thumb img {
+  transform: scale(1.05);
+}
+.row:hover .num {
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.row:hover .mid h2 {
+  transform: translateX(6px);
+}
+
+/* ============ POST PAGE ============ */
+.post {
+  display: grid;
+  grid-template-columns: 1fr 256px;
+  gap: 0;
+}
+.article {
+  padding: 34px 0 50px;
+  border-right: 1px solid var(--hair);
+  padding-right: 44px;
+}
+.article .cat {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--o2);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+.article h1 {
+  font-family: var(--font-head);
+  font-size: clamp(30px, 4.4vw, 46px);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+  margin-top: 12px;
+}
+.article .byline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 18px;
+  padding-bottom: 22px;
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted2);
+  flex-wrap: wrap;
+}
+.article .byline .dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--o2);
+}
+.article .hero-img {
+  width: 100%;
+  margin: 26px 0;
+  border-radius: 4px;
+}
+
+/* prose */
+.prose {
+  font-size: 15.5px;
+  line-height: 1.75;
+}
+.prose > * + * {
+  margin-top: 18px;
+}
+.prose p {
+  max-width: 64ch;
+}
+.prose h2 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 24px;
+  letter-spacing: -0.01em;
+  margin-top: 32px;
+}
+.prose h3 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 19px;
+  margin-top: 24px;
+}
+.prose a {
+  color: var(--o2);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.prose ul,
+.prose ol {
+  padding-left: 22px;
+}
+.prose li {
+  margin-top: 6px;
+  max-width: 62ch;
+}
+.prose dt {
+  font-weight: 700;
+  margin-top: 12px;
+}
+.prose dd {
+  margin-left: 30px;
+}
+.prose img {
+  max-width: 100%;
+  border-radius: 4px;
+  cursor: zoom-in;
+}
+.prose blockquote {
+  border-left: 3px solid;
+  border-image: var(--grad) 1;
+  padding-left: 18px;
+  color: var(--muted);
+  font-style: italic;
+}
+/* on wide screens tables sit at 80% of the post width, centered;
+   on narrow screens they go full-width (see the mobile media query) */
+.prose table {
+  width: 80%;
+  margin: 22px auto;
+  border-collapse: collapse;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.prose th,
+.prose td {
+  text-align: left;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--hair);
+  vertical-align: top;
+}
+.prose thead th {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--o2);
+  border-bottom: 2px solid var(--hair);
+}
+.prose tbody tr:hover {
+  background: color-mix(in srgb, var(--panel), transparent 35%);
+}
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  background: var(--panel);
+  padding: 2px 6px;
+  border-radius: 3px;
+}
+.prose pre {
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-size: 13.5px;
+  line-height: 1.6;
+  margin: 22px 0;
+}
+.prose pre code {
+  background: none;
+  padding: 0;
+  font-size: inherit;
+}
+
+.article .tags {
+  margin-top: 30px;
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.article .tags a {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  border: 1px solid var(--hair);
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-decoration: none;
+}
+.article .tags a:hover {
+  color: var(--o2);
+  border-color: var(--o2);
+}
+
+/* recent panel */
+.panel {
+  padding: 34px 0 0 28px;
+  position: sticky;
+  /* clear the ~94px fixed header, then scroll the sidebar independently of the
+     body when its content is taller than the viewport */
+  top: 110px;
+  align-self: start;
+  max-height: calc(100vh - 130px);
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+.panel .pt {
+  font-family: var(--font-mono);
+  font-size: 13px; /* ~20% larger than the old 11px, for legibility (all themes) */
+  color: var(--y1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 6px;
+}
+.panel .ritem {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--hair);
+}
+.panel .ritem .rn {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--o2);
+}
+.panel .ritem h3 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  line-height: 1.15;
+  margin-top: 5px;
+  transition: color 0.2s;
+}
+.panel .ritem:hover h3 {
+  color: #fff;
+}
+.panel .ritem .rd {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted2);
+  margin-top: 5px;
+}
+.panel .allbtn {
+  display: inline-block;
+  margin-top: 18px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+  border-bottom: 2px solid;
+  border-image: var(--grad) 1;
+  padding-bottom: 2px;
+}
+
+/* comments */
+.comments {
+  grid-column: 1 / -1;
+  border-top: 1px solid var(--hair);
+  margin-top: 10px;
+  padding: 34px 0 20px;
+}
+.comments h2 {
+  font-family: var(--font-head);
+  font-size: 22px;
+  letter-spacing: -0.02em;
+  margin-bottom: 18px;
+}
+
+/* GitHub callouts (remark-github-blockquote-alert) */
+.markdown-alert {
+  border-left: 4px solid var(--muted);
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 24px 0;
+  background: var(--panel);
+  max-width: 64ch;
+}
+.markdown-alert > :first-child {
+  margin-top: 0;
+}
+.markdown-alert > :last-child {
+  margin-bottom: 0;
+}
+.markdown-alert-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 6px;
+}
+.markdown-alert-note {
+  border-left-color: #2f81f7;
+}
+.markdown-alert-note .markdown-alert-title {
+  color: #2f81f7;
+}
+.markdown-alert-tip {
+  border-left-color: #3fb950;
+}
+.markdown-alert-tip .markdown-alert-title {
+  color: #3fb950;
+}
+.markdown-alert-important {
+  border-left-color: #a371f7;
+}
+.markdown-alert-important .markdown-alert-title {
+  color: #a371f7;
+}
+.markdown-alert-warning {
+  border-left-color: var(--o1);
+}
+.markdown-alert-warning .markdown-alert-title {
+  color: var(--o1);
+}
+.markdown-alert-caution {
+  border-left-color: #f85149;
+}
+.markdown-alert-caution .markdown-alert-title {
+  color: #f85149;
+}
+
+/* ============ generic content pages (about/speaking/oss) ============ */
+.page {
+  padding: 20px 0 40px;
+}
+.page .eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--y1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.page h1 {
+  font-family: var(--font-head);
+  font-size: clamp(32px, 5vw, 54px);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin: 12px 0 8px;
+}
+.page h1 em {
+  font-style: normal;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.page .lead {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 60ch;
+  margin-bottom: 10px;
+}
+
+/* about page: content + author photo in a sidebar-width column */
+.about-layout {
+  display: grid;
+  grid-template-columns: 1fr 256px;
+  gap: 40px;
+  align-items: start;
+}
+.author-aside {
+  position: sticky;
+  top: 110px;
+  padding-top: 40px;
+}
+.author-aside img {
+  width: 100%; /* fills the 256px sidebar column; responsive on resize */
+  height: auto;
+  display: block;
+  border-radius: 14px;
+  border: 1px solid var(--hair);
+}
+@media (max-width: 760px) {
+  .about-layout {
+    grid-template-columns: 1fr;
+  }
+  .author-aside {
+    position: static;
+    padding-top: 0;
+    max-width: 320px;
+  }
+}
+
+/* tag cloud: size + brightness scale with post count (set inline per tag) */
+.tag-cloud {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px 18px;
+  margin-top: 26px;
+  line-height: 1.5;
+}
+.tag-cloud a {
+  /* keep "#tag <count>" on one line — it must never wrap mid-label */
+  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.tag-cloud a:hover {
+  color: var(--o2) !important;
+}
+.tag-cloud a .cnt {
+  /* superscript count, sized relative to its tag so big tags get bigger counts */
+  font-size: 0.6em;
+  vertical-align: super;
+  margin-left: 0.2em;
+  color: var(--muted2);
+}
+.tag-cloud a:hover .cnt {
+  color: var(--o1);
+}
+
+.talk {
+  display: grid;
+  grid-template-columns: 64px 1fr;
+  gap: 20px;
+  align-items: start;
+  padding: 24px 8px;
+  border-bottom: 1px solid var(--hair);
+}
+.talk .yr {
+  font-family: var(--font-head);
+  font-size: 20px;
+  background: var(--grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+/* body contains the floated cover, so it must contain the float (flow-root) */
+.talk-body {
+  display: flow-root;
+}
+.talk h3 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  letter-spacing: -0.01em;
+}
+.talk p {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+/* clickable cover thumbnail, floated right with text wrapping around it */
+.talk-thumb {
+  float: right;
+  margin: 2px 0 10px 22px;
+  display: block;
+  width: 210px;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 8px;
+  border: 1px solid var(--hair);
+  background: var(--panel);
+  cursor: pointer;
+  position: relative;
+}
+.talk-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s;
+}
+.talk-thumb:hover img {
+  transform: scale(1.04);
+}
+/* expand hint on hover, signalling the cover opens the slides */
+.talk-thumb::after {
+  content: "⤢";
+  position: absolute;
+  right: 8px;
+  bottom: 6px;
+  font-size: 15px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.25s;
+  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.65);
+}
+.talk-thumb:hover::after {
+  opacity: 0.95;
+}
+.talk .pdf {
+  display: inline-block;
+  margin-top: 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--o2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.talk .pdf:hover {
+  text-decoration: underline;
+}
+
+/* ===== PDF presentation modal (speaking page) ===== */
+.pdf-modal {
+  width: min(94vw, 1080px);
+  height: 90vh;
+  padding: 0;
+  border: 1px solid var(--hair);
+  border-radius: 14px;
+  background: var(--panel);
+  color: var(--fg);
+  overflow: hidden;
+  flex-direction: column;
+}
+.pdf-modal[open] {
+  display: flex;
+}
+.pdf-modal::backdrop {
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+}
+.pdf-modal .pm-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--hair);
+}
+.pdf-modal .pm-head h2 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  font-size: 15px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pdf-modal .pm-actions {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.pdf-modal .pm-ext {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--o2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.pdf-modal .pm-ext:hover {
+  text-decoration: underline;
+}
+.pdf-modal .pm-close {
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  width: 30px;
+  height: 30px;
+  border-radius: 999px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+}
+.pdf-modal .pm-close:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+.pdf-modal iframe {
+  flex: 1 1 auto;
+  width: 100%;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+
+.oss-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0;
+  border-top: 1px solid var(--hair);
+}
+.oss {
+  padding: 22px 24px;
+  border-bottom: 1px solid var(--hair);
+}
+.oss:nth-child(odd) {
+  border-right: 1px solid var(--hair);
+}
+.oss .top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+.oss h3 {
+  font-family: "Archivo", sans-serif;
+  font-weight: 800;
+  font-size: 18px;
+}
+.oss h3 a {
+  text-decoration: none;
+}
+.oss h3 a:hover {
+  color: var(--o2);
+}
+.oss .stars {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--y1);
+}
+.oss .lang {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted2);
+  text-transform: uppercase;
+  margin-top: 2px;
+}
+.oss p {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 8px;
+  line-height: 1.5;
+}
+
+@media (max-width: 760px) {
+  .post {
+    grid-template-columns: 1fr;
+  }
+  .article {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .panel {
+    position: static;
+    padding: 30px 0 0;
+    border-top: 1px solid var(--hair);
+    margin-top: 30px;
+    /* let the sidebar flow naturally on mobile — no internal scroll box */
+    max-height: none;
+    overflow: visible;
+  }
+  .row {
+    grid-template-columns: 40px 1fr;
+    gap: 14px;
+  }
+  .row .thumb {
+    width: 92px;
+    margin-left: 14px;
+  }
+  .talk {
+    grid-template-columns: 48px 1fr;
+    gap: 14px;
+  }
+  .talk-thumb {
+    width: 132px;
+    margin-left: 14px;
+  }
+  /* tables go full-width on narrow screens (80% would waste space) */
+  .prose table {
+    width: 100%;
+  }
+  .oss-grid {
+    grid-template-columns: 1fr;
+  }
+  .oss:nth-child(odd) {
+    border-right: 0;
+  }
+}

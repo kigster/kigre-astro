@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+  const tags = new Set();
+  for (const p of posts) for (const t of p.data.tags) tags.add(t);
+  return [...tags].map((tag) => ({
+    params: { tag },
+    props: {
+      tag,
+      posts: posts
+        .filter((p) => p.data.tags.includes(tag))
+        .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf()),
+    },
+  }));
+}
+
+const { tag, posts } = Astro.props;
+const fmt = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+---
+<BaseLayout title={`#${tag}`} description={`Posts tagged ${tag}.`}>
+  <header class="ghead">
+    <div class="eyebrow">// tag</div>
+    <h1>#<em>{tag}</em></h1>
+    <div class="sub">{posts.length} post{posts.length === 1 ? '' : 's'}</div>
+  </header>
+  <div class="idx">
+    {posts.map((post, i) => (
+      <a class="row" href={post.data.permalink}>
+        <div class="num">{String(posts.length - i).padStart(2, '0')}</div>
+        <div class="mid">
+          <span class="cat">{post.data.category}</span>
+          <h2>{post.data.title}</h2>
+          {post.data.description && <p>{post.data.description}</p>}
+        </div>
+        <div class="date">{fmt(post.data.date)}</div>
+      </a>
+    ))}
+  </div>
+</BaseLayout>

@@ -1,0 +1,47 @@
+name: Weekly AI Digest
+
+# Runs every Sunday 14:00 UTC. Generates a draft digest post and opens a PR
+# for human review (never commits to main directly).
+on:
+  schedule:
+    - cron: '0 14 * * 0'
+  workflow_dispatch: {} # allow manual runs from the Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  digest:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - run: bun install --frozen-lockfile
+
+      - name: Generate weekly digest
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          DIGEST_MODEL: claude-opus-4-8
+        run: bun run digest
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: 'chore: weekly AI papers digest'
+          branch: digest/weekly
+          title: 'Weekly AI Papers Digest'
+          body: |
+            Auto-generated weekly digest of AI papers.
+
+            - Generated from arXiv (cs.AI, cs.LG, cs.CL), last 7 days
+            - Fact-checked by a verification pass against source abstracts
+            - Posted as `draft: true`
+
+            **To publish:** review the post in `src/content/blog/`, set `draft: false`, and merge.
+          labels: digest, automated
+          delete-branch: true

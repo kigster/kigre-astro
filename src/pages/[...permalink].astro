@@ -1,0 +1,69 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Comments from '../components/Comments.astro';
+
+export async function getStaticPaths() {
+  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+
+  return posts.map((post, i) => {
+    // permalink is "/YYYY/MM/DD/slug.html". Strip leading slash AND trailing .html;
+    // build:{format:'file'} re-appends .html, yielding the exact legacy path.
+    const param = post.data.permalink.replace(/^\//, '').replace(/\.html$/, '');
+    const recent = posts.filter((p) => p.id !== post.id).slice(0, 5);
+    return { params: { permalink: param }, props: { post, recent } };
+  });
+}
+
+const { post, recent } = Astro.props;
+const { Content } = await render(post);
+const d = post.data.date;
+const fmtLong = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+const fmtShort = (x) =>
+  `${x.getFullYear()}.${String(x.getMonth() + 1).padStart(2, '0')}.${String(x.getDate()).padStart(2, '0')}`;
+const fullUrl = `https://kig.re${post.data.permalink}`;
+---
+<BaseLayout title={post.data.title} description={post.data.description}>
+  <div class="post">
+    <article class="article" data-pagefind-body>
+      <div class="cat">// {post.data.category}</div>
+      <h1>{post.data.title}</h1>
+      <div class="byline">
+        <span>{fmtLong}</span>
+        <span class="dot"></span>
+        <span>Konstantin Gredeskoul</span>
+      </div>
+      {post.data.heroImage && (
+        <img class="hero-img" src={post.data.heroImage} alt={post.data.title} />
+      )}
+      <div class="prose">
+        <Content />
+      </div>
+      {post.data.tags.length > 0 && (
+        <div class="tags">
+          {post.data.tags.map((t) => (
+            <a href={`/tags/${encodeURIComponent(t)}`}>#{t}</a>
+          ))}
+        </div>
+      )}
+    </article>
+
+    <aside class="panel">
+      <div class="pt">// recent posts</div>
+      {recent.map((p, i) => (
+        <a class="ritem" href={p.data.permalink}>
+          <div class="rn">{String(i + 1).padStart(2, '0')}</div>
+          <h3>{p.data.title}</h3>
+          <div class="rd">{fmtShort(p.data.date)}</div>
+        </a>
+      ))}
+      <a class="allbtn" href="/">View full index →</a>
+    </aside>
+
+    {post.data.comments && (
+      <Comments identifier={post.data.permalink} title={post.data.title} url={fullUrl} />
+    )}
+  </div>
+</BaseLayout>

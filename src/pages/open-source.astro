@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+// Top projects sourced from reinvent.one/#open-source (github.com/kigster).
+// Sorted by stars. Edit to feature different repos.
+const repos = [
+  { name: 'cmake-project-template', lang: 'C++', stars: 945, desc: 'Jump-start a C/C++ project that builds libraries, binaries, and a working unit-test suite. Uses CMake and is deliberately minimal.' },
+  { name: 'simple-feed', lang: 'Ruby', stars: 335, desc: 'Flexible time-ordered activity feeds for social apps. Events are pushed and fanned out to users, then returned as a pre-populated ordered list.' },
+  { name: 'bashmatic', lang: 'Shell', stars: 172, desc: '900+ BASH DSL functions for UNIX command-line power users. Über toolkit optimized for humans. See bashmatic.dev.' },
+  { name: 'sym', lang: 'Ruby', stars: 138, desc: 'CLI and Ruby API that makes encrypting and decrypting sensitive data trivial — usability-first symmetric encryption with keychain support.' },
+  { name: 'laser-cutter', lang: 'Ruby', stars: 98, desc: 'Generates PDFs for cutting notched boxes on a laser cutter. An extensible, well-tested framework for laser-cut box templates.' },
+  { name: 'ventable', lang: 'Ruby', stars: 62, desc: 'Event/Observable support for plain Ruby, with grouping of observers and wrapping notifications in blocks like transaction handling.' },
+  { name: 'warp-dir', lang: 'Ruby', stars: 41, desc: 'A drop-in superset of the nifty `wd` ZSH module — written in Ruby, works with any shell.' },
+  { name: 'puma-daemon', lang: 'Ruby', stars: 39, desc: 'Restores automatic daemonization to Puma v5/v6 after it was removed from the gem itself.' },
+  { name: 'arli', lang: 'Ruby / C++', stars: 30, desc: 'Arduino library manager decoupled from any IDE, plus a project generator based on arduino-cmake.' },
+  { name: 'gomoku-ansi-c', lang: 'C', stars: 2, desc: 'ASCII terminal Gomoku with MiniMax + alpha/beta pruning, plus a networked HTTPD version powering a ReactJS web app.' },
+];
+const totalStars = repos.reduce((s, r) => s + r.stars, 0);
+---
+<BaseLayout title="Open Source" description="Open-source projects by Konstantin Gredeskoul — 200+ repos across Ruby, C++, Arduino, Shell and more.">
+  <div class="page">
+    <div class="eyebrow">// open source</div>
+    <h1>Open <em>Source</em></h1>
+    <p class="lead">
+      200+ public repositories and 200M+ RubyGems downloads. A selection of favorites below —
+      the full list lives on <a href="https://github.com/kigster" style="color:var(--o2)">github.com/kigster</a>.
+    </p>
+  </div>
+  <div class="oss-grid">
+    {repos.map((r) => (
+      <div class="oss">
+        <div class="top">
+          <h3><a href={`https://github.com/kigster/${r.name}`} target="_blank" rel="noopener">{r.name}</a></h3>
+          <span class="stars">★ {r.stars}</span>
+        </div>
+        <div class="lang">{r.lang}</div>
+        <p>{r.desc}</p>
+      </div>
+    ))}
+  </div>
+</BaseLayout>
