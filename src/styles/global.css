@@ -1387,6 +1387,38 @@ button:focus-visible {
 }
 
 /* ============================================================
+   Global UI scale — device-class "browser zoom"
+   ------------------------------------------------------------
+   The design system mixes px with rem/em units, so bumping the
+   root font-size alone would leave every px value untouched. CSS
+   `zoom` scales the whole layout box — text, images, spacing —
+   exactly like the browser's own Cmd-+, and re-flows instead of
+   clipping. Media queries are evaluated against the *unzoomed*
+   viewport, so each device class is keyed off the real screen
+   width before the scale is applied.
+     • Phones  (≤760px)         → 100% (native)
+     • Desktop (mouse, >760px)  → 120%
+     • Tablets (touch, >760px)  → 140%  (e.g. iPad Pro)
+   ============================================================ */
+@media (max-width: 760px) {
+  :root {
+    zoom: 1;
+  }
+}
+@media (min-width: 761px) {
+  :root {
+    zoom: 1.2;
+  }
+}
+/* a coarse pointer on a roomy screen is a tablet — bump to 140%. This rule
+   follows the desktop one, so it wins on touch devices (iPad &c.). */
+@media (min-width: 761px) and (pointer: coarse) {
+  :root {
+    zoom: 1.4;
+  }
+}
+
+/* ============================================================
    Collapsible "recent posts" sidebar (post pages)
    ------------------------------------------------------------
    A chevron in the panel header slides the sidebar off to the
