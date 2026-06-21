@@ -5,114 +5,123 @@ const { title, description } = Astro.props;
 const pathname = Astro.url.pathname;
 const isActive = (p) => (p === '/' ? pathname === '/' : pathname.startsWith(p));
 const navItems = [
-  { href: '/', label: 'Index' },
-  { href: '/speaking', label: 'Speaking' },
-  { href: '/open-source', label: 'Open Source' },
-  { href: '/about', label: 'About' },
-  { href: '/tags', label: 'Tags' },
+{ href: '/', label: 'Index' },
+{ href: '/speaking', label: 'Speaking' },
+{ href: '/open-source', label: 'Open Source' },
+{ href: '/about', label: 'About' },
+{ href: '/tags', label: 'Tags' },
 ];
 ---
 <!doctype html>
 <html lang="en" data-theme="dark-glass">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>{title ? `${title} — kig.re` : 'kig.re'}</title>
-  {description && <meta name="description" content={description} />}
-  <link rel="alternate" type="application/rss+xml" title="kig.re" href="/rss.xml" />
-  <script is:inline>
-    // set theme before paint to avoid flash; fall back to dark-glass (default) on unknown values
-    (function () {
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title ? `${title} — kig.re` : 'kig.re'}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="alternate" type="application/rss+xml" title="kig.re" href="/rss.xml" />
+    <script is:inline>
+      // set theme before paint to avoid flash; fall back to dark-glass (default) on unknown values
+      (function () {
       const themes = ['dark-glass', 'noir', 'azure', 'light-forest', 'light-earth', 'light'];
       const saved = localStorage.getItem('theme');
       const theme = themes.includes(saved) ? saved : 'dark-glass';
       document.documentElement.setAttribute('data-theme', theme);
     })();
-  </script>
-</head>
-<body>
-  <header class="site-header" id="siteHeader">
-    <div class="wrap">
-      <nav class="nav">
-        <a href="/" class="logo">KIG<b>.RE</b></a>
-        <div class="links">
-          <Search
-            className="pf-search"
-            searchboxOptions={{ placeholder: 'Search' }}
-          />
-          {navItems.map((it) => (
+    </script>
+  </head>
+  <body>
+    <header class="site-header" id="siteHeader">
+      <div class="wrap">
+        <nav class="nav">
+          <a href="/" class="logo">KIG<b>.RE</b></a>
+          <div class="links">
+            <Search
+              className="pf-search"
+              searchboxOptions={{ placeholder: 'Search' }}
+              />
+            {navItems.map((it) => (
             <a href={it.href} class={isActive(it.href) ? 'active' : ''}>{it.label}</a>
-          ))}
-          <button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Scroll to top">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-              <path d="M12 19V5M5 12l7-7 7 7" />
-            </svg>
-          </button>
-          <select class="theme-select" id="themeSelect" aria-label="Color theme">
-            <option value="dark-glass">Dark Glass</option>
-            <option value="noir">Noir</option>
-            <option value="azure">Azure</option>
-            <option value="light-forest">Light Forest</option>
-            <option value="light-earth">Light Earth</option>
-            <option value="light">Light</option>
-          </select>
-        </div>
-      </nav>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <slot />
-  </main>
-
-  <footer class="site-footer">
-    <div class="wrap">
-      <div class="ft-row">
-        <span class="mono">© {new Date().getFullYear()} Konstantin Gredeskoul — kig.re</span>
-        <span>
-          <a href="https://github.com/kigster">GitHub</a> ·
-          <a href="https://twitter.com/kig">Twitter</a> ·
-          <a href="https://linkedin.com/in/kigster">LinkedIn</a> ·
-          <a href="/rss.xml">RSS</a>
-        </span>
+            ))}
+            <button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Scroll to top">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M12 19V5M5 12l7-7 7 7" />
+              </svg>
+            </button>
+            <select class="theme-select" id="themeSelect" aria-label="Color theme">
+              <option value="dark-glass">Dark Glass</option>
+              <option value="noir">Noir</option>
+              <option value="azure">Azure</option>
+              <option value="light-forest">Light Forest</option>
+              <option value="light-earth">Light Earth</option>
+              <option value="light">Light</option>
+            </select>
+          </div>
+        </nav>
       </div>
-    </div>
-  </footer>
+    </header>
 
-  <script>
-    // theme dropdown: sync the control to the active theme, persist on change
-    const sel = document.getElementById('themeSelect');
-    if (sel) {
-      sel.value = document.documentElement.getAttribute('data-theme') || 'dark-glass';
-      sel.addEventListener('change', () => {
-        document.documentElement.setAttribute('data-theme', sel.value);
-        localStorage.setItem('theme', sel.value);
+    <main class="wrap">
+      <slot />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="ft-row">
+          <span class="mono">© {new Date().getFullYear()} Konstantin Gredeskoul — kig.re</span>
+          <span>
+            <a href="https://github.com/kigster">GitHub</a> ·
+            <a href="https://twitter.com/kig">Twitter</a> ·
+            <a href="https://linkedin.com/in/kigster">LinkedIn</a> ·
+            <a href="/rss.xml">RSS</a>
+          </span>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // theme dropdown: sync the control to the active theme, persist on change
+      const sel = document.getElementById('themeSelect');
+      if (sel) {
+        sel.value = document.documentElement.getAttribute('data-theme') || 'dark-glass';
+        sel.addEventListener('change', () => {
+          document.documentElement.setAttribute('data-theme', sel.value);
+          localStorage.setItem('theme', sel.value);
+        });
+      }
+    </script>
+
+    <script>
+      // fixed header: drop a hairline once scrolled, reveal the scroll-to-top arrow
+      const header = document.getElementById('siteHeader');
+      const toTop = document.getElementById('scrollTop');
+      const onScroll = () => {
+        const y = window.scrollY;
+        header?.classList.toggle('scrolled', y > 4);
+        toTop?.classList.toggle('visible', y > 240);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+      toTop?.addEventListener('click', () => {
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
       });
-    }
-  </script>
+    </script>
 
-  <script>
-    // fixed header: drop a hairline once scrolled, reveal the scroll-to-top arrow
-    const header = document.getElementById('siteHeader');
-    const toTop = document.getElementById('scrollTop');
-    const onScroll = () => {
-      const y = window.scrollY;
-      header?.classList.toggle('scrolled', y > 4);
-      toTop?.classList.toggle('visible', y > 240);
-    };
-    window.addEventListener('scroll', onScroll, { passive: true });
-    onScroll();
-    toTop?.addEventListener('click', () => {
-      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
-    });
-  </script>
+    <!-- medium-zoom: modern click-to-zoom replacing the old lightbox -->
+    <script>
+      import mediumZoom from 'medium-zoom';
+      mediumZoom('.prose img', { background: 'rgba(20,12,2,0.92)', margin: 24 });
+    </script>
+    <script id="dsq-count-scr" src="//kiguino.disqus.com/count.js" async></script>
 
-  <!-- medium-zoom: modern click-to-zoom replacing the old lightbox -->
-  <script>
-    import mediumZoom from 'medium-zoom';
-    mediumZoom('.prose img', { background: 'rgba(20,12,2,0.92)', margin: 24 });
-  </script>
-  <script id="dsq-count-scr" src="//kiguino.disqus.com/count.js" async></script>
-</body>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-C18VWPMEKR"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-C18VWPMEKR');
+    </script>
+  </body>
 </html>
