@@ -33,6 +33,11 @@ const navItems = [
       const theme = themes.includes(saved) ? saved : 'dark-glass';
       document.documentElement.setAttribute('data-theme', theme);
     })();
+      // restore the collapsed-sidebar state before paint (no flash, no animation)
+      (function () {
+      if (localStorage.getItem('sidebar-collapsed') === '1')
+        document.documentElement.classList.add('sb-collapsed');
+    })();
     </script>
   </head>
   <body>

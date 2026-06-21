@@ -51,7 +51,14 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
     </article>
 
     <aside class="panel">
-      <div class="pt">// recent posts</div>
+      <div class="pt">
+        <span>// recent posts</span>
+        <button class="panel-collapse" id="panelCollapse" aria-label="Hide sidebar" title="Hide sidebar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 6l6 6-6 6" />
+          </svg>
+        </button>
+      </div>
       {recent.map((p, i) => (
         <a class="ritem" href={p.data.permalink}>
           <div class="rn">{String(i + 1).padStart(2, '0')}</div>
@@ -62,8 +69,36 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
       <a class="allbtn" href="/">View full index →</a>
     </aside>
 
+    <!-- collapsed-state grab tab: only this click restores the sidebar -->
+    <button class="panel-reopen" id="panelReopen" aria-label="Show sidebar" title="Show recent posts">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M15 6l-6 6 6 6" />
+      </svg>
+      <span>Recent</span>
+    </button>
+
     {post.data.comments && (
       <Comments identifier={post.data.permalink} title={post.data.title} url={fullUrl} />
     )}
   </div>
+
+  <script>
+    // Collapsible recent-posts sidebar. The "sb-collapsed" class on <html> is the
+    // single source of truth — set pre-paint in BaseLayout from localStorage, so
+    // the buttons here only flip it and persist. Only an explicit click restores it.
+    const root = document.documentElement;
+    const collapseBtn = document.getElementById('panelCollapse');
+    const reopenBtn = document.getElementById('panelReopen');
+    const KEY = 'sidebar-collapsed';
+    function setCollapsed(collapsed: boolean) {
+      root.classList.toggle('sb-collapsed', collapsed);
+      collapseBtn?.setAttribute('aria-expanded', String(!collapsed));
+      try {
+        localStorage.setItem(KEY, collapsed ? '1' : '0');
+      } catch {}
+    }
+    collapseBtn?.setAttribute('aria-expanded', String(!root.classList.contains('sb-collapsed')));
+    collapseBtn?.addEventListener('click', () => setCollapsed(true));
+    reopenBtn?.addEventListener('click', () => setCollapsed(false));
+  </script>
 </BaseLayout>
