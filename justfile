@@ -33,8 +33,6 @@ digest:
     @bun run digest
 
 deploy: build
-    @scp kig@kig.re -c "rm -rvf ~/workspace/kigre-astro/dist.bak"
-    @scp kig@kig.re -c "mv -v ~/workspace/kigre-astro/dist ~/workspace/kigre-astro/dist.bak
-    @scp -rvp ./dist kig@kig.re:~/workspace/kigre-astro/
+    @rsync -Pavz -e "ssh" ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
 
 
