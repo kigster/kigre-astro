@@ -21,7 +21,7 @@ build: setup
     @bun run build
 
 # Preview the production build locally
-preview:
+preview: build
     @bun run preview
 
 # Convert AsciiDoc posts to Markdown

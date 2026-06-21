@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview",
+    "preview": "astro preview --host",
     "convert": "bun bin/convert.mjs",
     "digest": "bun scripts/ai-digest.mjs"
   },

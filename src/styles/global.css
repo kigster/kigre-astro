@@ -1005,10 +1005,11 @@ button:focus-visible {
   -webkit-text-fill-color: transparent;
 }
 .page .lead {
-  font-size: 17px;
+  font-size: 18px;
+  font-weight: 600;
   color: var(--muted);
   max-width: 60ch;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
 }
 
 /* about page: content + author photo in a sidebar-width column */
