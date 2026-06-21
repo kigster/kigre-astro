@@ -31,3 +31,10 @@ convert:
 # Generate the weekly AI digest post locally, needs ANTHROPIC_API_KEY
 digest:
     @bun run digest
+
+deploy: build
+    @scp kig@kig.re -c "rm -rvf ~/workspace/kigre-astro/dist.bak"
+    @scp kig@kig.re -c "mv -v ~/workspace/kigre-astro/dist ~/workspace/kigre-astro/dist.bak
+    @scp -rvp ./dist kig@kig.re:~/workspace/kigre-astro/
+
+

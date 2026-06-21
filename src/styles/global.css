@@ -308,6 +308,18 @@ body {
 }
 a {
   color: inherit;
+  font-style: normal;
+  font-weight: 700;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+/* explicit bold so <strong>/<b> always render heavy — the UA default
+   `bolder` is relative and computes wrong inside already-bold contexts */
+b,
+strong {
+  font-weight: 700;
 }
 a:focus-visible,
 button:focus-visible {
@@ -358,8 +370,27 @@ button:focus-visible {
   height: 44px;
   width: auto;
   display: block;
+  transform-origin: center;
   /* drop-shadow follows the round PNG's alpha shape (box-shadow would not) */
   filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+}
+/* breathe on hover: scale to 1.5x and back, ~0.5s each way, smooth, looping */
+.nav .logo:hover .logo-img {
+  animation: logo-breathe 1s ease-in-out infinite;
+}
+@keyframes logo-breathe {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.5);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .nav .logo:hover .logo-img {
+    animation: none;
+  }
 }
 .nav .logo b {
   background: var(--grad);
@@ -579,6 +610,10 @@ button:focus-visible {
   color: inherit;
   position: relative;
 }
+/* post-row links are card-like — keep them un-underlined even on hover */
+.row:hover {
+  text-decoration: none;
+}
 /* mid contains the floated thumbnail, so it must establish a block formatting
    context (flow-root) to grow around it and not let the float spill into the
    next row */
@@ -740,8 +775,11 @@ button:focus-visible {
 }
 .prose a {
   color: var(--o2);
-  text-decoration: underline;
+  text-decoration: none;
   text-underline-offset: 2px;
+}
+.prose a:hover {
+  text-decoration: underline;
 }
 .prose ul,
 .prose ol {
