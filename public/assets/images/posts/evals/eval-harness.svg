@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 640" width="1600" height="640" role="img" aria-label="An eval harness running test cases against an LLM-powered feature">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1d2021"/>
+      <stop offset="1" stop-color="#282828"/>
+    </linearGradient>
+    <linearGradient id="bar" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#b8bb26"/>
+      <stop offset="1" stop-color="#8ec07c"/>
+    </linearGradient>
+    <style>
+      .mono { font-family: "SFMono-Regular", "JetBrains Mono", "Fira Code", Menlo, Consolas, monospace; }
+      .t  { fill: #ebdbb2; }
+      .dim{ fill: #928374; }
+      .gn { fill: #b8bb26; }
+      .rd { fill: #fb4934; }
+      .yl { fill: #fabd2f; }
+      .aq { fill: #8ec07c; }
+      .or { fill: #fe8019; }
+      .bl { fill: #83a598; }
+    </style>
+  </defs>
+
+  <rect width="1600" height="640" rx="24" fill="url(#bg)"/>
+  <rect x="1" y="1" width="1598" height="638" rx="23" fill="none" stroke="#3c3836" stroke-width="2"/>
+
+  <!-- window chrome -->
+  <circle cx="48" cy="44" r="9" class="rd"/>
+  <circle cx="80" cy="44" r="9" class="yl"/>
+  <circle cx="112" cy="44" r="9" class="gn"/>
+  <text x="148" y="50" class="mono dim" font-size="22">lead_qualifier_eval.rb — bundle exec ruby</text>
+
+  <!-- left: prompt to model -->
+  <g class="mono" font-size="26">
+    <text x="48" y="132" class="dim">$ </text>
+    <text x="80" y="132" class="t">ruby eval.rb</text>
+
+    <text x="48" y="196" class="bl">case</text>
+    <text x="132" y="196" class="t">"do you do crypto taxes for an LLC?"</text>
+    <text x="48" y="236" class="dim">expect</text>
+    <text x="160" y="236" class="yl">intent: "hot"</text>
+
+    <text x="48" y="300" class="bl">case</text>
+    <text x="132" y="300" class="t">"unsubscribe me you spammers"</text>
+    <text x="48" y="340" class="dim">expect</text>
+    <text x="160" y="340" class="yl">intent: "spam"</text>
+
+    <text x="48" y="404" class="bl">case</text>
+    <text x="132" y="404" class="t">"maybe next year, just looking"</text>
+    <text x="48" y="444" class="dim">expect</text>
+    <text x="160" y="444" class="yl">intent: "cold"</text>
+  </g>
+
+  <!-- arrow / pipe -->
+  <g>
+    <line x1="760" y1="300" x2="860" y2="300" stroke="#665c54" stroke-width="3"/>
+    <polygon points="860,290 884,300 860,310" fill="#665c54"/>
+    <rect x="690" y="262" width="74" height="76" rx="12" fill="#3c3836" stroke="#504945" stroke-width="2"/>
+    <text x="727" y="312" class="mono aq" font-size="34" text-anchor="middle">∑</text>
+    <text x="727" y="356" class="mono dim" font-size="15" text-anchor="middle">Claude</text>
+  </g>
+
+  <!-- right: results panel -->
+  <g class="mono" font-size="26">
+    <rect x="912" y="96" width="640" height="372" rx="16" fill="#252221" stroke="#3c3836" stroke-width="2"/>
+
+    <text x="944" y="150" class="gn">✓</text>
+    <text x="984" y="150" class="t">hot</text>
+    <text x="1090" y="150" class="dim">→ hot</text>
+
+    <text x="944" y="214" class="gn">✓</text>
+    <text x="984" y="214" class="t">spam</text>
+    <text x="1090" y="214" class="dim">→ spam</text>
+
+    <text x="944" y="278" class="rd">✗</text>
+    <text x="984" y="278" class="t">cold</text>
+    <text x="1090" y="278" class="rd">→ warm</text>
+
+    <text x="944" y="342" class="gn">✓</text>
+    <text x="984" y="342" class="t">warm</text>
+    <text x="1090" y="342" class="dim">→ warm</text>
+
+    <text x="944" y="406" class="gn">✓</text>
+    <text x="984" y="406" class="t">hot</text>
+    <text x="1090" y="406" class="dim">→ hot</text>
+
+    <text x="1330" y="150" class="aq">json ✓</text>
+    <text x="1330" y="214" class="aq">json ✓</text>
+    <text x="1330" y="278" class="aq">json ✓</text>
+    <text x="1330" y="342" class="aq">json ✓</text>
+    <text x="1330" y="406" class="aq">json ✓</text>
+  </g>
+
+  <!-- score bar -->
+  <g class="mono">
+    <text x="912" y="520" class="t" font-size="28">accuracy</text>
+    <rect x="1080" y="500" width="380" height="26" rx="13" fill="#3c3836"/>
+    <rect x="1080" y="500" width="304" height="26" rx="13" fill="url(#bar)"/>
+    <text x="1480" y="522" class="gn" font-size="28">80%</text>
+    <text x="912" y="566" class="dim" font-size="20">threshold ≥ 90% … </text>
+    <text x="1132" y="566" class="rd" font-size="20">FAIL — ship blocked</text>
+  </g>
+
+  <!-- title -->
+  <text x="48" y="556" class="mono or" font-size="40" font-weight="700">EVALS</text>
+  <text x="48" y="596" class="mono dim" font-size="22">the unit tests for the non-deterministic parts of your app</text>
+</svg>
