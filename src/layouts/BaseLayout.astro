@@ -19,6 +19,11 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} — kig.re` : 'kig.re'}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-touch-icon.png" />
+    <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title="kig.re" href="/rss.xml" />
     <script is:inline>
       // set theme before paint to avoid flash; fall back to dark-glass (default) on unknown values
@@ -34,15 +39,19 @@ const navItems = [
     <header class="site-header" id="siteHeader">
       <div class="wrap">
         <nav class="nav">
-          <a href="/" class="logo">KIG<b>.RE</b></a>
-          <div class="links">
-            <Search
-              className="pf-search"
-              searchboxOptions={{ placeholder: 'Search' }}
-              />
-            {navItems.map((it) => (
-            <a href={it.href} class={isActive(it.href) ? 'active' : ''}>{it.label}</a>
-            ))}
+          <a href="/" class="logo" aria-label="kig.re home">
+            <img src="/assets/images/logos/kigre-v2-logo-07-round.png" alt="kig.re" class="logo-img" />
+          </a>
+          <div class="nav-right">
+            <div class="links" id="navLinks">
+              <Search
+                className="pf-search"
+                searchboxOptions={{ placeholder: 'Search' }}
+                />
+              {navItems.map((it) => (
+              <a href={it.href} class={isActive(it.href) ? 'active' : ''}>{it.label}</a>
+              ))}
+            </div>
             <button class="scroll-top" id="scrollTop" aria-label="Scroll to top" title="Scroll to top">
               <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M12 19V5M5 12l7-7 7 7" />
@@ -56,6 +65,11 @@ const navItems = [
               <option value="light-earth">Light Earth</option>
               <option value="light">Light</option>
             </select>
+            <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                <path d="M3 6h18M3 12h18M3 18h18" />
+              </svg>
+            </button>
           </div>
         </nav>
       </div>
@@ -78,6 +92,28 @@ const navItems = [
         </div>
       </div>
     </footer>
+
+    <script>
+      // mobile nav: hamburger toggles the links dropdown (an overlay, so the
+      // page content underneath never shifts). Closes on outside click / nav.
+      const navToggle = document.getElementById('navToggle');
+      const navLinks = document.getElementById('navLinks');
+      if (navToggle && navLinks) {
+        const setOpen = (open) => {
+          navLinks.classList.toggle('open', open);
+          navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        };
+        navToggle.addEventListener('click', (e) => {
+          e.stopPropagation();
+          setOpen(!navLinks.classList.contains('open'));
+        });
+        document.addEventListener('click', (e) => {
+          if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) setOpen(false);
+        });
+        navLinks.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+      }
+    </script>
 
     <script>
       // theme dropdown: sync the control to the active theme, persist on change
