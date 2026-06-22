@@ -28,14 +28,13 @@ preview: build
 convert:
     @bun run convert
 
-# Generate the weekly AI digest post locally, needs ANTHROPIC_API_KEY
+# Generate the weekly AI digest post locally (needs one provider API key)
 digest:
-    #!/usr/bin/env bash
-    if [[ -z "${ANTHROPIC_API_KEY}" ]]; then
-        echo "\e[1;31mERROR: Anthropic API Key is not available."
-    else
-        bun run digest
-    fi
+    @bun run digest
+
+# Typecheck the tools/ TypeScript toolchain
+typecheck:
+    @bun run typecheck
 
 deploy: build
     @rsync -Pavz -e "ssh" ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
