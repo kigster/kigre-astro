@@ -20,7 +20,8 @@ bun run dev        # dev server at http://localhost:4321
 bun run build      # production build into dist/ (also runs the content-schema check — build FAILS on invalid frontmatter)
 bun run preview    # serve the production build locally
 bun run convert    # one-time AsciiDoc→Markdown migration (bin/convert.mjs); reads ../kig.re/jekyll/v2/_posts
-bun run digest     # generate the weekly AI digest post locally (needs ANTHROPIC_API_KEY)
+bun run digest     # generate the weekly AI digest locally (needs one provider key)
+bun run typecheck  # typecheck the tools/ TypeScript toolchain (tsc --noEmit)
 ```
 
 There is no test suite and no linter configured. The build is the gate: an invalid
@@ -97,16 +98,22 @@ indexes the built HTML *after* `astro build` (a post-build pass over `dist/`, wr
   (types: NOTE, TIP, IMPORTANT, WARNING, CAUTION).
 - `site: "https://kig.re"`, `trailingSlash: "ignore"`.
 
-## Weekly AI digest pipeline (`scripts/ai-digest.ts`)
+## Weekly AI digest pipeline (`tools/digest/`)
 
-Five sequential stages, each feeding the next: FETCH (arXiv cs.AI/cs.LG/cs.CL, last 7
-days) → CLUSTER (Claude groups into themes) → DRAFT (Claude writes synthesis) → VERIFY
-(second Claude pass fact-checks claims against the real abstracts) → EMIT (writes a
-post into `src/content/blog/` with `draft: true`). Model defaults to `claude-opus-4-8`
-(override via `DIGEST_MODEL`). The GitHub Action (`.github/workflows/weekly-digest.yml`,
-Sundays 14:00 UTC) runs it and opens a PR — it never commits to `main`. Drafts
-(`draft: true`) are excluded from the index, post routes, and RSS via the
-`!data.draft` filter, so a human reviews and sets `draft: false` to publish.
+Five sequential stages, each feeding the next: FETCH (arXiv cs.AI/cs.LG/cs.CL, last
+`DIGEST_DAYS_BACK` days) → CLUSTER → DRAFT → VERIFY (fact-checks claims against the
+real abstracts) → EMIT (writes a post into `notes/drafts/ai-digests/` with
+`draft: true`). Built on **Genkit**, with prompts in `prompts/*.prompt` (dotprompt;
+see `prompts/README.md`). The provider is chosen at runtime by `tools/ai/genkit.ts`
+(`AI_PROVIDER`, else the first key present among Anthropic → Gemini → OpenAI);
+override the model with `DIGEST_MODEL`. The GitHub Action
+(`.github/workflows/weekly-digest.yml`, Sundays 14:00 UTC) runs it and opens a PR —
+it never commits to `main`. Drafts (`draft: true`) are excluded from the index, post
+routes, and RSS via the `!data.draft` filter, so a human reviews and sets
+`draft: false` to publish.
+
+The broader plan (configurable CLI, `article`/`news` modes, source registry) lives
+in `.plans/`.
 
 ## Deploy
 
@@ -115,5 +122,6 @@ Sundays 14:00 UTC) runs it and opens a PR — it never commits to `main`. Drafts
 
 ## Environment
 
-Copy `.env.example` to `.env`. `PUBLIC_DISQUS_SHORTNAME` enables comments;
-`ANTHROPIC_API_KEY` is needed for the digest (also a repo secret for CI).
+Copy `.env.example` to `.env`. `PUBLIC_DISQUS_SHORTNAME` enables comments; the
+digest needs one provider key — `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, or
+`GEMINI_API_KEY`/`GOOGLE_API_KEY` (the CI secret is `ANTHROPIC_API_KEY`).
