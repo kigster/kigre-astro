@@ -1,3 +1,5 @@
+[![CI](https://github.com/kigster/kigre-astro/actions/workflows/ci.yml/badge.svg)](https://github.com/kigster/kigre-astro/actions/workflows/ci.yml)
+
 # kig.re
 
 Personal engineering blog of Konstantin Gredeskoul, built on [Astro](https://astro.build).
