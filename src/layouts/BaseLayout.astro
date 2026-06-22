@@ -47,12 +47,12 @@ const navItems = [
           <a href="/about" class="logo" aria-label="About kig.re">
             <img src="/assets/images/logos/kigre-v2-logo-07-round.png" alt="kig.re" class="logo-img" />
           </a>
+          <Search
+            className="pf-search"
+            searchboxOptions={{ placeholder: 'Search' }}
+            />
           <div class="nav-right">
             <div class="links" id="navLinks">
-              <Search
-                className="pf-search"
-                searchboxOptions={{ placeholder: 'Search' }}
-                />
               {navItems.map((it) => (
               <a href={it.href} class={isActive(it.href) ? 'active' : ''}>{it.label}</a>
               ))}
