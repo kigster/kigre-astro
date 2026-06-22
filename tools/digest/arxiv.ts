@@ -22,6 +22,38 @@ export interface FetchOptions {
   max: number
 }
 
+/**
+ * Pure parser for an arXiv Atom feed. Extracted from `fetchArxiv` so the
+ * date-filtering / dedup / field-extraction logic can be unit-tested without a
+ * network round-trip. Appends new, non-duplicate papers into `into`.
+ */
+export function parseArxivFeed(
+  xml: string,
+  category: string,
+  since: Date,
+  into: Paper[],
+): void {
+  const entries = xml.split('<entry>').slice(1)
+
+  for (const e of entries) {
+    const grab = (tag: string): string => {
+      const m = e.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`))
+      return (m?.[1] ?? '').trim()
+    }
+
+    const published = grab('published')
+    if (new Date(published) < since) continue
+
+    const title = grab('title').replace(/\s+/g, ' ')
+    const summary = grab('summary').replace(/\s+/g, ' ')
+    const id = grab('id')
+
+    // skip untitled entries and duplicates (by arXiv id or title)
+    if (!title || into.some((p) => p.id === id || p.title === title)) continue
+    into.push({ id, title, summary, published, category })
+  }
+}
+
 export async function fetchArxiv(opts: FetchOptions): Promise<Paper[]> {
   const since = new Date(Date.now() - opts.daysBack * 864e5)
   const all: Paper[] = []
@@ -33,26 +65,7 @@ export async function fetchArxiv(opts: FetchOptions): Promise<Paper[]> {
 
     const res = await fetch(url)
     if (!res.ok) throw new Error(`arXiv API ${res.status} for ${cat}`)
-    const xml = await res.text()
-    const entries = xml.split('<entry>').slice(1)
-
-    for (const e of entries) {
-      const grab = (tag: string): string => {
-        const m = e.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`))
-        return (m?.[1] ?? '').trim()
-      }
-
-      const published = grab('published')
-      if (new Date(published) < since) continue
-
-      const title = grab('title').replace(/\s+/g, ' ')
-      const summary = grab('summary').replace(/\s+/g, ' ')
-      const id = grab('id')
-
-      // skip untitled entries and duplicates (by arXiv id or title)
-      if (!title || all.some((p) => p.id === id || p.title === title)) continue
-      all.push({ id, title, summary, published, category: cat })
-    }
+    parseArxivFeed(await res.text(), cat, since, all)
   }
 
   return all.slice(0, opts.max)

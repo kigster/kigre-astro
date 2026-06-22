@@ -1,0 +1,32 @@
+name: CI
+
+# Runs on every PR and on pushes to main: typecheck + unit tests + production
+# build (the build also validates post frontmatter via the content schema).
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  ci:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version-file: package.json
+
+      - run: bun install --frozen-lockfile
+
+      - name: Typecheck (tools/)
+        run: bun run typecheck
+
+      - name: Unit tests (tools/)
+        run: bun run test
+
+      - name: Production build
+        run: bun run build
