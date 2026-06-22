@@ -97,7 +97,7 @@ indexes the built HTML *after* `astro build` (a post-build pass over `dist/`, wr
   (types: NOTE, TIP, IMPORTANT, WARNING, CAUTION).
 - `site: "https://kig.re"`, `trailingSlash: "ignore"`.
 
-## Weekly AI digest pipeline (`scripts/ai-digest.mjs`)
+## Weekly AI digest pipeline (`scripts/ai-digest.ts`)
 
 Five sequential stages, each feeding the next: FETCH (arXiv cs.AI/cs.LG/cs.CL, last 7
 days) → CLUSTER (Claude groups into themes) → DRAFT (Claude writes synthesis) → VERIFY

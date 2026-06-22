@@ -1,7 +1,8 @@
 # kig.re
 
-Personal engineering blog of Konstantin Gredeskoul, rebuilt on [Astro](https://astro.build).
-Migrated from Jekyll/AsciiDoc to Astro/Markdown, with a weekly AI-paper digest pipeline.
+Personal engineering blog of Konstantin Gredeskoul, built on [Astro](https://astro.build).
+Migrated from Jekyll/AsciiDoc to Astro/Markdown, with a weekly AI-paper digest pipeline and
+a fully static, client-side search.
 
 - **Design:** "Editorial Index" — a numbered reading list, warm orange→yellow gradient, sans-serif only.
 - **Themes:** six switchable color themes (default **Dark Glass**, plus Noir, Azure, Light Forest, Light Earth, Light), chosen from the nav dropdown and remembered in `localStorage`.
@@ -11,31 +12,40 @@ Migrated from Jekyll/AsciiDoc to Astro/Markdown, with a weekly AI-paper digest p
 - **Callouts:** GitHub-style `> [!NOTE]` admonitions.
 - **Images:** click-to-zoom via medium-zoom.
 
----
+______________________________________________________________________
 
 ## Quick start
 
-This project uses [**bun**](https://bun.sh) as its package manager and runtime
-(`curl -fsSL https://bun.sh/install | bash`, or `brew install oven-sh/bun/bun`).
+This project uses [**bun**](https://bun.sh) as its package manager and runtime, with a
+[`justfile`](https://github.com/casey/just) wrapping the everyday tasks. If you have `just`
+installed, that's the only interface you need:
+
+```bash
+just setup     # install bun (if missing) + project dependencies
+just dev       # dev server at http://localhost:4321 (or https://dev.kig.re/)
+just build     # production build into dist/ (also builds the Pagefind search index)
+just preview   # preview the production build locally
+just deploy    # build, then rsync dist/ to the production origin (see Deploying)
+just           # interactive recipe picker
+```
+
+Prefer raw bun? The same scripts exist directly:
 
 ```bash
 bun install
-bun run dev        # local dev server at http://localhost:4321
-bun run build      # production build into dist/ (also builds the Pagefind search index)
-bun run preview    # preview the production build locally
+bun run dev
+bun run build
+bun run preview
 ```
 
-A `justfile` wraps the same tasks (`just setup`, `just dev`, `just build`, …) if you
-prefer [`just`](https://github.com/casey/just).
-
-Copy `.env.example` to `.env` and set `PUBLIC_DISQUS_SHORTNAME` (and, for the
-digest, `ANTHROPIC_API_KEY`).
+Copy `.env.example` to `.env` and set `PUBLIC_DISQUS_SHORTNAME` (and, for the digest,
+`ANTHROPIC_API_KEY`).
 
 > [!NOTE]
-> Search is built by Pagefind as a post-build step over `dist/`, so there's no
-> search index in `bun run dev` until you've run `bun run build` at least once.
+> Search is built by Pagefind as a post-build step over `dist/`, so there's no search index
+> in `just dev` until you've run `just build` at least once.
 
----
+______________________________________________________________________
 
 ## Writing a new post
 
@@ -57,18 +67,6 @@ comments: true
 Your content here. Standard Markdown.
 ```
 
-### The three content rules (enforced by the schema in `src/content.config.ts`)
-
-1. **Permalinks are exact and permanent.** Every post sets `permalink: "/YYYY/MM/DD/slug.html"`.
-   This matches the old Jekyll URLs so existing inbound links, SEO, and **Disqus comment
-   threads** keep working. The build emits each post at exactly that path. Don't change a
-   permalink after publishing.
-2. **One category per post.** `category` is a single string, never a list.
-3. **Any number of tags.** `tags` is an array; each tag gets its own page at `/tags/<tag>`.
-
-If a post violates the schema (bad permalink format, missing category, etc.) the build
-**fails loudly** rather than shipping a broken page.
-
 ### Code blocks, callouts, images
 
 ````markdown
@@ -82,105 +80,17 @@ def hello = puts "hi"   # syntax-highlighted by Shiki, in Fantasque Sans Mono
 ![alt text](/assets/images/posts/diagram.png)   <!-- click to zoom (medium-zoom) -->
 ````
 
-### Images
-
 Put post images under `public/assets/images/...` and reference them with an absolute path
 (`/assets/images/...`). They're served as-is and become click-to-zoom automatically inside
 post bodies.
 
----
-
-## Migrating the old AsciiDoc posts
-
-The old Jekyll `.adoc` posts are converted by a one-time script:
-
-```bash
-# reads ../kig.re/jekyll/v2/_posts, writes src/content/blog/*.md
-bun run convert
-# or specify paths:
-bun bin/convert.mjs /path/to/_posts src/content/blog
-```
-
-What it does:
-- AsciiDoc attribute frontmatter → YAML frontmatter
-- First category wins; tags preserved
-- Permalinks derived from the `YYYY-MM-DD-slug.adoc` filename → `/YYYY/MM/DD/slug.html`
-- AsciiDoc admonitions (`NOTE:`, `[NOTE]`, sidebars) → GitHub `> [!NOTE]` callouts
-- `[source,lang]` blocks → fenced code blocks
-- old `lightbox_image` Liquid tags → standard Markdown images
-- `{% include %}` (e.g. the interactive quizzes) → `<!-- TODO -->` markers for manual porting
-
-A verification summary prints at the end and is saved to `scripts/migration-report.json`
-(confirms all permalinks are unique and every post has exactly one category).
-
-> [!NOTE]
-> Two posts use interactive quiz `include`s that need a manual port (flagged in the report).
-
----
-
-## Weekly AI-paper digest
-
-`scripts/ai-digest.mjs` generates a weekly post summarizing and connecting recent AI papers.
-
-**Pipeline:** fetch arXiv (cs.AI / cs.LG / cs.CL, last 7 days) → cluster into themes (Claude)
-→ draft a connected digest (Claude) → **verify** every claim against the source abstracts
-(Claude) → write a `draft: true` Markdown post.
-
-Run locally:
-
-```bash
-ANTHROPIC_API_KEY=sk-ant-... bun run digest
-```
-
-In CI it runs automatically: see `.github/workflows/weekly-digest.yml` (Sundays 14:00 UTC).
-It **opens a pull request** with the draft rather than publishing directly — so you always
-review before it goes live. To publish: open the post in `src/content/blog/`, set
-`draft: false`, and merge.
-
-Set `ANTHROPIC_API_KEY` as a repository secret (Settings → Secrets and variables → Actions).
-
----
-
-## Deploying
-
-The site is fully static (`dist/`), so any static host works. The build runs the
-Pagefind indexer automatically, so search ships with every deploy — nothing extra to
-configure. Two options:
-
-### Option A — GitHub Pages (included)
-
-1. **Settings → Pages → Source: GitHub Actions.**
-2. Push to `main`. `.github/workflows/deploy.yml` runs `bun install` + `bun run build`
-   and publishes `dist/` (no Node/Bun setup needed beyond the workflow).
-3. **Custom domain (kig.re):** `public/CNAME` contains `kig.re`, so it's copied into
-   every build and keeps the domain bound. Also set it once under **Settings → Pages →
-   Custom domain**, point the DNS (`CNAME` → `kigster.github.io`, or apex `A`/`AAAA`
-   records per GitHub's docs), and enable **Enforce HTTPS**.
-
-The first deploy can take a minute for Pages to provision; subsequent pushes are quick.
-
-### Option B — Netlify / Vercel / Cloudflare Pages
-Connect the repo and use:
-- **Build command:** `bun run build`
-- **Output directory:** `dist`
-- **Runtime:** Bun (Netlify/Vercel/Cloudflare auto-detect `bun.lock`; node 22+ also fine)
-
-These build on every push automatically — if you use one of them, delete `deploy.yml`
-and set the custom domain in the host's dashboard (the `CNAME` file is ignored there).
-Pull requests (including the weekly digest PR) get automatic preview deploys on all three.
-
-> [!IMPORTANT]
-> Whatever host you choose, make sure the legacy `/YYYY/MM/DD/slug.html` URLs resolve
-> exactly. The build already emits them; just don't add a host-level rule that rewrites or
-> strips `.html`.
-
----
+______________________________________________________________________
 
 ## Project structure
 
 ```
 bin/convert.mjs            # one-time AsciiDoc → Markdown migration
-scripts/ai-digest.mjs      # weekly AI paper digest generator
+scripts/ai-digest.ts       # weekly AI paper digest generator
 src/
   content/blog/*.md        # posts (the content)
   content.config.ts        # schema enforcing the 3 content rules
@@ -196,19 +106,119 @@ src/
     rss.xml.js             # RSS feed (also feeds email newsletters)
   styles/global.css        # the Editorial Index design system + all six themes
 public/
-  CNAME                    # custom domain (kig.re) for GitHub Pages
+  CNAME                    # custom domain (kig.re)
+  resume/                  # resume PDF + redirect stub (/resume → PDF)
   assets/                  # fonts, post images, talk covers (served as-is)
-.github/workflows/         # deploy + weekly digest
+justfile                   # setup / dev / build / preview / deploy recipes
+astro.config.mjs           # site config, legacy-URL emit, Shiki, Pagefind, sitemap
 ```
 
----
+______________________________________________________________________
+
+## The content model (deeper)
+
+Three rules are enforced by the schema in `src/content.config.ts`. A post that violates them
+**fails the build loudly** rather than shipping a broken page.
+
+1. **Permalinks are exact and permanent.** Every post sets `permalink: "/YYYY/MM/DD/slug.html"`.
+   This matches the old Jekyll URLs so existing inbound links, SEO, and **Disqus comment
+   threads** keep working. The build emits each post at exactly that path
+   (`build.format: "file"` in `astro.config.mjs`). Don't change a permalink after publishing.
+2. **One category per post.** `category` is a single string, never a list.
+3. **Any number of tags.** `tags` is an array; each tag gets its own page at `/tags/<tag>`.
+
+### Theming & fonts
+
+- **Themes** live in `global.css` as `[data-theme="…"]` blocks. To add one, define the block
+  and register its value in `BaseLayout.astro` (the validation list **and** the `<select>`
+  options). The active theme is stored in `localStorage` and applied before paint to avoid a
+  flash of the wrong colors.
+- **Fonts:** Fantasque Sans Mono is self-hosted from `public/assets/fonts/` (`@font-face` in
+  `global.css`), falling back to Cascadia Code then a system mono.
+
+______________________________________________________________________
+
+## Weekly AI-paper digest
+
+`scripts/ai-digest.ts` generates a weekly post that summarizes and connects recent AI papers.
+
+**Pipeline:** fetch arXiv (cs.AI / cs.LG / cs.CL, last 7 days) → cluster into themes (Claude)
+→ draft a connected digest (Claude) → **verify** every claim against the source abstracts
+(Claude) → write a `draft: true` Markdown post.
+
+```bash
+just digest                       # or: ANTHROPIC_API_KEY=sk-ant-... bun run digest
+```
+
+In CI it runs automatically (`.github/workflows/weekly-digest.yml`, Sundays 14:00 UTC) and
+**opens a pull request** with the draft rather than publishing directly — so you always review
+before it goes live. To publish: open the post in `src/content/blog/`, set `draft: false`, and
+merge. Set `ANTHROPIC_API_KEY` as a repository secret (Settings → Secrets and variables → Actions).
+
+______________________________________________________________________
+
+## Migrating the old AsciiDoc posts
+
+The old Jekyll `.adoc` posts are converted by a one-time script:
+
+```bash
+just convert                                  # reads ../kig.re/jekyll/v2/_posts → src/content/blog/*.md
+bun bin/convert.mjs /path/to/_posts src/content/blog   # or specify paths
+```
+
+It maps AsciiDoc frontmatter → YAML, first-category-wins, `YYYY-MM-DD-slug.adoc` → permalink,
+admonitions → GitHub callouts, `[source,lang]` → fenced blocks, and `lightbox_image` →
+standard Markdown images. `{% include %}` tags (e.g. interactive quizzes) become
+`<!-- TODO -->` markers for manual porting. A verification summary is saved to
+`scripts/migration-report.json` (confirms permalinks are unique and every post has one category).
+
+______________________________________________________________________
+
+## Deploying
+
+The site is fully static and the build runs the Pagefind indexer automatically, so search
+ships with every deploy. Production lives on the origin server behind the Fastly CDN, and
+deploys are a single rsync:
+
+```bash
+just deploy
+```
+
+That recipe (in the `justfile`) does two things:
+
+1. **`just build`** — produces `dist/` (HTML, assets, and the Pagefind search index).
+1. **rsync** the built tree to the production origin over SSH:
+
+   ```bash
+   rsync -Pavz -e ssh ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
+   ```
+
+Fastly fronts that origin and serves `https://kig.re`. The deploy is incremental — rsync only
+ships changed files — and idempotent, so re-running it is safe.
+
+**Prerequisites:** SSH access to `fastly-backend.kig.re` as `kig` (key-based auth recommended).
+Nothing else is required locally beyond `bun` and `just`.
+
+> [!IMPORTANT]
+> The legacy `/YYYY/MM/DD/slug.html` URLs must keep resolving exactly. The build already emits
+> them — don't add an origin or CDN rule that rewrites or strips `.html`.
+
+> [!NOTE]
+> Because the site is just static files, any host (GitHub Pages, Netlify, Vercel, Cloudflare
+> Pages) also works with build command `bun run build` and output dir `dist`. The rsync flow
+> above is the canonical path; the `public/CNAME` file keeps `kig.re` bound on hosts that read it.
+
+______________________________________________________________________
 
 ## Notes
 
 - **Newsletter:** the RSS feed at `/rss.xml` can drive an email newsletter (Buttondown,
   Beehiiv, or Substack's RSS import) without changing anything here.
-- **Theme:** the selected theme (default Dark Glass) is stored in `localStorage` and applied
-  before paint to avoid a flash. Add or edit themes in `global.css` (`[data-theme="…"]`) and
-  register the value in `BaseLayout.astro` (the validation list + the `<select>` options).
-- **Fonts:** Fantasque Sans Mono is self-hosted from `public/assets/fonts/` (`@font-face` in
-  `global.css`), falling back to Cascadia Code then a system mono.
+- **Resume:** `public/resume/` ships the PDF plus a tiny `index.html` so `/resume` redirects
+  to the latest file.
+
+______________________________________________________________________
+
+## Copyright
+
+© 2012-2026 Konstantin Gredeskoul

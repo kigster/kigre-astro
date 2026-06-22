@@ -1425,6 +1425,27 @@ button:focus-visible {
   }
 }
 
+/* phones in landscape: very little vertical room, so drop the logo and slim
+   the sticky header to a thin strip. max-height excludes tablets/desktops;
+   the controls stay top-right via flex-end now that the logo is gone */
+@media (orientation: landscape) and (max-height: 500px) {
+  .nav {
+    justify-content: flex-end;
+    padding: 7px 0;
+  }
+  .nav .logo {
+    display: none;
+  }
+  /* keep each link on one line so the bar stays a single thin row */
+  .nav .links a {
+    white-space: nowrap;
+  }
+  /* keep the dropdown panel anchored just below the thinner bar */
+  .nav .links {
+    top: calc(100% + 6px);
+  }
+}
+
 /* ============================================================
    Global UI scale — device-class "browser zoom"
    ------------------------------------------------------------
@@ -1562,5 +1583,56 @@ html.sb-collapsed .panel-reopen {
     transform: none;
     opacity: 1;
     pointer-events: auto;
+  }
+}
+
+/* ============================================================
+   Print — let the content use the full page width
+   ============================================================ */
+@media print {
+  /* drop the centered, max-width reading column */
+  .wrap,
+  .page {
+    max-width: none !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* remove the per-element measure caps so text fills the page */
+  .prose,
+  .prose p,
+  .prose ul,
+  .prose ol,
+  .prose li,
+  .prose h1,
+  .prose h2,
+  .prose h3,
+  .prose h4,
+  .prose blockquote,
+  .prose table,
+  .article,
+  .page .lead,
+  .ghead h1,
+  .ghead .sub {
+    max-width: none !important;
+    width: auto !important;
+  }
+
+  /* collapse the about page's two-column grid to one full-width column */
+  .about-layout {
+    display: block !important;
+  }
+  .author-aside {
+    position: static !important;
+    max-width: 256px;
+    padding-top: 0;
+  }
+
+  /* hide interactive chrome — it only wastes paper and a fixed header would
+     overlap the printed content */
+  .site-header,
+  .site-footer {
+    display: none !important;
   }
 }
