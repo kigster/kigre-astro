@@ -1,8 +1,14 @@
 ---
 import '../styles/global.css';
 import Search from 'astro-pagefind/components/Search.astro';
-const { title, description } = Astro.props;
+const { title, description, canonical } = Astro.props;
 const pathname = Astro.url.pathname;
+// Canonical URL: posts pass their exact legacy permalink; every other page
+// falls back to its own absolute URL so search engines see one canonical per page.
+// build.format:'file' makes pathname end in `.html` (and `/index.html` for dir
+// indexes) — normalize to the clean URLs our internal links actually use.
+const cleanPath = pathname.replace(/index\.html$/, '').replace(/\.html$/, '') || '/';
+const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
 const isActive = (p) => (p === '/' ? pathname === '/' : pathname.startsWith(p));
 const navItems = [
 { href: '/', label: 'Index' },
@@ -19,6 +25,7 @@ const navItems = [
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? `${title} — kig.re` : 'kig.re'}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />
