@@ -79,7 +79,7 @@
     var(--y1) 80%,
     var(--y2)
   );
-  --font-body: "dosis", system-ui, sans-serif;
+  --font-body: "Space Grotesk", system-ui, sans-serif;
   --font-head: "Archivo Black", "Archivo", sans-serif;
   --font-mono:
     "Fantasque Sans Mono", "Cascadia Code", "JetBrains Mono", ui-monospace,
@@ -128,9 +128,13 @@
   color: #e5ba41;
 }
 [data-theme="azure"] :is(.ghead h1 em, .page h1 em) {
-  background: none;
-  -webkit-text-fill-color: #e5ba41;
-  color: #e5ba41;
+  background: var(--grad);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: header-shine 7s ease-in-out infinite;
 }
 /* sidebar: sage block with dark text so it reads on the light-green surface */
 [data-theme="azure"] .panel {
@@ -167,7 +171,7 @@
   --y1: #ffc300;
   --y2: #ffd400;
   --bg: #140c02;
-  --fg: #fff8ec;
+  --fg: #f7e4c2;
   --panel: #1d1305;
   --hair: #3a2a10;
   --muted: #b89a68;
@@ -204,9 +208,11 @@
   -webkit-text-fill-color: transparent;
   color: transparent;
   filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.5));
-  animation: glass-shine 7s ease-in-out infinite;
+  animation: header-shine 7s ease-in-out infinite;
 }
-@keyframes glass-shine {
+/* shared shine sweep: a bright band travels across a gradient-clipped header.
+   Every theme reuses this; each supplies its own palette via the gradient. */
+@keyframes header-shine {
   0% {
     background-position: 120% 0;
   }
@@ -239,9 +245,13 @@
   color: #9d6638;
 }
 [data-theme="light-earth"] :is(.ghead h1 em, .page h1 em) {
-  background: none;
-  -webkit-text-fill-color: #9d6638;
-  color: #9d6638;
+  background: var(--grad);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: header-shine 7s ease-in-out infinite;
 }
 /* sidebar: brown block (9D6638) with cream text so items stay legible */
 [data-theme="light-earth"] .panel {
@@ -289,9 +299,13 @@
   color: #ff6c00f2;
 }
 [data-theme="light-forest"] :is(.ghead h1 em, .page h1 em) {
-  background: none;
-  -webkit-text-fill-color: #ff0052;
-  color: #ff0052;
+  background: var(--grad);
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: header-shine 7s ease-in-out infinite;
 }
 /* sidebar: yellow block (FFD400) with dark text */
 [data-theme="light-forest"] .panel {
@@ -399,6 +413,33 @@ button:focus-visible {
   flex-wrap: wrap;
   gap: 16px;
 }
+/* logo + home button group, kept together on the left of the nav */
+.nav .nav-left {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+/* tiny home button to the right of the logo — always returns to the front page;
+   styled to match the round nav pill buttons (scroll-top, etc.) */
+.nav .home-btn {
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  border-radius: 999px;
+  width: 34px;
+  height: 34px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.nav .home-btn:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
 .nav .logo {
   font-family: var(--font-head);
   font-size: 26px;
@@ -479,6 +520,7 @@ button:focus-visible {
 }
 .nav .links a:hover {
   color: var(--fg);
+  text-decoration: underline;
 }
 .nav .links a.active {
   color: var(--fg);
@@ -601,6 +643,7 @@ button:focus-visible {
 }
 .site-footer a:hover {
   color: var(--fg);
+  text-decoration: underline;
 }
 .site-footer .mono {
   font-family: var(--font-mono);
@@ -628,9 +671,11 @@ button:focus-visible {
 .ghead h1 em {
   font-style: normal;
   background: var(--grad);
+  background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: header-shine 7s ease-in-out infinite;
 }
 .ghead .sub {
   margin-top: 16px;
@@ -674,13 +719,33 @@ button:focus-visible {
   line-height: 1;
   color: var(--hair);
   transition: color 0.25s;
+  padding-right: 2px;
+  /* size to the digits so the hover gradient (clipped to text) always spans the
+     whole number — otherwise glyphs overflowing the narrow column render
+     transparent on hover, looking cut off at the right edge */
+  width: max-content;
+  white-space: nowrap;
 }
 .row .mid .cat {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 14px;
   color: var(--o2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+/* digest rows in the index: purple AI tag + a slightly smaller title, a subtle
+   signal that the entry is an AI-generated news digest rather than a post */
+.row .mid .ai-tag {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: #a371f7;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.row.is-digest .mid h2 {
+  font-size: clamp(17px, 2vw, 21px);
+  color: var(--muted);
 }
 .row .mid h2 {
   font-family: "Archivo", sans-serif;
@@ -703,6 +768,37 @@ button:focus-visible {
   font-size: 12px;
   color: var(--muted2);
   white-space: nowrap;
+}
+/* author byline: same look as the category, but an undecorated link that only
+   underlines on hover. position/z-index lifts it above the stretched row link */
+.row .mid .byline-link {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--o2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  text-decoration: none;
+  white-space: nowrap;
+  position: relative;
+  z-index: 1;
+}
+.row .mid .byline-link:hover {
+  text-decoration: underline;
+}
+/* the title is the post link; ::after stretches it to make the whole row
+   clickable (the row is position:relative), keeping nested anchors valid */
+.row .row-link {
+  color: inherit;
+  text-decoration: none;
+}
+.row .row-link:hover {
+  text-decoration: underline;
+}
+.row .row-link::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 /* thumbnail floats to the right of the text, which wraps around it */
 .row .thumb {
@@ -756,10 +852,11 @@ button:focus-visible {
 }
 .article .cat {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 14px;
   color: var(--o2);
   text-transform: uppercase;
   letter-spacing: 0.06em;
+  white-space: nowrap;
 }
 .article h1 {
   font-family: var(--font-head);
@@ -792,10 +889,37 @@ button:focus-visible {
   border-radius: 4px;
 }
 
+/* byline author link */
+.article .byline .byline-author {
+  color: var(--o2);
+  text-decoration: none;
+}
+.article .byline .byline-author:hover {
+  text-decoration: underline;
+}
+
+/* AI digest post: a smaller title + a distinct "AI in the News" stamp so the
+   reader can tell at a glance this is machine-generated, not hand-written */
+.article .ai-stamp {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #a371f7;
+  border: 1px solid color-mix(in srgb, #a371f7 45%, transparent);
+  border-radius: 999px;
+  padding: 3px 11px;
+}
+.article.is-digest h1 {
+  font-size: clamp(24px, 3vw, 34px);
+}
+
 /* prose */
 .prose {
   font-size: 17px;
-  line-height: 1.4;
+  line-height: 1.7;
 }
 .prose > * + * {
   margin-top: 18px;
@@ -970,6 +1094,7 @@ button:focus-visible {
 }
 .panel .ritem:hover h3 {
   color: #fff;
+  text-decoration: underline;
 }
 .panel .ritem .rd {
   font-family: var(--font-mono);
@@ -1008,7 +1133,7 @@ button:focus-visible {
   border-left: 4px solid var(--muted);
   border-radius: 6px;
   padding: 12px 16px;
-  margin: 24px 0;
+  margin: 24px 30px; /* 30px indent on both sides (20px on phones, below) */
   background: var(--panel);
   max-width: 64ch;
 }
@@ -1081,9 +1206,11 @@ button:focus-visible {
 .page h1 em {
   font-style: normal;
   background: var(--grad);
+  background-size: 250% 100%;
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  animation: header-shine 7s ease-in-out infinite;
 }
 .page .lead {
   font-size: 18px;
@@ -1120,6 +1247,11 @@ button:focus-visible {
 }
 
 @media (max-width: 760px) {
+  /* tighter side indent for admonitions on phones */
+  .markdown-alert {
+    margin-left: 20px;
+    margin-right: 20px;
+  }
   .about-layout {
     grid-template-columns: 1fr;
   }
@@ -1164,7 +1296,10 @@ button:focus-visible {
 
 .talk {
   display: grid;
-  grid-template-columns: 64px 1fr;
+  /* year column wide enough for a 4-digit year in Archivo Black; the gradient
+     is clipped to the text, so the column must contain the whole number or the
+     overflow renders transparent (looks cut off) */
+  grid-template-columns: 80px 1fr;
   gap: 20px;
   align-items: start;
   padding: 24px 8px;
@@ -1177,6 +1312,12 @@ button:focus-visible {
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
+  /* size to the number so the text-clipped gradient always spans every digit.
+     Without this, a 4-digit year overflows the narrow grid column and the
+     overflowing glyphs render transparent (no gradient behind them) — looking
+     cut off when the layout shrinks. */
+  width: max-content;
+  white-space: nowrap;
 }
 /* body contains the floated cover, so it must contain the float (flow-root) */
 .talk-body {
@@ -1448,6 +1589,10 @@ button:focus-visible {
     grid-template-columns: 40px 1fr;
     gap: 14px;
   }
+  /* drop the author byline on phones — "if space allows" only */
+  .row .mid .byline-link {
+    display: none;
+  }
   /* index excerpt under each post title: +30% on phones (13.5px → 17.5px) */
   .row .mid p {
     font-size: 17.5px;
@@ -1457,7 +1602,7 @@ button:focus-visible {
     margin-left: 14px;
   }
   .talk {
-    grid-template-columns: 48px 1fr;
+    grid-template-columns: 64px 1fr;
     gap: 14px;
   }
   .talk-thumb {
@@ -1604,6 +1749,13 @@ html.sb-collapsed .post {
 html.sb-collapsed .article {
   border-right: 0;
   padding-right: 0;
+}
+/* the prose text is normally capped (~64ch) for readability; with the sidebar
+   hidden, let it use the full widened column so the body visibly expands */
+html.sb-collapsed .article .prose p,
+html.sb-collapsed .article .prose li,
+html.sb-collapsed .article .prose .markdown-alert {
+  max-width: none;
 }
 html.sb-collapsed .panel {
   position: absolute;

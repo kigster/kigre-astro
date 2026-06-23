@@ -7,6 +7,7 @@ tags: ["sym", "symmetric encryption", "gem", "rubygems", "keychain", "password"]
 description: "Most of us are familiar with the concept of application secrets, how important it is is not to commit those to your version control system, and how challenging it is to distribute development and production secrets across the dev team in a consistent and, most importantly, secure fashion. In this post we introduce a new Ruby Gem called 'Sym' for symmetric encryption."
 heroImage: "/assets/images/posts/security/big-data.jpg"
 comments: true
+author: kig
 ---
 Sym is a command line utility and a Ruby API that makes it trivial to encrypt and decrypt sensitive data. Unlike many other existing encryption tools, sym focuses on usability and streamlined interface (CLI), with the goal of making encryption easy and transparent. The result? There is no excuse for keeping your application secrets unencrypted :)
 

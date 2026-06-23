@@ -7,6 +7,7 @@ tags: ["rails", "databases", "scalability", "wanelo", "postgresql", "vertical sh
 description: "In this post I share the story of overcoming a massive scalability bottleneck from too many writes ino the Analytics database table used for Event collection, using Vertical Sharding."
 heroImage: "/assets/images/posts/abstract/shiny-db-cylinders.jpg"
 comments: true
+author: kig
 ---
 ## Good Problems to Have
 

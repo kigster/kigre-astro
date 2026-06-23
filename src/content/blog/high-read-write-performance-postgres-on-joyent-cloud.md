@@ -7,6 +7,7 @@ tags: ["postgresql", "joyent", "cloud", "high-performance", "scaling", "wanelo",
 description: "In this post, I'll go over some of our settings in postgresql.conf, which have been adjusted for high-performance/throughput and large RAM sizes. I would like to credit Josh Berkus and his PGExperts consultancy for providing us with timely and necessary assistance in tuning PostgreSQL these last few months."
 heroImage: "/assets/images/posts/postgres/animated-distributed-postgres.svg"
 comments: true
+author: kig
 ---
 ## PostgreSQL All the Way
 

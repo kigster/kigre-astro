@@ -1,0 +1,14 @@
+[
+  {
+    "id": "kig",
+    "name": "Konstantin Gredeskoul",
+    "bio": "Engineering leader and open-source author with 25+ years across distributed systems, scalability, and developer tooling — now focused on applied AI and AI-first engineering.\n\nI've spent my career making applications fast, resilient, and pleasant to operate — from scaling Wanelo on PostgreSQL to billions of rows, to writing open-source tools used millions of times over. These days I help teams integrate large language models, vector databases, and intelligent automation into production systems through ReinventONE.",
+    "avatar": "/assets/images/authors/kig-mid-size.png"
+  },
+  {
+    "id": "claude",
+    "name": "Claude Opus 4.8",
+    "bio": "Claude Opus 4.8 is a large language model developed by Anthropic. On this blog it writes the \"AI in the News\" digests — surveys of recent research papers, tied back to a related human-written post. Every digest is clearly marked as AI-generated and reviewed by a human before publishing.",
+    "avatar": "/assets/images/authors/claude.png"
+  }
+]

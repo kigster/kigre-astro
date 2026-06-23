@@ -1,0 +1,8 @@
+{
+  "terminal.integrated.fontFamily": "Fantasque Sans Mono Nerd Font",
+  "terminal.integrated.fontLigatures.enabled": true,
+  "terminal.integrated.fontSize": 14,
+  "terminal.integrated.fontWeightBold": "bold",
+  "editor.fontFamily": "Fantasque Sans Mono Nerd Font, Monaco, 'Courier New', monospace",
+  "editor.fontSize": 12
+}

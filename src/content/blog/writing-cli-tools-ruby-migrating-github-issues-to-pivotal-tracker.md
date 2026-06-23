@@ -7,6 +7,7 @@ tags: ["ruby", "cli", "dry-cli", "dry-rb", "rspec", "aruba", "github api"]
 description: "This post details how to use dry-cli gem to create multi-command and sub-command CLI tools, and how to test them using RSpec and Aruba."
 heroImage: "/assets/images/posts/ruby/githuh.png"
 comments: true
+author: kig
 ---
 You may or may not know that I love writing CLI utilities in Ruby and open-sourcing them as ruby gems. You can install a ruby gem with *gem install name* on nearly any UNIX system, including a Mac.
 

@@ -7,6 +7,7 @@ tags: ["occupancy", "sensor", "c++", "arduino", "rf24", "sonar", "motion", "ligh
 description: "Occupus (formerly BORAT: Bathroom Occupancy Remote Awareness Technology) – is an Arduino-based restroom occupancy detection and rapid notification system based on a network of nRF24L01+ 2.4GHz RF radios. It supports multiple (up to 5) casters (each installed in a bathrooms) and a single reporting unit."
 heroImage: "/assets/images/posts/borat/bathroom-occupied-calm-technology.jpg"
 comments: true
+author: kig
 ---
 ## The Occupancy Unawareness **Problem**
 

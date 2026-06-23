@@ -7,6 +7,7 @@ tags: ["c99", "c++", "cmake", "coding", "beginner"]
 description: "In this post we'll explore some of the things that a beginner C++ programmers (but not general beginner programmers) might find useful in getting quickly up to speed."
 heroImage: "/assets/images/posts/cpp/c-cpp.jpg"
 comments: true
+author: kig
 ---
 In this post we'll explore some of the things that beginner C++ programmers (but not general beginner programmers) might find useful in getting quickly up to speed. We will look at which compilers support newer C++ standards c++11 and c++14 and the difference between linker and compiler, as well as dynamic vs static library. Finally, we'll offer a C++ project template you can use in your own projects.
 

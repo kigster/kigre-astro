@@ -20,78 +20,26 @@ const items = talks.map((t) => {
   const slug = t.pdf.split('/').pop().replace(/\.pdf$/, '');
   return { ...t, slug, img: `/assets/images/talks/${slug}.jpg` };
 });
-// minimal data handed to the client script for the hash-driven modal
-const talkData = items.map((t) => ({ slug: t.slug, pdf: t.pdf, title: t.title }));
 ---
 <BaseLayout title="Speaking" description="Talks and presentations on software architecture, Ruby, DevOps, concurrency, and scaling distributed systems.">
   <div class="page">
     <div class="eyebrow">// speaking</div>
     <h1>Talks & <em>Presentations</em></h1>
-    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to read the slides.</p>
+    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to open the slides (PDF) in a new tab.</p>
   </div>
   <div>
     {items.map((t) => (
       <div class="talk">
         <div class="yr">{t.year}</div>
         <div class="talk-body">
-          <a class="talk-thumb" href={`#talk/${t.slug}`} aria-label={`Read the slides: ${t.title}`}>
+          <a class="talk-thumb" href={t.pdf} target="_blank" rel="noopener" aria-label={`Open the slides (PDF, new tab): ${t.title}`}>
             <img src={t.img} alt="" loading="lazy" />
           </a>
           <h3>{t.title}</h3>
           <p>{t.blurb}</p>
-          <a class="pdf" href={`#talk/${t.slug}`}>View slides ↗</a>
+          <a class="pdf" href={t.pdf} target="_blank" rel="noopener">View slides ↗</a>
         </div>
       </div>
     ))}
   </div>
-
-  <dialog id="pdfModal" class="pdf-modal" aria-label="Presentation viewer">
-    <div class="pm-head">
-      <h2 id="pdfModalTitle"></h2>
-      <div class="pm-actions">
-        <a id="pdfModalOpen" class="pm-ext" href="#" target="_blank" rel="noopener">Open in new tab ↗</a>
-        <button id="pdfModalClose" class="pm-close" aria-label="Close presentation">✕</button>
-      </div>
-    </div>
-    <iframe id="pdfFrame" title="PDF presentation"></iframe>
-  </dialog>
-
-  <script define:vars={{ talkData }}>
-    const map = Object.fromEntries(talkData.map((t) => [t.slug, t]));
-    const dialog = document.getElementById('pdfModal');
-    const frame = document.getElementById('pdfFrame');
-    const titleEl = document.getElementById('pdfModalTitle');
-    const extLink = document.getElementById('pdfModalOpen');
-
-    function openFor(slug) {
-      const t = map[slug];
-      if (!t) return;
-      titleEl.textContent = t.title;
-      extLink.href = t.pdf;
-      if (frame.getAttribute('src') !== t.pdf) frame.src = t.pdf; // load only when shown
-      if (!dialog.open) dialog.showModal();
-    }
-    function syncFromHash() {
-      const m = location.hash.match(/^#talk\/(.+)$/);
-      if (m) openFor(decodeURIComponent(m[1]));
-      else if (dialog.open) dialog.close();
-    }
-    // closing (Esc, backdrop, button, or Back) strips the hash without a new entry
-    dialog.addEventListener('close', () => {
-      frame.removeAttribute('src');
-      if (location.hash.startsWith('#talk/')) {
-        history.replaceState(null, '', location.pathname + location.search);
-      }
-    });
-    document.getElementById('pdfModalClose').addEventListener('click', () => dialog.close());
-    // click outside the dialog box (on the backdrop) closes it
-    dialog.addEventListener('click', (e) => {
-      const r = dialog.getBoundingClientRect();
-      const inside =
-        e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
-      if (!inside) dialog.close();
-    });
-    window.addEventListener('hashchange', syncFromHash);
-    syncFromHash(); // honor a deep link on initial load
-  </script>
 </BaseLayout>

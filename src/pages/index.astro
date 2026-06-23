@@ -5,6 +5,9 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
   (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
 );
+const authors = await getCollection('authors');
+const authorOf = (post) =>
+  post.data.author ? authors.find((a) => a.id === post.data.author.id) : null;
 const fmt = (d) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
@@ -16,23 +19,34 @@ const fmt = (d) =>
   </header>
 
   <div class="idx">
-    {posts.map((post, i) => (
-      <a class="row" href={post.data.permalink}>
-        <div class="num">{String(posts.length - i).padStart(2, '0')}</div>
-        <div class="mid">
-          {post.data.heroImage && (
-            <div class="thumb">
-              <img src={post.data.heroImage} alt="" loading="lazy" />
+    {posts.map((post, i) => {
+      const author = authorOf(post);
+      return (
+        <div class={post.data.type === 'digest' ? 'row is-digest' : 'row'}>
+          <div class="num">{String(posts.length - i).padStart(2, '0')}</div>
+          <div class="mid">
+            {post.data.heroImage && (
+              <div class="thumb">
+                <img src={post.data.heroImage} alt="" loading="lazy" />
+              </div>
+            )}
+            <div class="meta">
+              {post.data.type === 'digest' ? (
+                <span class="ai-tag">// AI in the News</span>
+              ) : (
+                <span class="cat">{post.data.category}</span>
+              )}
+              <span class="date">{fmt(post.data.date)}</span>
+              {author && (
+                <a class="byline-link" href={`/authors/${post.data.author.id}`}>{author.data.name}</a>
+              )}
             </div>
-          )}
-          <div class="meta">
-            <span class="cat">{post.data.category}</span>
-            <span class="date">{fmt(post.data.date)}</span>
+            {/* the title is the post link; ::after stretches it over the whole row */}
+            <h2><a class="row-link" href={post.data.permalink}>{post.data.title}</a></h2>
+            {post.data.description && <p>{post.data.description}</p>}
           </div>
-          <h2>{post.data.title}</h2>
-          {post.data.description && <p>{post.data.description}</p>}
         </div>
-      </a>
-    ))}
+      );
+    })}
   </div>
 </BaseLayout>

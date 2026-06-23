@@ -6,6 +6,7 @@ category: "programming"
 tags: ["ruby", "rails", "software", "ruby on rails"]
 heroImage: "/assets/images/posts/rails/ruby-on-rails.png"
 comments: true
+author: kig
 ---
 The decision of which framework or language to choose from is not a simple one and rests on both the company values and project values. For simplicity's sake, we can refer to values or priorities.
 

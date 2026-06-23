@@ -7,6 +7,7 @@ tags: ["gem", "rubygems", "hardware", "laser-cutting", "makeabox.io"]
 description: "LaserCutter & MakeABox.io — its a ruby gem and a website for making PDF designs of laser-cut boxes, which fit/snap in together at all edges using tabs that go in and out.  The output of the library is a PDF document. Typically next step would import that PDF into Adobe Illustrator for additions and touch ups, and then sent off to a laser cutter for the actual, well, cutting."
 heroImage: "/assets/images/posts/makeabox/laser-cutter-header.jpeg"
 comments: true
+author: kig
 ---
 ## The Joys of Laser Cutting are hard to describe...
 

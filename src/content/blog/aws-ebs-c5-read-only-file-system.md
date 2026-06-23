@@ -7,6 +7,7 @@ tags: ["aws", "ec2", "ubuntu", "nvme", "nvme-io-timeout", "fsck"]
 description: "In this short post I describe the read-only file system issue that happened to one of our C5 hosts, and how we fixed it."
 heroImage: "/assets/images/posts/aws/nvme-disks.jpg"
 comments: true
+author: kig
 ---
 This post describes how I was able to fix the "read-only filesystem" issue on one of my C5 instances in AWS EC2.
 

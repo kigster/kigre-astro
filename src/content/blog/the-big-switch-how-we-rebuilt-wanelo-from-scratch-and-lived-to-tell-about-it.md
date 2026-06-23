@@ -7,11 +7,11 @@ tags: ["wanelo", "java", "rails", "postgresql", "mysql", "tomcat", "devops", "sc
 description: "In this post we share the details of what we did and what we learned, in case someone out there ever finds themselves in a similar situation, weighing the risks of either working with a legacy stack or going full steam ahead with a rewrite."
 heroImage: "/assets/images/posts/misc/wanelo.png"
 comments: true
+author: kig
 ---
 The [Wanelo](http://wanelo.com) you see today is a completely different website than the one that existed a few months ago. It's been rewritten and rebuilt from the ground up, as part of a process that took about two months. We thought we'd share the details of what we did and what we learned, in case someone out there ever finds themselves in a similar situation, weighing the risks of either working with a legacy stack or going full steam ahead with a rewrite.
 
 ## The Cost of Success
-:sectnums!:
 
 ### Wanelo Version 1
 
@@ -25,18 +25,17 @@ When I joined Wanelo as it's CTO, there were only two employees: [Deena Varshavs
 
 Literally, about an hour after I verbally accepted the position, I got a call from Deena. It sounded like this:
 
-*****
-— "Hey, do you by chance have a moment to take a look at the current site? My sister and I are restarting Tomcat every 20 minutes, otherwise the site is down..."
-
-— ... (long pause)
-
-— "Are you there?", she must be worried I hung up.
-
-— "... Yes. Did you say... you are restarting Tomcat every 20 minutes?"
-
-— "Uhm... yes, why?" — she asks.
-
-— "Well, for starters, I am impressed that my CEO knows what Tomcat is, not to mention — how to restart it.  But I am also terrified that my CEO knows what Tomcat is, not to mention — how to restart it. ", — I must be sound worried, so I quickly utter: "But, let me take a quick look... Give me the credentials please."
+>— "Hey, do you by chance have a moment to take a look at the current site? My sister and I are restarting Tomcat every 20 minutes, otherwise the site is down..."
+>
+> — ... (long pause)
+>
+> — "Are you there?", she must be worried I hung up.
+>
+> — "... Yes. Did you say... you are restarting Tomcat every 20 minutes?"
+>
+> — "Uhm... yes, why?" — she asks.
+>
+> — "Well, for starters, I am impressed that my CEO knows what Tomcat is, not to mention — how to restart it.  But I am also terrified that my CEO knows what Tomcat is, not to mention — how to > restart it. ", — I must be sound worried, so I quickly utter: "But, let me take a quick look... Give me the credentials please."
 *****
 
 So this is how my tenure started, and during the first two weeks I had to dive in and fix the performance issues plaguing the site that just got just a little too popular for the teeny tiny Rackspace-leased server, that was housing both the database and Tomcat. Oh, and of course it was serving static assets with Tomcat.
@@ -114,8 +113,6 @@ Our switch from from the old stack to the new one took place on June 27, with fo
 . Bring the new app up internally and do a quick smoke test.
 
 . Bring the new app live to the world.
-
-![image](http://media.tumblr.com/tumblr_mactnrWk7s1qd6gic.jpg)
 
 Despite the enormous risk with this type of change, our launch was relatively uneventful. We fixed a few bugs throughout the day, and added a few redirects we had forgotten. But now we were running on a new streamlined platform, highly optimized for rapid development, and built atop the latest version of Ruby on Rails. We were ready for the next phase.
 

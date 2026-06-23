@@ -7,6 +7,7 @@ tags: ["concurrency", "activity feed", "redis", "gem", "rubygems", "social netwo
 description: "This gem implements a flexible time-ordered activity feeds commonly used within social networking applications. As events occur, they are pushed into the Feed and distributed to all users that need to see the event. Upon the user visiting their 'feed page', a pre-populated ordered list of events is returned by the library."
 heroImage: "/assets/images/posts/misc/social-connections.png"
 comments: true
+author: kig
 ---
 This post is the "official" announcement of the new open source [ruby gem](https://rubygems.org/gems/simple-feed) called [Simple Feed](https://github.com/kigster/simple-feed), released as a under the MIT License.
 

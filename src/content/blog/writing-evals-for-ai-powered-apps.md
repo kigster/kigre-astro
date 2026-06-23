@@ -1,12 +1,13 @@
 ---
 title: "Evals: The Unit Tests for the Non-Deterministic Parts of Your App"
-date: 2026-06-21
-permalink: "/2026/06/21/writing-evals-for-ai-powered-apps.html"
-category: "ai"
+date: 2026-06-23
+permalink: "/2026/06/22/writing-evals-for-ai-powered-apps.html"
+category: "Evals To the Rescue"
 tags: ["ai", "llm", "evals", "claude", "ruby", "testing", "prompt-engineering"]
 description: "Building an app on top of a language model means part of your code now returns a different answer every time you run it. Here's how to keep that part honest — with a tiny, complete, runnable Ruby app and a real eval harness that tests it end to end."
 heroImage: "/assets/images/posts/evals/eval-harness.svg"
 comments: true
+author: kig
 ---
 For about twenty-five years, my mental model of "is this code correct?" was simple
 and comforting: feed it a known input, assert on a known output, watch the dot turn
@@ -30,10 +31,7 @@ eval.
 
 Let's be precise about what changed, because the hype machine is bad at this.
 
-For a normal function, the mapping from input to output is fixed. `slugify("Hello World")`
-returns `"hello-world"` today, tomorrow, and on the heat-death afternoon of the
-universe. Your test pins that mapping in place, and any future change that breaks it
-turns the dot red.
+For a normal function, the mapping from input to output is fixed. `slugify("Hello World")` returns `"hello-world"` today, tomorrow, and on the heat-death afternoon of the universe. Your test pins that mapping in place, and any future change that breaks it turns the dot red.
 
 A language model is not a function in this sense. It's a _sample_ from a probability
 distribution over possible responses. Ask Claude to classify a customer message and
@@ -195,11 +193,11 @@ funneled it down to a single enum, and enums I know how to test.
 
 So an eval is, at its heart, three boring pieces:
 
-1. A **dataset** of inputs paired with what we expect (often called the _golden set_).
+1. A **dataset** of inputs paired with what we expect (often called the _ground truth_, or _golden set_).
 2. A **runner** that feeds each input through the feature and **scores** the result.
 3. A **threshold** — the pass rate below which we refuse to ship.
 
-### The golden set
+### The ground truth
 
 This is the part nobody wants to do and the part that matters most. Sit down and write
 out real examples — including the nasty ones. The weird inputs are where your feature
@@ -400,101 +398,36 @@ wouldn't be fetched, and I'd rather tell you that than pretend otherwise.) Two t
 run clean through the whole pile, and both sharpen the argument I've been making all
 post.
 
-**Theme one: the judge needs a judge.** Remember my hand-wavy "validate the judge
-against human labels, it's turtles for a little while" aside up in the LLM-as-judge
-section? Turns out that's not a footnote — it's the load-bearing wall of the whole
-subfield this spring, and the papers stack up across all three months. Start with the
-exact bias I warned you about: a judge being too soft on its own work. Back in April,
-[_Self-Preference Bias in Rubric-Based Evaluation_](https://arxiv.org/abs/2604.06996)
-(Pombal, Rei & Martins) put a number on it — when a rubric criterion is genuinely
-failed, a judge is **up to 50% more likely to wave it through if the output is its
-own**. "Fine," you think, "I'll convene a _panel_ of judges and let the bias wash out."
-Except May's [_Nine Judges, Two Effective Votes_](https://arxiv.org/abs/2605.29800)
-(Kohli) shows a nine-judge panel carries only about **two independent votes' worth of
-information** — the judges all trip over the _same_ things, so the errors don't cancel,
-they conspire. And by June the big systematic study,
-[_Reliability without Validity_](https://arxiv.org/abs/2606.19544) (Norman, Rivera &
-Hughes), ran 21 judges over roughly 541,000 judgments and found the headline agreement
-numbers inflated by 33–41 points once you correct for chance — catching production
-judges that are flawlessly _consistent_ and consistently _biased_ at the same time. The
-one that should make anyone who ships sit up: [_Catching One in Five_](https://arxiv.org/abs/2606.10315)
-(Zhang, Wang & Lei, June) pointed an LLM judge at a real production agent and watched it
-flag **about 22% — two of nine — of the problem patterns humans confirmed were real.**
-Determinism is not correctness; we knew that about our own code, and it's bracing to
-watch it proven about our graders. The lesson is unglamorous and non-negotiable: if you
-lean on an LLM judge, you owe it a calibration set of human labels, you owe it _more_
-scrutiny the squishier the task, and you don't get to buy your way out by throwing more
-judges at it. The turtles are real. Budget for them.
+> [!IMPORTANT]
+>
+> If there's a single thread tying this all together, it's this: **the profession is growing up and learning to measure the measurer.**
+>
+> When you thinka about it, it almost has parallels to the recent [discoveries by Google about Quantum Computing](https://techcrunch.com/2024/12/10/google-says-its-new-quantum-chip-indicates-that-multiple-universes-exist/). That's the same idea this post was all about, just one level higher. **Don't trust the model — measure it**. **Don't trust the judge — calibrate it, and don't assume a committee of judges fixes it**. Don't trust the leaderboard — build your own. Don't even fully trust your own error bars — widen them. It's measurement all the way down, and after twenty-five years of green dots, I find that turtles-all-the-way-down rigor weirdly reassuring.
+>
+> <br />
+> Now go write ten cases for whatever AI feature is making you nervous. I'll wait. 😂
 
-**Theme two: somebody else's leaderboard is not your eval.** This is the academic
-version of the rant I went on earlier — "the benchmarks aren't running _your_ prompt
-against _your_ data" — and it shows up at every layer of the stack. At the benchmark
-layer, an April meta-analysis, [_The LLM Effect on IR Benchmarks_](https://arxiv.org/abs/2604.05766)
-(Staudinger, Kusa & Hanbury), finds measurable contamination quietly propping up
-reported gains. At the leaderboard layer, May's [_AgentAtlas_](https://arxiv.org/abs/2605.20530)
-(Mazaheri & Mazaheri) shows outcome-only leaderboards hide whether an agent made _good
-decisions_ or merely stumbled into the right answer, and June's sprawling
-[_Beyond Static Leaderboards_](https://arxiv.org/abs/2606.19704) (Patel et al.) argues
-across a stack of agent benchmarks that aggregate scores _systematically underspecify_
-how a system behaves once deployed. And at the most damning layer,
-[_Search-Time Contamination in Deep Research Agents_](https://arxiv.org/abs/2606.05241)
-(Wang et al., June) catches agents that, mid-task, quietly web-search their way to the
-benchmark's _own answer key_ and post scores for reasoning they never did. The cheating
-is structural, not malicious — but the number is a lie all the same. Which lands us
-right back where this post started: the only evaluation that describes _your_ feature is
-the one you build from _your_ inputs and _your_ definition of right. The golden set I
-made you write by hand isn't busywork. It's the one number on the table that no
-leaderboard can contaminate.
-
-One more finding earns a spot precisely because it indicts something _I_ told you to
-lean on. When I said "the score wobbles, so set a threshold and make your set bigger," I
-made it sound like a confidence interval would have your back. April's
-[_Hidden Measurement Error in LLM Pipelines_](https://arxiv.org/abs/2604.11581) (Messing)
-is a bucket of cold water: naive standard errors on model-scored evals run **40–60%
-smaller than the properly corrected ones**, because the model's own measurement noise
-never makes it into the arithmetic. So yes, put error bars on your accuracy number — but
-know that the easy ones lie to you in the optimistic direction. Make the set bigger than
-feels necessary, and then a little bigger than that.
-
-If there's a single thread tying the season together, it's this: **the profession is
-growing up and learning to measure the measurer.** That's the same move this whole post
-has been about, just one level higher. Don't trust the model — measure it. Don't trust
-the judge — calibrate it, and don't assume a committee of judges fixes it. Don't trust
-the leaderboard — build your own. Don't even fully trust your own error bars — widen
-them. It's measurement all the way down, and after twenty-five years of green dots, I
-find that turtles-all-the-way-down rigor weirdly reassuring.
-
-Now go write ten cases for whatever AI feature is making you nervous. I'll wait.
-
-— Konstantin
+—— Konstantin
 
 San Francisco, CA, June 21, 2026.
 
+---
+
+> [!NOTE]
+>
+> Some of my artiles will reference the body of scientific work that's constantly getting published with ferocious speed, and intensity. Since I don't like using AI-generated content in my regular articles, I am going to properly tag and attribute to Claude posts that contain surveys of the current scientific landscape.
+>
+> <br />
+> This article about Evals mentioned quite a few rants and claimed a few ideas that are very much in line with the scientific literature, which you can read in the blog <a href="/2026/06/22/ai-digest-on-evals.html">You Can't Really Trust your AI. Trust your Evals instead</a>.
+
 ## References
 
- * [Anthropic — Building evals and test suites](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) — the official guidance, and a good next read.
- * [Anthropic — Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) — how to make malformed JSON impossible instead of merely rare.
- * [Hamel Husain — "Your AI Product Needs Evals"](https://hamel.dev/blog/posts/evals/) — the essay that made a lot of us take this seriously.
- * The official [Anthropic Ruby SDK](https://github.com/anthropics/anthropic-sdk-ruby) — the one gem this whole post stands on.
+- [Anthropic — Building evals and test suites](https://platform.claude.com/docs/en/test-and-evaluate/develop-tests) — the official guidance, and a good next read.
 
-### Recent papers cited in the closing section
+- [Anthropic — Structured outputs](https://platform.claude.com/docs/en/build-with-claude/structured-outputs) — how to make malformed JSON impossible instead of merely rare.
+  
+- [Hamel Husain — "Your AI Product Needs Evals"](https://hamel.dev/blog/posts/evals/) — the essay that made a lot of us take this seriously.
+  
+- The official [Anthropic Ruby SDK](https://github.com/anthropics/anthropic-sdk-ruby) — the one gem this whole post stands on.
 
-Spanning mid-April through mid-June 2026, in the order they appear above.
-
-_Theme one — the reliability of LLM judges:_
-
- * José Pombal, Ricardo Rei, André F. T. Martins — ["Self-Preference Bias in Rubric-Based Evaluation of Large Language Models"](https://arxiv.org/abs/2604.06996), arXiv:2604.06996 (April 8, 2026).
- * Guneet Kohli — ["Nine Judges, Two Effective Votes: Correlated Errors Undermine LLM Evaluation Panels"](https://arxiv.org/abs/2605.29800), arXiv:2605.29800 (May 28, 2026).
- * Justin D. Norman, Michael U. Rivera, D. Alex Hughes — ["Reliability without Validity: A Systematic, Large-Scale Evaluation of LLM-as-a-Judge Models Across Agreement, Consistency, and Bias"](https://arxiv.org/abs/2606.19544), arXiv:2606.19544 (June 17, 2026).
- * Sawyer Zhang, Alexander Wang, Sophie Lei — ["Catching One in Five: LLM-as-Judge Blind Spots in Production Multi-Turn Transaction Agents"](https://arxiv.org/abs/2606.10315), arXiv:2606.10315 (June 9, 2026).
-
-_Theme two — benchmark and leaderboard validity:_
-
- * Moritz Staudinger, Wojciech Kusa, Allan Hanbury — ["The LLM Effect on IR Benchmarks: A Meta-Analysis of Effectiveness, Baselines, and Contamination"](https://arxiv.org/abs/2604.05766), arXiv:2604.05766 (April 7, 2026).
- * Parsa Mazaheri, Kasra Mazaheri — ["AgentAtlas: Beyond Outcome Leaderboards for LLM Agents"](https://arxiv.org/abs/2605.20530), arXiv:2605.20530 (May 19, 2026).
- * Dhaval C. Patel, Kaoutar El Maghraoui, et al. — ["Beyond Static Leaderboards: Predictive Validity for the Evaluation of LLM Agents"](https://arxiv.org/abs/2606.19704), arXiv:2606.19704 (June 18, 2026).
- * Yongjie Wang, Xinyue Zhang, Kunhong Yao, Zhiwei Zeng, Kaisong Song, Jun Lin, Zhiqi Shen — ["Search-Time Contamination in Deep Research Agents: Measuring Performance Inflation in Public Benchmark Evaluation"](https://arxiv.org/abs/2606.05241), arXiv:2606.05241 (June 3, 2026).
-
-_The statistics of eval scores:_
-
- * Solomon Messing — ["Hidden Measurement Error in LLM Pipelines Distorts Annotation, Evaluation, and Benchmarking"](https://arxiv.org/abs/2604.11581), arXiv:2604.11581 (April 13, 2026).
+- ... and this outdated, a bit tedious, but still marginally useful article written by the folks at sOpenAI about [Eval Driven System Design - From Prototype to Production](https://developers.openai.com/cookbook/examples/partners/eval_driven_system_design/receipt_inspection) — might be worth a read when you've run out of everything else to watch, read and learn.

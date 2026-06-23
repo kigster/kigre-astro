@@ -7,6 +7,7 @@ tags: ["ide", "c++", "visual studio", "xcode", "eclipse"]
 description: "Review of Arduino IDE Alternatives."
 heroImage: "/assets/images/posts/arduino/ide-arduino-arduino.jpg"
 comments: true
+author: kig
 ---
 > [!NOTE]
 > This article was originally written in 2014. It had recently been updated for 2020.

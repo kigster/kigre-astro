@@ -7,6 +7,7 @@ tags: ["sre", "resilience", "scalability", "uptime"]
 description: "With this post, I'd like to start a series of *DevOps*-related conversations about building distributed applications (read: common web-apps). Folks running enterprise application use different technologies and are hosted across a range of cloud providers, and yet are often faced with very similar problems."
 heroImage: "/assets/images/posts/haproxy/haproxy-router.png"
 comments: true
+author: kig
 ---
 Do you constantly struggle to keep production running smoothly? Do you get a ton of alerts that don't actually mean things are broken? Do you use Docker, but your deploy takes 20+ minutes? Do you use Docker, but manually configure Docker Hosts once the cloud provisions them? Does it take hours to bring a new server into the pool to help alleviate load? Have you never practiced failover to your database replica? Do you NOT know who owns your root DNS? Have you skipped that ticket about making an offsite backup, and now there isn't one?
 

@@ -7,6 +7,7 @@ tags: ["scalability", "performance", "postgresql", "web-apps", "caching", "zfs",
 description: "In this exciting and informative talk, presented at PgConf Silicon Valley 2015, Konstantin cut through the theory to deliver a clear set of practical solutions for scaling applications atop PostgreSQL, eventually supporting millions of active users, tens of thousands concurrently, and with the application stack that responds to requests with a 100ms average."
 heroImage: "/assets/images/posts/postgres/scaling-web-applications-on-postgresql.png"
 comments: true
+author: kig
 ---
 ## PostgreSQL Developer Conference
 

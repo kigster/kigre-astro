@@ -7,6 +7,7 @@ tags: ["c++", "serial", "macos", "driver", "ch340g"]
 description: "Recent versions of cheap Arduino clones have been coming out with a different USB/Serial chip, which replaces the usual FTDI. The chipset is called CH340G and this post explains how to install the drivers for it on both Mac and Windows."
 heroImage: "/assets/images/posts/arduino/nano-ch340g-top.jpg"
 comments: true
+author: kig
 ---
 ## Introduction -- What is CH340G?
 

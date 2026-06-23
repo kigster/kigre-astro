@@ -6,6 +6,7 @@ category: "consumer-electronics"
 tags: ["usb", "thunderbolt", "ssd", "write speed", "read speed", "performance"]
 heroImage: "/assets/images/posts/ssds/ssds-side-by-side.png"
 comments: true
+author: kig
 ---
 In this post I wanted to document a comparison between two of the leading fastest external SSD drives I could find on Amazon -- with a price difference of nearly 2X! I wanted to see if, perhaps, the two drives were similar in performance, which would mean that I could get away with buying the much more cost-effective SanDisk.
 

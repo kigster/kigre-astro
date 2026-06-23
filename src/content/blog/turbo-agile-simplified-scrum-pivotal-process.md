@@ -6,6 +6,7 @@ category: "programming"
 tags: ["pivotal", "tracker", "project management"]
 heroImage: "/assets/images/posts/agile/process-00.jpg"
 comments: true
+author: kig
 ---
 This post is about a software engineering process most similar to what is practiced by Pivotal Labs consultancy, with some SCRUM sprinkled in, and with some tweaks and adjustments applied.
 

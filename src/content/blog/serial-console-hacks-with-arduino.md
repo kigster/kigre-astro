@@ -7,6 +7,7 @@ tags: ["console", "hacks", "serial", "minicom"]
 description: "In this post I'll share a method that I use to connect to a Serial port of any Arduino I am using at any given moment.  This method has a caveat, in that if you have more than one Arduino connected, it will pick one of them at random."
 heroImage: "/assets/images/posts/arduino/arduino-board.jpg"
 comments: true
+author: kig
 ---
 ## Battling Console
 

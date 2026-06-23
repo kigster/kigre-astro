@@ -7,6 +7,7 @@ tags: ["bazel", "intellij", "docker", "build-systems", "ide"]
 description: "Overview of Bazel support in IntelliJ Family of products, and instructions on how to build the plugin from sources."
 heroImage: "/assets/images/bazel/bazel-build.png"
 comments: true
+author: kig
 ---
 ## What is Bazel?
 

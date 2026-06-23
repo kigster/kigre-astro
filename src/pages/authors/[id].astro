@@ -1,0 +1,104 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+// One page per author. With build.format:"file", a route named authors/<id>
+// emits authors/<id>.html, matching the /authors/<id> links in post bylines.
+export async function getStaticPaths() {
+  const authors = await getCollection('authors');
+  const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  );
+  return authors.map((author) => ({
+    params: { id: author.id },
+    props: {
+      author,
+      posts: posts.filter((p) => p.data.author?.id === author.id)
+    }
+  }));
+}
+
+const { author, posts } = Astro.props;
+const fmt = (d) =>
+  `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
+// bios may contain blank-line-separated paragraphs
+const paragraphs = author.data.bio.split(/\n\n+/);
+---
+<BaseLayout title={author.data.name} description={`Posts by ${author.data.name} on kig.re.`}>
+  <div class="about-layout">
+    <div class="page">
+      <div class="eyebrow">// author</div>
+      <h1>{author.data.name}</h1>
+      <div class="prose" style="margin-top:24px;">
+        {paragraphs.map((p) => <p>{p}</p>)}
+      </div>
+
+      <h3 class="section-eyebrow" style="margin-top:32px;">// posts</h3>
+      {posts.length > 0 ? (
+        <div class="author-posts">
+          {posts.map((post) => (
+            <a class="author-post" href={post.data.permalink}>
+              {post.data.type === 'digest' ? (
+                <span class="ai-tag">// AI in the News</span>
+              ) : (
+                <span class="cat">{post.data.category}</span>
+              )}
+              <h2>{post.data.title}</h2>
+              <span class="date">{fmt(post.data.date)}</span>
+            </a>
+          ))}
+        </div>
+      ) : (
+        <p class="prose">No posts yet.</p>
+      )}
+    </div>
+
+    <aside class="author-aside">
+      <img src={author.data.avatar} alt={author.data.name} width="256" height="256" />
+    </aside>
+  </div>
+
+  <style>
+    .author-posts {
+      display: flex;
+      flex-direction: column;
+      margin-top: 4px;
+    }
+    .author-post {
+      display: block;
+      padding: 18px 0;
+      border-bottom: 1px solid var(--hair);
+      text-decoration: none;
+      color: inherit;
+    }
+    .author-post .cat,
+    .author-post .ai-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .author-post .cat {
+      color: var(--o2);
+    }
+    .author-post .ai-tag {
+      color: #a371f7;
+    }
+    .author-post h2 {
+      font-family: "Archivo", sans-serif;
+      font-weight: 800;
+      font-size: clamp(18px, 2.2vw, 23px);
+      letter-spacing: -0.015em;
+      margin: 6px 0 4px;
+      transition: transform 0.25s;
+    }
+    .author-post:hover h2 {
+      transform: translateX(6px);
+    }
+    .author-post .date {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--muted2);
+    }
+  </style>
+</BaseLayout>

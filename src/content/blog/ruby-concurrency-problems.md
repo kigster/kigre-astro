@@ -7,6 +7,7 @@ tags: ["concurrency", "puma", "sidekiq", "multi-threading", "multi-process", "fi
 description: "Test your understanding of how Ruby Concurrency works with these two simple multiple-choice questions."
 heroImage: "/assets/images/posts/concurrency/multi-process-3d.png"
 comments: true
+author: kig
 ---
 In one of the future blog posts, I plan on reviewing Ruby Concurrency as it stands in 2020. I have done several presentation on the subject, and what's most fascinating to me, is the wide variety of levels of understanding among engineers attending my talks. So I decided to put together this little "self-test": where you can figure out if you understand Ruby Concurrency well enough to plan a deployment for a very popular unnamed social network.
 

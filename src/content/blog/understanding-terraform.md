@@ -7,6 +7,7 @@ tags: ["terraform", "chef", "puppet", "cloud"]
 description: "This post is a quick introduction to HashiCorp Terraform. We compare the approach to Chef and Puppet, and explain some conceptual differences that could help you migrate from Chef or Puppet to Terraform quicker."
 heroImage: "/assets/images/posts/terraform/devops.jpg"
 comments: true
+author: kig
 ---
 In this post we dive deep into a comparison between Terraform, Chef & Puppet, talk at length about module dependency management, see what's a simple Terraform config, and what you need to do as you scale out your infrastrucutre.
 
