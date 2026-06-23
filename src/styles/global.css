@@ -1018,6 +1018,26 @@ button:focus-visible {
   font-size: 13.5px;
   line-height: 1.4;
   margin: 22px 0;
+  /* horizontal scrollbar reveals on hover only — transparent thumb at rest, so
+     wide code blocks don't show a permanent bar (matches the .panel treatment) */
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.prose pre:hover,
+.prose pre:focus-within {
+  scrollbar-color: var(--hair) transparent;
+}
+/* WebKit: reserve a constant 8px track height, reveal the thumb on hover only */
+.prose pre::-webkit-scrollbar {
+  height: 8px;
+}
+.prose pre::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+}
+.prose pre:hover::-webkit-scrollbar-thumb,
+.prose pre:focus-within::-webkit-scrollbar-thumb {
+  background: var(--hair);
 }
 .prose pre code {
   background: none;
