@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>503 — Service Unavailable · kig.re</title>
+    <meta name="robots" content="noindex" />
+    <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
+    <!-- self-contained: error pages must render even when the build's hashed
+         CSS / app is unavailable, so all styling is inlined here -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@700;800;900&family=Archivo+Black&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --o1: #ff5f00;
+        --o2: #ff8c00;
+        --y1: #ffc300;
+        --y2: #ffd400;
+        --bg: #140c02;
+        --fg: #f7e4c2;
+        --panel: #1d1305;
+        --hair: #3a2a10;
+        --muted: #b89a68;
+        --muted2: #8a6a38;
+        --grad: linear-gradient(95deg, var(--o1), var(--o2) 40%, var(--y1) 80%, var(--y2));
+        --font-body: "Space Grotesk", system-ui, sans-serif;
+        --font-head: "Archivo Black", "Archivo", sans-serif;
+        --font-mono: ui-monospace, "Cascadia Code", "JetBrains Mono", monospace;
+        --maxw: 1080px;
+      }
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      html { overflow-x: hidden; }
+      body {
+        background: var(--bg);
+        color: var(--fg);
+        font-family: var(--font-body);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+      }
+      .wrap { max-width: var(--maxw); margin: 0 auto; padding: 0 32px; width: 100%; }
+      /* header */
+      .site-header { border-bottom: 1px solid var(--hair); }
+      .nav {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 22px 0;
+        flex-wrap: wrap;
+        gap: 16px;
+      }
+      .nav-left { display: inline-flex; align-items: center; gap: 12px; }
+      .logo { display: inline-flex; align-items: center; text-decoration: none; }
+      .logo-img {
+        height: 44px;
+        width: auto;
+        display: block;
+        filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.5));
+      }
+      .links { display: flex; gap: 18px; flex-wrap: wrap; }
+      .links a {
+        font-weight: 600;
+        font-size: 14px;
+        color: var(--muted);
+        text-decoration: none;
+      }
+      .links a:hover { color: var(--fg); text-decoration: underline; }
+      /* error body */
+      main.err {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding-top: 48px;
+        padding-bottom: 64px;
+      }
+      .code {
+        font-family: var(--font-mono);
+        font-size: 13px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--o2);
+      }
+      .err-img {
+        width: 100%;
+        max-width: 440px;
+        height: auto;
+        margin: 26px 0 30px;
+        border-radius: 16px;
+        border: 1px solid var(--hair);
+        box-shadow: 0 18px 50px rgba(0, 0, 0, 0.5);
+      }
+      h1 {
+        font-family: var(--font-head);
+        font-size: clamp(34px, 6vw, 64px);
+        line-height: 0.98;
+        letter-spacing: -0.03em;
+        background: var(--grad);
+        -webkit-background-clip: text;
+        background-clip: text;
+        -webkit-text-fill-color: transparent;
+        color: transparent;
+      }
+      .msg {
+        margin-top: 16px;
+        font-size: 18px;
+        color: var(--muted);
+        max-width: 52ch;
+        line-height: 1.5;
+      }
+      .back {
+        margin-top: 30px;
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--fg);
+        text-decoration: none;
+        border: 1px solid var(--hair);
+        border-radius: 999px;
+        padding: 11px 22px;
+      }
+      .back:hover { border-color: var(--o2); }
+      /* footer */
+      .site-footer { border-top: 1px solid var(--hair); padding: 22px 0; }
+      .ft-row {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--muted2);
+      }
+      .ft-row .mono { font-family: var(--font-mono); }
+      .site-footer a { color: var(--muted); text-decoration: none; }
+      .site-footer a:hover { color: var(--fg); text-decoration: underline; }
+    </style>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <nav class="nav">
+          <div class="nav-left">
+            <a href="/about" class="logo" aria-label="About kig.re">
+              <img src="/assets/images/logos/kigre-v2-logo-07-round.png" alt="kig.re" class="logo-img" />
+            </a>
+          </div>
+          <div class="links">
+            <a href="/">Index</a>
+            <a href="/speaking">Speaking</a>
+            <a href="/open-source">Open Source</a>
+            <a href="/about">About</a>
+            <a href="/tags">Tags</a>
+          </div>
+        </nav>
+      </div>
+    </header>
+
+    <main class="wrap err">
+      <div class="code">// error 503 — service unavailable</div>
+      <img class="err-img" src="/images/errors/503.png" alt="503 — service unavailable" />
+      <h1>Be right back</h1>
+      <p class="msg">We're doing maintenance (or panicking quietly &mdash; hard to say). The site will be back shortly. Grab a coffee and refresh.</p>
+      <a class="back" href="/">← Back to the index</a>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <div class="ft-row">
+          <span class="mono">© 2026 Konstantin Gredeskoul — kig.re</span>
+          <span>
+            <a href="https://github.com/kigster">GitHub</a> ·
+            <a href="https://twitter.com/kig">Twitter</a> ·
+            <a href="https://linkedin.com/in/kigster">LinkedIn</a> ·
+            <a href="/rss.xml">RSS</a>
+          </span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>
