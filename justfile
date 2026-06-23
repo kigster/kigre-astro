@@ -39,4 +39,5 @@ typecheck:
 deploy: build
     @rsync -Pavz -e "ssh" ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
 
-
+test:
+    @bun test tools/
