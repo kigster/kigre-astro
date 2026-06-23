@@ -27,7 +27,7 @@ const fmtShort = (x) =>
   `${x.getFullYear()}.${String(x.getMonth() + 1).padStart(2, '0')}.${String(x.getDate()).padStart(2, '0')}`;
 const fullUrl = `https://kig.re${post.data.permalink}`;
 ---
-<BaseLayout title={post.data.title} description={post.data.description}>
+<BaseLayout title={post.data.title} description={post.data.description} canonical={fullUrl}>
   <div class="post">
     <article class={isDigest ? 'article is-digest' : 'article'} data-pagefind-body>
       {isDigest ? (
