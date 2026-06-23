@@ -2,69 +2,73 @@
    kig.re — Editorial Index design system
    ============================================================ */
 
-/* --- fonts: funky sans body, heavy sans headings, mono accents --- */
+/* --- fonts ---
+   Body + headings: self-hosted Sprig Sans (regular / black). Code: self-hosted
+   Maple Mono (semibold). The Google import is kept for the secondary "Archivo"
+   weights still used by mid-weight headings (row/prose titles). */
 @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@400;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Dosis:wght@200..800&display=swap");
-/* Fantasque Sans Mono for code (self-hosted fallback chain to Cascadia) */
 
-/* Regular */
+/* Sprig Sans — body weights (regular + bold, with italics) */
 @font-face {
-  font-family: "Fantasque Sans Mono";
-  src: url("/assets/fonts/FantasqueSansMono-Bold.otf") format("opentype");
+  font-family: "Sprig Sans";
+  src: url("/assets/fonts/faire-sprigsans-regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
+  font-display: swap;
 }
-
-/* Italic */
 @font-face {
-  font-family: "Fantasque Sans Mono";
-  src: url("/assets/fonts/FantasqueSansMono-Italic.otf") format("opentype");
+  font-family: "Sprig Sans";
+  src: url("/assets/fonts/faire-sprigsans-regularitalic.woff2") format("woff2");
   font-weight: 400;
   font-style: italic;
+  font-display: swap;
 }
-
-/* Bold */
 @font-face {
-  font-family: "Fantasque Sans Mono";
-  src: url("/assets/fonts/FantasqueSansMono-Bold.otf") format("opentype");
+  font-family: "Sprig Sans";
+  src: url("/assets/fonts/faire-sprigsans-bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
+  font-display: swap;
 }
-
-/* Bold Italic */
 @font-face {
-  font-family: "Fantasque Sans Mono";
-  src: url("/assets/fonts/FantasqueSansMono-BoldItalic.otf") format("opentype");
+  font-family: "Sprig Sans";
+  src: url("/assets/fonts/faire-sprigsans-bolditalic.woff2") format("woff2");
   font-weight: 700;
   font-style: italic;
+  font-display: swap;
 }
 
-.dosis-regular {
-  font-family: "Dosis", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 600;
+/* Sprig Sans Black — a distinct family for headings (always the black cut,
+   covering any requested weight so headers never get synthetically bolded) */
+@font-face {
+  font-family: "Sprig Sans Black";
+  src: url("/assets/fonts/faire-sprigsans-black.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: normal;
+  font-display: swap;
 }
-
-.dosis-bold {
-  font-family: "Dosis", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 800;
-  font-style: normal;
-}
-
-.dosis-thin {
-  font-family: "Dosis", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 200;
-  font-style: normal;
-}
-
-.dosis-italic {
-  font-family: "Dosis", sans-serif;
-  font-optical-sizing: auto;
-  font-weight: 400;
+@font-face {
+  font-family: "Sprig Sans Black";
+  src: url("/assets/fonts/faire-sprigsans-blackitalic.woff2") format("woff2");
+  font-weight: 100 900;
   font-style: italic;
+  font-display: swap;
+}
+
+/* Maple Mono — code (semibold cut for all weights, italic where requested) */
+@font-face {
+  font-family: "Maple Mono";
+  src: url("/assets/fonts/maple-mono-nl-semibold.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Maple Mono";
+  src: url("/assets/fonts/maple-mono-nl-italic.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
 }
 
 :root {
@@ -79,11 +83,10 @@
     var(--y1) 80%,
     var(--y2)
   );
-  --font-body: "Space Grotesk", system-ui, sans-serif;
-  --font-head: "Archivo Black", "Archivo", sans-serif;
+  --font-body: "Sprig Sans", system-ui, sans-serif;
+  --font-head: "Sprig Sans Black", "Sprig Sans", sans-serif;
   --font-mono:
-    "Fantasque Sans Mono", "Cascadia Code", "JetBrains Mono", ui-monospace,
-    monospace;
+    "Maple Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
   --maxw: 1080px;
 }
 
@@ -360,7 +363,7 @@ body {
   color: var(--fg);
   font-family: var(--font-body);
   -webkit-font-smoothing: antialiased;
-  line-height: 1.3;
+  line-height: 1.6;
 }
 a {
   color: inherit;
@@ -918,11 +921,11 @@ button:focus-visible {
 
 /* prose */
 .prose {
-  font-size: 17px;
-  line-height: 1.7;
+  font-size: 16px;
+  line-height: 1.5;
 }
 .prose > * + * {
-  margin-top: 18px;
+  margin-top: 19px;
 }
 .prose p {
   max-width: 64ch;
@@ -1015,7 +1018,7 @@ button:focus-visible {
   overflow-x: auto;
   font-family: var(--font-mono);
   font-size: 13.5px;
-  line-height: 1.6;
+  line-height: 1.4;
   margin: 22px 0;
 }
 .prose pre code {
@@ -1048,17 +1051,36 @@ button:focus-visible {
 .panel {
   padding: 34px 0 0 28px;
   position: sticky;
-  /* clear the ~94px fixed header, then scroll the sidebar independently of the
-     body when its content is taller than the viewport */
+  /* clear the ~94px fixed header, then fill the rest of the viewport height and
+     scroll the sidebar independently of the body when content overflows */
   top: 110px;
   align-self: start;
-  max-height: calc(100vh - 130px);
+  height: calc(100vh - 110px);
   overflow-y: auto;
+  /* scrollbar visible on hover only — keep the gutter reserved (thin) but make
+     the thumb transparent until hovered/focused, so there's no layout shift */
   scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
   /* animates the slide-out / slide-in when collapsed (see sb-collapsed rules) */
   transition:
     transform 0.32s ease,
     opacity 0.25s ease;
+}
+.panel:hover,
+.panel:focus-within {
+  scrollbar-color: var(--hair) transparent;
+}
+/* WebKit: reserve a constant 8px track, reveal the thumb on hover only */
+.panel::-webkit-scrollbar {
+  width: 8px;
+}
+.panel::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+}
+.panel:hover::-webkit-scrollbar-thumb,
+.panel:focus-within::-webkit-scrollbar-thumb {
+  background: var(--hair);
 }
 .panel .pt {
   /* row: the "// recent posts" label on the left, collapse chevron on the right */
@@ -1133,7 +1155,7 @@ button:focus-visible {
   border-left: 4px solid var(--muted);
   border-radius: 6px;
   padding: 12px 16px;
-  margin: 24px 30px; /* 30px indent on both sides (20px on phones, below) */
+  margin: 3px 3px; /* 30px indent on both sides (20px on phones, below) */
   background: var(--panel);
   max-width: 64ch;
 }
@@ -1269,7 +1291,7 @@ button:focus-visible {
   align-items: baseline;
   gap: 10px 18px;
   margin-top: 26px;
-  line-height: 1.5;
+  line-height: 1;
 }
 .tag-cloud a {
   /* keep "#tag <count>" on one line — it must never wrap mid-label */
@@ -1296,7 +1318,7 @@ button:focus-visible {
 
 .talk {
   display: grid;
-  /* year column wide enough for a 4-digit year in Archivo Black; the gradient
+  /* year column wide enough for a 4-digit year in the heading font; the gradient
      is clipped to the text, so the column must contain the whole number or the
      overflow renders transparent (looks cut off) */
   grid-template-columns: 80px 1fr;
@@ -1581,7 +1603,8 @@ button:focus-visible {
     padding: 30px 0 0;
     border-top: 1px solid var(--hair);
     margin-top: 30px;
-    /* let the sidebar flow naturally on mobile — no internal scroll box */
+    /* let the sidebar flow naturally on mobile — no fixed height or scroll box */
+    height: auto;
     max-height: none;
     overflow: visible;
   }
@@ -1679,11 +1702,10 @@ button:focus-visible {
    ------------------------------------------------------------
    A chevron in the panel header slides the sidebar off to the
    right and hands the freed space back to the article; a small
-   fixed tab on the screen edge slides it in again. The state
-   lives in localStorage ("sidebar-collapsed") and is applied to
-   <html class="sb-collapsed"> before first paint (BaseLayout head
-   script), so there's no flash and the slide only animates on a
-   real click. The <html> class is the single source of truth.
+   fixed tab on the screen edge slides it in again. The state is
+   NOT persisted — it lives only on <html class="sb-collapsed"> for
+   the current page view, so every new page starts expanded. The
+   <html> class is the single source of truth.
    ============================================================ */
 .panel-collapse {
   flex: 0 0 auto;
