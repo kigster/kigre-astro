@@ -108,18 +108,14 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
 
   <script>
     // Collapsible recent-posts sidebar. The "sb-collapsed" class on <html> is the
-    // single source of truth — set pre-paint in BaseLayout from localStorage, so
-    // the buttons here only flip it and persist. Only an explicit click restores it.
+    // single source of truth. The state is intentionally NOT persisted — it lives
+    // only for the current page view, so every new blog page starts expanded.
     const root = document.documentElement;
     const collapseBtn = document.getElementById('panelCollapse');
     const reopenBtn = document.getElementById('panelReopen');
-    const KEY = 'sidebar-collapsed';
     function setCollapsed(collapsed: boolean) {
       root.classList.toggle('sb-collapsed', collapsed);
       collapseBtn?.setAttribute('aria-expanded', String(!collapsed));
-      try {
-        localStorage.setItem(KEY, collapsed ? '1' : '0');
-      } catch {}
     }
     collapseBtn?.setAttribute('aria-expanded', String(!root.classList.contains('sb-collapsed')));
     collapseBtn?.addEventListener('click', () => setCollapsed(true));
