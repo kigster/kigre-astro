@@ -3,10 +3,8 @@
    ============================================================ */
 
 /* --- fonts ---
-   Body + headings: self-hosted Sprig Sans (regular / black). Code: self-hosted
-   Maple Mono (semibold). The Google import is kept for the secondary "Archivo"
-   weights still used by mid-weight headings (row/prose titles). */
-@import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Archivo:wght@400;600;700;800;900&family=Archivo+Black&family=JetBrains+Mono:wght@400;500;700&display=swap");
+   All self-hosted, nothing fetched from Google. Body: Sprig Sans (regular).
+   Headings: Sprig Sans Black. Code: Maple Mono (semibold). */
 
 /* Sprig Sans — body weights (regular + bold, with italics) */
 @font-face {
@@ -87,7 +85,7 @@
   --font-head: "Sprig Sans Black", "Sprig Sans", sans-serif;
   --font-mono:
     "Maple Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
-  --maxw: 1080px;
+  --maxw: 864px;
 }
 
 :root,
@@ -751,7 +749,7 @@ button:focus-visible {
   color: var(--muted);
 }
 .row .mid h2 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 800;
   font-size: clamp(20px, 2.6vw, 27px);
   letter-spacing: -0.015em;
@@ -931,14 +929,14 @@ button:focus-visible {
   max-width: 64ch;
 }
 .prose h2 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 800;
   font-size: 24px;
   letter-spacing: -0.01em;
   margin-top: 32px;
 }
 .prose h3 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 700;
   font-size: 19px;
   margin-top: 24px;
@@ -1107,7 +1105,7 @@ button:focus-visible {
   color: var(--o2);
 }
 .panel .ritem h3 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 700;
   font-size: 15px;
   line-height: 1.15;
@@ -1346,7 +1344,7 @@ button:focus-visible {
   display: flow-root;
 }
 .talk h3 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 800;
   font-size: 20px;
   letter-spacing: -0.01em;
@@ -1504,7 +1502,7 @@ button:focus-visible {
   align-items: baseline;
 }
 .oss h3 {
-  font-family: "Archivo", sans-serif;
+  font-family: var(--font-head);
   font-weight: 800;
   font-size: 18px;
 }
@@ -1538,9 +1536,11 @@ button:focus-visible {
   .wrap {
     padding: 0 18px;
   }
-  /* slightly larger body text for phone legibility */
+  /* sidebar still sits beside the article down to 970px (below); in this
+     tighter range the reading column is narrower, so drop the body text a
+     step (16px -> 15px) for a comfortable fit */
   .prose {
-    font-size: 18px;
+    font-size: 15px;
   }
   /* anchor the nav dropdown to the header, trim its vertical padding */
   .nav {
@@ -1591,23 +1591,6 @@ button:focus-visible {
     width: 160px;
     padding: 4px 6px 8px;
   }
-  .post {
-    grid-template-columns: 1fr;
-  }
-  .article {
-    border-right: 0;
-    padding-right: 0;
-  }
-  .panel {
-    position: static;
-    padding: 30px 0 0;
-    border-top: 1px solid var(--hair);
-    margin-top: 30px;
-    /* let the sidebar flow naturally on mobile — no fixed height or scroll box */
-    height: auto;
-    max-height: none;
-    overflow: visible;
-  }
   .row {
     grid-template-columns: 40px 1fr;
     gap: 14px;
@@ -1641,6 +1624,29 @@ button:focus-visible {
   }
   .oss:nth-child(odd) {
     border-right: 0;
+  }
+}
+
+/* below 970px the recent-posts sidebar can no longer sit beside the article,
+   so it stacks underneath. Now a true single column, the body text takes the
+   larger phone-legibility size (overrides the 15px tighter-range rule above). */
+@media (max-width: 970px) {
+  .post {
+    grid-template-columns: 1fr;
+  }
+  .article {
+    border-right: 0;
+    padding-right: 0;
+  }
+  .panel {
+    position: static;
+    padding: 30px 0 0;
+    border-top: 1px solid var(--hair);
+    margin-top: 30px;
+    /* sidebar flows naturally when stacked — no fixed height or scroll box */
+    height: auto;
+    max-height: none;
+    overflow: visible;
   }
 }
 
