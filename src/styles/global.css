@@ -1027,13 +1027,17 @@ button:focus-visible {
 .prose pre:focus-within {
   scrollbar-color: var(--hair) transparent;
 }
-/* WebKit: reserve a constant 8px track height, reveal the thumb on hover only */
+/* WebKit: reserve a constant 8px track height, reveal the thumb on hover only.
+   cursor:pointer asks for a hand over the bar (honored by WebKit/Blink; some
+   browsers force the default arrow on native scrollbars and ignore it) */
 .prose pre::-webkit-scrollbar {
   height: 8px;
+  cursor: pointer;
 }
 .prose pre::-webkit-scrollbar-thumb {
   background: transparent;
   border-radius: 8px;
+  cursor: pointer;
 }
 .prose pre:hover::-webkit-scrollbar-thumb,
 .prose pre:focus-within::-webkit-scrollbar-thumb {
@@ -1091,10 +1095,12 @@ button:focus-visible {
 /* WebKit: reserve a constant 8px track, reveal the thumb on hover only */
 .panel::-webkit-scrollbar {
   width: 8px;
+  cursor: pointer;
 }
 .panel::-webkit-scrollbar-thumb {
   background: transparent;
   border-radius: 8px;
+  cursor: pointer;
 }
 .panel:hover::-webkit-scrollbar-thumb,
 .panel:focus-within::-webkit-scrollbar-thumb {
