@@ -1,7 +1,11 @@
-# © 2026 Konstantin Gredeskoul
+# © 2026 Konstantin Gredeskoul 
 
-set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
+set shell := ["bash", "-eu", "-o", "pipefail", "-c"] 
+
 set dotenv-load
+
+version := `cat package.json | jq .version | tr -d '"'`
+
 
 [no-exit-message]
 recipes:
@@ -41,3 +45,13 @@ deploy: build
 
 test:
     @bun test tools/
+
+version: 
+    @echo "Site version is {{ version }}"
+
+release:
+    @git tag -f 'v{{ version }}'
+    @git push --tags
+    @gh release create --generate-notes
+
+
