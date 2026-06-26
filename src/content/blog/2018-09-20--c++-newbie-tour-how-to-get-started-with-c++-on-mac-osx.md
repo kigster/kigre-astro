@@ -15,7 +15,7 @@ In this post we'll explore some of the things that beginner C++ programmers (but
 
 First I'll start with a confession: I started learning C++ somewhat recently, which may be puzzling if you know me well because I've been building my career in software engineering for well over twenty five years.
 
-Well, despite having hands-on skils in C, Java, Ruby, Perl, even BASH, -- I have somehow skipped c++.  But then, as soon as I decided to play with hardware like Arduino it became clear that I wanted to take advantage of the Object Oriented techniques and Design Patterns that I acquired over the years and apply them to my Arduino code!
+Well, despite having hands-on skils in C, Java, Ruby, Perl, even BASH, -- I have somehow skipped c++.  But then, as soon as I decided to play with hardware like Arduino it became clear that I wanted to take advantage of the Object Oriented techniques and Design Patterns that I acquired over the years and apply them to my [Arduino code](/2014/07/18/back-seat-driver-autonomous-robot-maneuvering.html)!
 
 By that time I was very surprised to find that the vast majority of the existing Arduino projects and libraries were written rather badly, in C. The best ones are written in a mixture of C++ and Assembly. But, it turns out that you can have your cake and eat it too -- meaning, you can apply OO principles to Arduino programming.
 
@@ -85,7 +85,7 @@ The components I will be using in my C++ learning quest are:
 
 * We'll also use `gcc` compiler, of which I have two versions installed: one comes from [HomeBrew](http://brew.sh), and one comes built in by Apple.
 
-* At some point in the future, we may take an additional look at [Bazel Build System](https://bazel.build) which is a fantastic open source build system from Google.
+* At some point in the future, we may take an additional look at [Bazel Build System](https://bazel.build) which is a fantastic open source [build system from Google](/2020/03/21/building-intellij-bazel-plugin.html).
 
 #### A Shortcut To Get Started Quickly
 

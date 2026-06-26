@@ -17,8 +17,9 @@ setup:
     @bun install
 
 # Start the Astro dev server at http://localhost:4321 or https://dev.kig.re/
-dev: setup
-    @bun run dev
+dev: setup build
+    @bash -c "sleep 3 && open http://127.0.0.1:4321" &
+    @bun run dev --host
 
 # Build production site into dist/
 build: setup

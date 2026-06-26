@@ -38,7 +38,7 @@ It is the IntelliJ plugin that is the subject of this blog post.
 You can install this plugin in the following IntelliJ products:
 
 * IDEA Ultimate and Community Editions (excluding EAP) (Java)
-* CLion (C/C++)
+* [CLion (C/C++)](/2018/09/20/c++-newbie-tour-how-to-get-started-with-c++-on-mac-osx.html)
 * Android Studio (Java / AndroidSDK)
 * PyCharm (Python)
 * GoLand (Go)

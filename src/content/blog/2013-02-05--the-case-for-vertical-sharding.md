@@ -11,7 +11,7 @@ author: kig
 ---
 ## Good Problems to Have
 
-[Wanelo](https://wanelo.co)'s recent surge in popularity rewarded our engineers with a healthy stream of scaling problems to solve.
+[Wanelo](https://wanelo.co)'s recent surge in popularity rewarded our engineers with a healthy stream of [scaling problems to solve](/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html).
 
 Among the many performance initiatives launched over the last few weeks, vertical sharding has been the most impactful and interesting so far.
 
@@ -108,7 +108,7 @@ Feel free to leave a comment with questions or suggestions.
 
 #### Endnotes
 
-We use PostgreSQL 9.2.2 and are happily hosted on the [Joyent Public Cloud](http://joyent.com/products/joyent-cloud). We run on Rails 3.2 and Ruby 1.9.3.
+We use [PostgreSQL 9.2.2](/2013/02/13/high-read-write-performance-postgres-on-joyent-cloud.html) and are happily hosted on the [Joyent Public Cloud](http://joyent.com/products/joyent-cloud). We run on Rails 3.2 and Ruby 1.9.3.
 
 For splitting database reads and writes to read-replicas, we are using [Makara](https://github.com/taskrabbit/makara) ([TaskRabbit](https://www.taskrabbit.com/)'s open-sourced Ruby gem), which we [forked](https://github.com/wanelo/makara) for use with PostgreSQL.
 

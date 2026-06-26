@@ -23,7 +23,7 @@ Without further ado, let's get to it. Below you'll find two concurrency question
 
 ![All Cores Maxed Out](/assets/images/posts/misc/8-cores.png)
 
-Let's say we are running a Rails website on AWS, and we purchased a beefy multi-core server with 8 cores and lots of RAM. Our site is popular, and so we need to squeeze as much throughput from the server as possible.
+Let's say we are running a [Rails website](/2021/01/24/is-rails-still-relevant-today-in-2021.html) on AWS, and we purchased a beefy multi-core server with 8 cores and lots of RAM. Our site is popular, and so we need to squeeze as much throughput from the server as possible.
 
 If the server never exceeds 20% CPU we are wasting resources and money.
 Ideally we want to run the server closer to 80% of the total CPU on average, so that we **utilize** the allocated resources well.

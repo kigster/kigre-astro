@@ -9,7 +9,7 @@ heroImage: "/assets/images/posts/security/big-data.jpg"
 comments: true
 author: kig
 ---
-Sym is a command line utility and a Ruby API that makes it trivial to encrypt and decrypt sensitive data. Unlike many other existing encryption tools, sym focuses on usability and streamlined interface (CLI), with the goal of making encryption easy and transparent. The result? There is no excuse for keeping your application secrets unencrypted :)
+Sym is a [command line utility](/2020/09/07/writing-cli-tools-ruby-migrating-github-issues-to-pivotal-tracker.html) and a Ruby API that makes it trivial to encrypt and decrypt sensitive data. Unlike many other existing encryption tools, sym focuses on usability and streamlined interface (CLI), with the goal of making encryption easy and transparent. The result? There is no excuse for keeping your application secrets unencrypted :)
 
 ## Dealing with Application Secrets
 

@@ -147,7 +147,7 @@ If the driver properly loaded, you should see the device in you /dev folder (thi
 
 This port is showing up correctly in Arduino 1.0.6 and Arduino 1.5.8.
 
-However, if you are using the Eclipse Plugin, it is not smart enough to list this port in the list of available serial ports (either in project properties, or in the serial monitor).  You will have to type the entire thing yourself: `/dev/cu.wchusbserial1441140` and then Eclipse can upload your sketch.
+However, if you are using the [Eclipse Plugin](/2014/08/02/arduino-ide-alternatives.html), it is not smart enough to list this port in the list of available serial ports (either in project properties, or in the serial monitor).  You will have to type the entire thing yourself: `/dev/cu.wchusbserial1441140` and then Eclipse can upload your sketch.
 
 That's it! You should be ready to use the drivers and the board.
 

@@ -99,7 +99,7 @@ confines of my development environment.
 ## Project 'wanelo-mixmax-link-resolver'
 
 To cut the long story pretty damn short, [I built a small project](https://github.com/kigster/wanelo-mixmax-link-resolver)
-to resolve Wanelo product URLs into a small widget that looks like this:
+to resolve [Wanelo](/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html) product URLs into a small widget that looks like this:
 
 ![Preview of the Widget I built](/assets/images/posts/mixmax/mixmax-wanelo-preview.png)
 

@@ -54,7 +54,7 @@ So in choosing our new stack, we were hoping to harness the immense [productivit
 
 Thus, against the tide, and with many reservations, _we made the decision to do a complete rewrite_.
 
-We chose Ruby as the language, and Ruby on Rails as the underlying framework. The vibrant ecosystem of open-source projects around Ruby was a strong motivating factor, as was our team's prior experience building successful Ruby-based web apps. We were also keen to switch from MySQL to PostgreSQL, for [many](http://www.quora.com/Heroku/What-were-the-reasons-for-Heroku-choosing-PostgreSQL-over-MySQL) [well-publicized](http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram) [reasons](http://corner.squareup.com/2011/06/postgresql-data-is-important.html).
+We chose Ruby as the language, and [Ruby on Rails](/2021/01/24/is-rails-still-relevant-today-in-2021.html) as the underlying framework. The vibrant ecosystem of open-source projects around Ruby was a strong motivating factor, as was our team's prior experience building successful Ruby-based web apps. We were also keen to switch from MySQL to PostgreSQL, for [many](http://www.quora.com/Heroku/What-were-the-reasons-for-Heroku-choosing-PostgreSQL-over-MySQL) [well-publicized](http://instagram-engineering.tumblr.com/post/10853187575/sharding-ids-at-instagram) [reasons](http://corner.squareup.com/2011/06/postgresql-data-is-important.html).
 
 #### From Zero to Launch
 
@@ -70,7 +70,7 @@ The original Wanelo Java app had about 70k lines of code (100k lines total if yo
 
 The new Wanelo Ruby app had about 7k lines of code at launch (Ruby, CoffeeScript, Haml, SCSS), and another 5k lines of tests. We've since added many new features, and are now at just 11k lines of code and about 8k lines of test code, for a ratio of 1:0.7. So still under 20k lines of code after four months of development.
 
-Our new application is built atop Ruby 1.9.3, Rails 3.2, Devise, CoffeeScript, Compass, Haml and SCSS, and it uses PostgreSQL 9.1, Redis and Solr for search. We use minitest, Jasmine and Capybara for testing, CarrierWave for image handling, RABL for API generation, SideKiq for background jobs, Chef for provisioning new boxes on the cloud and Capistrano for deploying our code. We run our environment on Joyent Cloud, store images on Amazon S3, and use Fastly and CloudFront as our image CDN.
+Our new application is built atop Ruby 1.9.3, Rails 3.2, Devise, CoffeeScript, Compass, Haml and SCSS, and it uses [PostgreSQL 9.1](/2013/02/13/high-read-write-performance-postgres-on-joyent-cloud.html), Redis and Solr for search. We use minitest, Jasmine and Capybara for testing, CarrierWave for image handling, RABL for API generation, SideKiq for background jobs, Chef for provisioning new boxes on the cloud and Capistrano for deploying our code. We run our environment on Joyent Cloud, store images on Amazon S3, and use Fastly and CloudFront as our image CDN.
 
 #### Database Layer
 

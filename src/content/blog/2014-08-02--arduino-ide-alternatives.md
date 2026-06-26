@@ -22,7 +22,7 @@ was an immediate downer.
 
 Arduino IDE is simple to use, and I think this was one of the key design goals for this software.
 It is commonly used to introduce many folks to programming electronics, and just _programming_,
-notably in C/c++.  As such, this tool is pretty limited, and limiting too. Very quickly I found
+notably in [C/c++](/2018/09/20/c++-newbie-tour-how-to-get-started-with-c++-on-mac-osx.html).  As such, this tool is pretty limited, and limiting too. Very quickly I found
 myself very stuck unable to browse through external symbols by clicking through them, using auto-complete
 features, refactor code, and so on: all the "basic" features I so got spoiled with, by tools such as
 JetBrain's [RubyMine](http://www.jetbrains.com/ruby/), [AppCode](http://www.jetbrains.com/objc/), [IDEA](http://www.jetbrains.com/idea/),
@@ -163,7 +163,7 @@ libraries are located.  Then Eclipse allows me to edit files there too, and so I
 while working on multiple sketches (as you can see in the screenshot below).
 * I can also assign different Arduino boards to each project, and it automatically switches when I switch projects.
 * I configured Eclipse to use Command-R to compile, and Command-U to upload my sketches, just like Arduino IDE.
-* I love the Serial Console that stays open and reconnects between uploads.
+* I love the [Serial Console](/2015/11/22/serial-console-hacks-with-arduino.html) that stays open and reconnects between uploads.
 * I constantly use the automatic rename feature, where I highlight a symbol and hit Option-Command-R, and just
 type in the new name. Eclipse does the rest.
 * Focus cursor on a symbol (like a function call) and press F2.  This will pop up a dialog that shows function
@@ -181,7 +181,7 @@ ____
 These are some great features, and I am very glad that this plugin exists, because my Arduino development is
 infinitely easier with it.
 
-But this post has become way too long, and it's time to wrap up.  Next time I'll talk about my robot movement library,
+But this post has become way too long, and it's time to wrap up.  Next time I'll talk about my [robot movement library](/2014/07/18/back-seat-driver-autonomous-robot-maneuvering.html),
 and discuss using Eclipse for it's development in more details.
 
 I leave you with this beautiful screenshot of the Eclipse open with my library work in progress....

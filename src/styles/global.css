@@ -69,6 +69,86 @@
   font-display: swap;
 }
 
+/* Iosevka Charon Mono — fetched from Google Fonts, self-hosted here. Primary
+   monospace face (Maple Mono remains as a fallback in --font-mono). Latin subset,
+   weights 300/400/500/700 + italics. No unicode-range: glyphs it lacks fall back
+   to the next family in the stack. */
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-light.woff2") format("woff2");
+  font-weight: 300;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-lightitalic.woff2")
+    format("woff2");
+  font-weight: 300;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-mediumitalic.woff2")
+    format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Iosevka Charon Mono";
+  src: url("/assets/fonts/iosevka-charon-mono-bolditalic.woff2") format("woff2");
+  font-weight: 700;
+  font-style: italic;
+  font-display: swap;
+}
+
+/* Barlow Condensed — fetched from Google Fonts, self-hosted here. Used for the
+   top-nav links and for the comparison tables. */
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/barlow-condensed-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Barlow Condensed";
+  src: url("/assets/fonts/barlow-condensed-semibold.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --o1: #ff5f00;
   --o2: #ff8c00;
@@ -84,7 +164,9 @@
   --font-body: "Sprig Sans", system-ui, sans-serif;
   --font-head: "Sprig Sans Black", "Sprig Sans", sans-serif;
   --font-mono:
-    "Maple Mono", "Cascadia Code", "JetBrains Mono", ui-monospace, monospace;
+    "Iosevka Charon Mono", "Maple Mono", "Cascadia Code", "JetBrains Mono",
+    ui-monospace, monospace;
+  --font-condensed: "Barlow Condensed", var(--font-body);
   --maxw: 864px;
 }
 
@@ -125,10 +207,10 @@
   --grad: linear-gradient(95deg, #e5ba41, #d1855c 55%, #e5ba41);
 }
 /* headers feature the palette's gold, prominently (not a subtle gradient tint) */
-[data-theme="azure"] :is(.ghead h1, .page h1, .article h1) {
+[data-theme="azure"] :is(.ghead h2, .page h1, .article h1) {
   color: #e5ba41;
 }
-[data-theme="azure"] :is(.ghead h1 em, .page h1 em) {
+[data-theme="azure"] :is(.ghead h2 em, .page h1 em) {
   background: var(--grad);
   background-size: 250% 100%;
   -webkit-background-clip: text;
@@ -192,8 +274,8 @@
   padding: 26px 24px;
 }
 /* headers: a shiny glass sweep — a bright band travels across the orange text */
-[data-theme="dark-glass"] :is(.ghead h1, .page h1, .article h1),
-[data-theme="dark-glass"] :is(.ghead h1 em, .page h1 em) {
+[data-theme="dark-glass"] :is(.ghead h2, .page h1, .article h1),
+[data-theme="dark-glass"] :is(.ghead h2 em, .page h1 em) {
   background: linear-gradient(
     110deg,
     #ff5f00 0%,
@@ -242,10 +324,10 @@
   --grad: linear-gradient(95deg, #9d6638, #b0ba99 60%, #9d6638);
 }
 /* main headers in brown (9D6638), prominently */
-[data-theme="light-earth"] :is(.ghead h1, .page h1, .article h1) {
+[data-theme="light-earth"] :is(.ghead h2, .page h1, .article h1) {
   color: #9d6638;
 }
-[data-theme="light-earth"] :is(.ghead h1 em, .page h1 em) {
+[data-theme="light-earth"] :is(.ghead h2 em, .page h1 em) {
   background: var(--grad);
   background-size: 250% 100%;
   -webkit-background-clip: text;
@@ -296,10 +378,10 @@
   --grad: linear-gradient(95deg, #ff0052, #ffd400 50%, #0055da);
 }
 /* main headers in hot pink (FF0052) */
-[data-theme="light-forest"] :is(.ghead h1, .page h1, .article h1) {
+[data-theme="light-forest"] :is(.ghead h2, .page h1, .article h1) {
   color: #ff6c00f2;
 }
-[data-theme="light-forest"] :is(.ghead h1 em, .page h1 em) {
+[data-theme="light-forest"] :is(.ghead h2 em, .page h1 em) {
   background: var(--grad);
   background-size: 250% 100%;
   -webkit-background-clip: text;
@@ -514,8 +596,11 @@ button:focus-visible {
   border-color: var(--muted);
 }
 .nav .links a {
+  font-family: var(--font-condensed);
   font-weight: 600;
-  font-size: 14px;
+  /* condensed type sets narrower, so size up a touch and add tracking */
+  font-size: 17px;
+  letter-spacing: 0.02em;
   color: var(--muted);
   text-decoration: none;
 }
@@ -572,10 +657,11 @@ button:focus-visible {
   --pf-outline-focus: var(--o2);
   --pf-border-radius: 999px;
   --pf-input-height: 34px;
-  --pf-input-font-size: 13px;
+  --pf-input-font-size: 14px;
   --pf-searchbox-max-width: 200px;
   --pf-searchbox-dropdown-max-height: 60vh;
   font-family: var(--font-mono);
+  font-weight: 700;
 }
 /* the dropdown results panel reads better with the site's heading font */
 .pf-search [class*="result-title"] {
@@ -591,37 +677,71 @@ button:focus-visible {
   border-radius: 10px 10px 0 0 !important;
 }
 
-/* theme dropdown: native select, restyled to match the nav */
-.theme-select {
-  appearance: none;
-  -webkit-appearance: none;
-  background-color: transparent;
-  /* caret as an inline SVG (a fixed muted tone — background images can't use currentColor) */
-  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23998866' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'><path d='M6 9l6 6 6-6'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 9px center;
-  background-size: 13px;
+/* search + theme swatches stack: the swatch row sits directly under the search box */
+.search-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+.theme-swatches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+/* each swatch is a small two-tone disc previewing a palette (surface + accent) */
+.swatch {
+  position: relative;
+  width: 16px;
+  height: 16px;
+  padding: 0;
   border: 1px solid var(--hair);
-  color: var(--muted);
-  border-radius: 999px;
-  height: 34px;
-  padding: 0 28px 0 13px;
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 600;
+  border-radius: 50%;
   cursor: pointer;
+  background: linear-gradient(
+    135deg,
+    var(--sw-bg) 0 50%,
+    var(--sw-ac) 50% 100%
+  );
   transition:
-    color 0.15s ease,
-    border-color 0.15s ease;
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
 }
-.theme-select:hover {
-  color: var(--fg);
-  border-color: var(--muted);
+.swatch:hover {
+  transform: scale(1.18);
 }
-/* the popup list is OS-rendered; keep its colors legible regardless of theme */
-.theme-select option {
+/* the active theme's swatch wears a ring in the live accent color */
+.swatch[aria-pressed="true"] {
+  box-shadow:
+    0 0 0 2px var(--bg),
+    0 0 0 3.5px var(--o2);
+}
+/* hover/focus tooltip naming the theme (immediate, unlike the native title delay) */
+.swatch::after {
+  content: attr(data-name);
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%) translateY(-2px);
+  padding: 3px 7px;
   background: var(--panel);
   color: var(--fg);
+  border: 1px solid var(--hair);
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 0.12s ease,
+    transform 0.12s ease;
+  z-index: 60;
+}
+.swatch:hover::after,
+.swatch:focus-visible::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
 
 /* --- footer --- */
@@ -657,19 +777,20 @@ button:focus-visible {
 }
 .ghead .eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--y1);
   text-transform: uppercase;
   letter-spacing: 0.12em;
 }
-.ghead h1 {
+/* the huge banner headline (the prominent line) */
+.ghead h2 {
   font-family: var(--font-head);
-  font-size: clamp(34px, 6vw, 68px);
+  font-size: clamp(40px, 8vw, 88px);
   line-height: 0.92;
   letter-spacing: -0.035em;
   margin-top: 14px;
 }
-.ghead h1 em {
+.ghead h2 em {
   font-style: normal;
   background: var(--grad);
   background-size: 250% 100%;
@@ -678,10 +799,20 @@ button:focus-visible {
   -webkit-text-fill-color: transparent;
   animation: header-shine 7s ease-in-out infinite;
 }
+/* the smaller subtitle line beneath the banner */
+.ghead h1 {
+  font-family: var(--font-head);
+  font-weight: 600;
+  font-size: clamp(17px, 2.3vw, 26px);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--muted);
+  margin-top: 18px;
+}
 .ghead .sub {
   margin-top: 16px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted2);
 }
 
@@ -729,7 +860,7 @@ button:focus-visible {
 }
 .row .mid .cat {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--o2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -739,7 +870,7 @@ button:focus-visible {
    signal that the entry is an AI-generated news digest rather than a post */
 .row .mid .ai-tag {
   font-family: var(--font-mono);
-  font-size: 13px;
+  font-size: 14px;
   color: #a371f7;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -766,7 +897,7 @@ button:focus-visible {
 }
 .row .date {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted2);
   white-space: nowrap;
 }
@@ -774,7 +905,7 @@ button:focus-visible {
    underlines on hover. position/z-index lifts it above the stretched row link */
 .row .mid .byline-link {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--o2);
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -853,7 +984,7 @@ button:focus-visible {
 }
 .article .cat {
   font-family: var(--font-mono);
-  font-size: 14px;
+  font-size: 15px;
   color: var(--o2);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -874,7 +1005,7 @@ button:focus-visible {
   padding-bottom: 22px;
   border-bottom: 1px solid var(--hair);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--muted2);
   flex-wrap: wrap;
 }
@@ -904,7 +1035,7 @@ button:focus-visible {
 .article .ai-stamp {
   display: inline-block;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.08em;
@@ -982,19 +1113,24 @@ button:focus-visible {
   width: 80%;
   margin: 22px auto;
   border-collapse: collapse;
-  font-size: 14px;
-  line-height: 1.5;
+  /* Barlow Condensed packs more columns into the width; bump the size a touch
+     since condensed type reads smaller than the body face at the same px */
+  font-family: var(--font-condensed);
+  font-size: 15px;
+  line-height: 1.4;
 }
 .prose th,
 .prose td {
+  font-family: var(--font-condensed);
   text-align: left;
   padding: 10px 14px;
   border-bottom: 1px solid var(--hair);
   vertical-align: top;
 }
 .prose thead th {
-  font-family: var(--font-mono);
-  font-size: 11px;
+  font-family: var(--font-condensed);
+  font-weight: 600;
+  font-size: 13px;
   text-transform: uppercase;
   letter-spacing: 0.04em;
   color: var(--o2);
@@ -1003,9 +1139,62 @@ button:focus-visible {
 .prose tbody tr:hover {
   background: color-mix(in srgb, var(--panel), transparent 35%);
 }
+
+/* Zoom table: a very wide reference table that would otherwise blow out the
+   reading column. Base / touch / narrow screens get a normal table that can
+   scroll sideways. The shrink-to-thumbnail + expand-on-hover treatment is
+   layered on only where there's a real pointer and room beside the article
+   (see the media query below). Print gets the full-width version further down. */
+.prose .zoom-table {
+  margin: 22px 0;
+  overflow-x: auto;
+}
+.prose .zoom-table table {
+  margin: 0;
+  width: 100%;
+}
+
+@media (hover: hover) and (pointer: fine) and (min-width: 971px) {
+  .prose .zoom-table {
+    /* the expanded table overflows this box on purpose, over the sidebar */
+    overflow: visible;
+    position: relative;
+  }
+  .prose .zoom-table table {
+    /* lay the table out at its natural (wide) size, then `zoom` shrinks the
+       whole thing — layout footprint included — down to a tiny thumbnail, so
+       there's no leftover empty space around it at rest. */
+    width: max-content;
+    max-width: none;
+    zoom: 0.4;
+    /* grow from the top-center so the hover expansion spills out to BOTH sides —
+       left into the page margin and right over the sidebar — not just rightward */
+    transform-origin: top center;
+    transition:
+      transform 0.28s ease,
+      box-shadow 0.28s ease;
+    cursor: zoom-in;
+  }
+  .prose .zoom-table:hover table,
+  .prose .zoom-table:focus-within table {
+    /* zoom (0.4) x scale (2.5) ~= natural size again. Using `transform` rather
+       than changing `zoom` means it grows back without reflowing the prose —
+       it just lifts above the sidebar (high z-index) and overlays. */
+    transform: scale(2.5);
+    position: relative;
+    z-index: 200;
+    background: var(--bg);
+    border: 1px solid var(--hair);
+    border-radius: 6px;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.4);
+    cursor: zoom-out;
+  }
+}
 .prose code {
   font-family: var(--font-mono);
-  font-size: 0.88em;
+  /* Iosevka has no 600 cut; using the Bold (700) cut for code */
+  font-weight: 700;
+  font-size: 0.94em; /* ~+1px over the old 0.88em (relative so inline code keeps scaling) */
   background: var(--panel);
   padding: 2px 6px;
   border-radius: 3px;
@@ -1015,7 +1204,8 @@ button:focus-visible {
   padding: 18px 20px;
   overflow-x: auto;
   font-family: var(--font-mono);
-  font-size: 13.5px;
+  font-weight: 700;
+  font-size: 14.5px;
   line-height: 1.4;
   margin: 22px 0;
   /* horizontal scrollbar reveals on hover only — transparent thumb at rest, so
@@ -1057,7 +1247,7 @@ button:focus-visible {
 }
 .article .tags a {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--muted);
   border: 1px solid var(--hair);
   padding: 4px 10px;
@@ -1112,7 +1302,7 @@ button:focus-visible {
   align-items: center;
   justify-content: space-between;
   font-family: var(--font-mono);
-  font-size: 13px; /* ~20% larger than the old 11px, for legibility (all themes) */
+  font-size: 14px; /* ~20% larger than the old 11px, for legibility (all themes) */
   color: var(--y1);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -1127,7 +1317,7 @@ button:focus-visible {
 }
 .panel .ritem .rn {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--o2);
 }
 .panel .ritem h3 {
@@ -1144,7 +1334,7 @@ button:focus-visible {
 }
 .panel .ritem .rd {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted2);
   margin-top: 5px;
 }
@@ -1152,7 +1342,7 @@ button:focus-visible {
   display: inline-block;
   margin-top: 18px;
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   font-weight: 700;
   text-decoration: none;
   border-bottom: 2px solid;
@@ -1176,13 +1366,28 @@ button:focus-visible {
 
 /* GitHub callouts (remark-github-blockquote-alert) */
 .markdown-alert {
+  font-size: 16px;
+  font-family:
+    Barlow Condensed,
+    sans-serif;
   border-left: 4px solid var(--muted);
   border-radius: 6px;
   padding: 12px 16px;
-  margin: 3px 3px; /* 30px indent on both sides (20px on phones, below) */
+  margin: 30px 0; /* 30px indent on both sides (20px on phones, below) */
   background: var(--panel);
-  max-width: 64ch;
+  max-width: 100%;
 }
+.markdown-alert p {
+  margin: 10px 0;
+}
+.markdown-alert-note p code {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  background-color: var(--hair);
+  padding-left: 0px !important;
+  font-size: 0.84em !important; /* ~+1px over the old 0.78em */
+}
+
 .markdown-alert > :first-child {
   margin-top: 0;
 }
@@ -1195,7 +1400,7 @@ button:focus-visible {
   gap: 8px;
   font-family: var(--font-mono);
   font-weight: 700;
-  font-size: 12px;
+  font-size: 15px;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 6px;
@@ -1237,7 +1442,7 @@ button:focus-visible {
 }
 .page .eyebrow {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--y1);
   text-transform: uppercase;
   letter-spacing: 0.12em;
@@ -1295,8 +1500,8 @@ button:focus-visible {
 @media (max-width: 760px) {
   /* tighter side indent for admonitions on phones */
   .markdown-alert {
-    margin-left: 20px;
-    margin-right: 20px;
+    margin-left: 0px;
+    margin-right: 0px;
   }
   .about-layout {
     grid-template-columns: 1fr;
@@ -1423,7 +1628,7 @@ button:focus-visible {
   display: inline-block;
   margin-top: 12px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--o2);
   text-decoration: none;
   white-space: nowrap;
@@ -1476,7 +1681,7 @@ button:focus-visible {
 }
 .pdf-modal .pm-ext {
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   color: var(--o2);
   text-decoration: none;
   white-space: nowrap;
@@ -1540,12 +1745,12 @@ button:focus-visible {
 }
 .oss .stars {
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: 13px;
   color: var(--y1);
 }
 .oss .lang {
   font-family: var(--font-mono);
-  font-size: 10px;
+  font-size: 11px;
   color: var(--muted2);
   text-transform: uppercase;
   margin-top: 2px;
@@ -1725,7 +1930,7 @@ button:focus-visible {
    follows the desktop one, so it wins on touch devices (iPad &c.). */
 @media (min-width: 761px) and (pointer: coarse) {
   :root {
-    zoom: 1.4;
+    zoom: 1.3;
   }
 }
 
@@ -1779,7 +1984,7 @@ button:focus-visible {
   border-radius: 10px 0 0 10px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 12px;
   text-transform: uppercase;
   letter-spacing: 0.12em;
   cursor: pointer;
@@ -1844,9 +2049,187 @@ html.sb-collapsed .panel-reopen {
 }
 
 /* ============================================================
+   Left table-of-contents popup
+   A fixed overlay glued to the left edge — mirror of the right-hand
+   re-open tab, but it slides a full TOC panel in from the left.
+   "toc-open" on <html> is the single source of truth.
+   ============================================================ */
+
+/* the always-visible grab tab on the left screen edge (closed state) */
+.toc-tab {
+  position: fixed;
+  top: 120px;
+  left: 0;
+  z-index: 90;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 7px;
+  background: var(--panel);
+  color: var(--muted);
+  border: 1px solid var(--hair);
+  border-left: 0;
+  border-radius: 0 10px 10px 0;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.28);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  cursor: pointer;
+  writing-mode: vertical-rl; /* stack the "Contents" label vertically */
+  transition:
+    color 0.15s ease,
+    padding-left 0.15s ease,
+    opacity 0.2s ease;
+}
+.toc-tab:hover {
+  color: var(--fg);
+  padding-left: 11px; /* nudge out on hover to invite the click */
+}
+.toc-tab svg {
+  writing-mode: horizontal-tb; /* keep the icon upright */
+}
+/* when the panel is open the tab is redundant — fade it out behind the panel */
+html.toc-open .toc-tab {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* the sliding panel itself */
+.toc-panel {
+  position: fixed;
+  top: 110px; /* clear the fixed header */
+  left: 0;
+  z-index: 95;
+  width: min(290px, 84vw);
+  max-height: calc(100dvh - 130px);
+  display: flex;
+  flex-direction: column;
+  padding: 20px 18px 22px;
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  border-left: 0;
+  border-radius: 0 14px 14px 0;
+  box-shadow: 8px 12px 34px rgba(0, 0, 0, 0.34);
+  transform: translateX(-102%); /* parked off the left edge */
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 0.2s ease;
+}
+html.toc-open .toc-panel {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.toc-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hair);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--y1);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+.toc-close {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--muted);
+  border-radius: 999px;
+  cursor: pointer;
+  transition:
+    color 0.15s ease,
+    border-color 0.15s ease;
+}
+.toc-close:hover {
+  color: var(--fg);
+  border-color: var(--muted);
+}
+/* the scrollable list of links — reveal the scrollbar on hover only (matches the
+   right panel / code blocks) */
+.toc-nav {
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: transparent transparent;
+}
+.toc-nav:hover,
+.toc-nav:focus-within {
+  scrollbar-color: var(--hair) transparent;
+}
+.toc-nav::-webkit-scrollbar {
+  width: 8px;
+}
+.toc-nav::-webkit-scrollbar-thumb {
+  background: transparent;
+  border-radius: 8px;
+}
+.toc-nav:hover::-webkit-scrollbar-thumb {
+  background: var(--hair);
+}
+.toc-link {
+  display: block;
+  /* nested headings indent one step per level below the shallowest */
+  padding: 6px 8px 6px calc(8px + var(--toc-indent, 0) * 16px);
+  border-left: 2px solid transparent;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.35;
+  text-decoration: none;
+  transition:
+    color 0.12s ease,
+    border-color 0.12s ease,
+    background 0.12s ease;
+}
+.toc-link:hover {
+  color: var(--fg);
+  background: color-mix(in srgb, var(--o2) 12%, transparent);
+}
+/* the section currently in view (set by the scroll-spy) */
+.toc-link.is-active {
+  color: var(--fg);
+  border-left-color: var(--o2);
+  background: color-mix(in srgb, var(--o2) 10%, transparent);
+}
+
+/* anchor jumps land below the fixed header instead of under it */
+.prose :is(h2, h3, h4) {
+  scroll-margin-top: 110px;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* phones: the panel becomes a near-full-width sheet; hide the print/desktop-only
+   tab niceties stay as-is (the tab is still usable) */
+@media (max-width: 760px) {
+  .toc-panel {
+    width: min(320px, 88vw);
+  }
+}
+
+/* ============================================================
    Print — let the content use the full page width
    ============================================================ */
 @media print {
+  /* the TOC popup is screen-only chrome */
+  .toc-tab,
+  .toc-panel {
+    display: none !important;
+  }
+
   /* drop the centered, max-width reading column */
   .wrap,
   .page {
@@ -1871,9 +2254,24 @@ html.sb-collapsed .panel-reopen {
   .article,
   .page .lead,
   .ghead h1,
+  .ghead h2,
   .ghead .sub {
     max-width: none !important;
     width: auto !important;
+  }
+
+  /* the zoom table prints stretched to the full page width — undo the
+     thumbnail shrink and the hover transform/overlay entirely */
+  .prose .zoom-table {
+    overflow: visible !important;
+  }
+  .prose .zoom-table table {
+    zoom: 1 !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: 0 !important;
   }
 
   /* collapse the about page's two-column grid to one full-width column */

@@ -18,7 +18,7 @@ export default defineConfig({
     remarkPlugins: [remarkAlert],
     shikiConfig: {
       // Gruvbox Dark for code blocks, always (per design decision)
-      theme: "horizon",
+      theme: "ayu-mirage",
       wrap: false,
     },
   },

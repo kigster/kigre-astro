@@ -12,7 +12,7 @@ This post is about a software engineering process most similar to what is practi
 
 ## Introduction
 
-The name "Turbo Agile™" is a derivative of "Aggro Agile™" — what we've been calling it at Wanelo. Personally, I don't love the word "Aggro", but "Turbo" makes sense to me — hence the name change.
+The name "Turbo Agile™" is a derivative of "Aggro Agile™" — what we've been calling it at [Wanelo](/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html). Personally, I don't love the word "Aggro", but "Turbo" makes sense to me — hence the name change.
 
 My former colleagues — several senior engineers with whom I practiced the process described in this post, later referred to it as *"The dictionary definition of efficient, and well oiled engineering practice."*
 
@@ -319,7 +319,7 @@ A very quick summary of common planning mistakes based on the personal experienc
 
 > [!NOTE]
 >
-> Pivotal Tracker is no more. It's been decomissioned, but the same point system could apply in [Linear](linear.app) or any other tool you might be using.
+> [Pivotal Tracker](/2020/09/07/writing-cli-tools-ruby-migrating-github-issues-to-pivotal-tracker.html) is no more. It's been decomissioned, but the same point system could apply in [Linear](linear.app) or any other tool you might be using.
 
 ### *Blocking*
 

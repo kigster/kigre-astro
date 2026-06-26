@@ -49,7 +49,7 @@ I do not suggest that we invest a ton of effort into making a non-existant appli
 
 ### Infrastructure and Innovation
 
-When applications like Chef, Puppet and Ansible came to the rescue, when it comes to configuring servers, we finally reached a point of automating servers that were running our software (well, maybe not all of us, but some did).
+When applications like [Chef, Puppet and Ansible](/2024/12/06/understanding-terraform.html) came to the rescue, when it comes to configuring servers, we finally reached a point of automating servers that were running our software (well, maybe not all of us, but some did).
 
 And now Docker and light-weight containers are offering something different, and when coupled with the [ability to run on bare metal](https://www.joyent.com/blog/how-to-dockerize-a-complete-application) -- very exciting indeed.
 
@@ -94,7 +94,7 @@ But then, in between "oh, it hurts, but it's ok" and "we are finished" there lie
 [WARNING]
 This may not be The Catastrophy just yet, but your technology is either not scaling, not reliable, or not secure. The Catastrophy may be right around the corner.
 
-Given that I've been building almost exclusively applications that most certainly did not want to die because of scalability, reliability or security concerns, I've applied the same patterns over and over again, and results speak for themselves. I don't like bragging, and I wouldn't say this -- but for those of you still skeptical -- [I refer you to the uptime and scalability numbers mentioned in this presentation](https://rubyconf.eventer.com/rubyconf-australia-2015-1223/devops-without-the-ops-a-fallacy-a-dream-or-both-by-konstantin-gredeskoul-1724).
+Given that I've been building almost exclusively applications that most certainly did not want to die because of [scalability](/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html), reliability or security concerns, I've applied the same patterns over and over again, and results speak for themselves. I don't like bragging, and I wouldn't say this -- but for those of you still skeptical -- [I refer you to the uptime and scalability numbers mentioned in this presentation](https://rubyconf.eventer.com/rubyconf-australia-2015-1223/devops-without-the-ops-a-fallacy-a-dream-or-both-by-konstantin-gredeskoul-1724).
 
 Which brings me to the conclusion of this blog post.
 

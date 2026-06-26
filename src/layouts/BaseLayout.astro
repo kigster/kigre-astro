@@ -1,7 +1,9 @@
 ---
 import '../styles/global.css';
 import Search from 'astro-pagefind/components/Search.astro';
-const { title, description, canonical } = Astro.props;
+// `exactTitle` opts out of the global " — kig.re" suffix for pages that pass a
+// fully-composed <title> they want rendered verbatim (index + blog posts).
+const { title, description, canonical, exactTitle = false } = Astro.props;
 const pathname = Astro.url.pathname;
 // Canonical URL: posts pass their exact legacy permalink; every other page
 // falls back to its own absolute URL so search engines see one canonical per page.
@@ -17,13 +19,24 @@ const navItems = [
 { href: '/about', label: 'About' },
 { href: '/tags', label: 'Tags' },
 ];
+// Color-scheme swatches (replaces the old dropdown). `id` doubles as the URL
+// hash a shared link carries (#azure, #light-earth, …); bg/accent are a small
+// two-tone preview of each palette.
+const themeSwatches = [
+{ id: 'dark-glass', name: 'Dark Glass', bg: '#140c02', accent: '#ff8c00' },
+{ id: 'noir', name: 'Noir', bg: '#ffffff', accent: '#ff8c00' },
+{ id: 'azure', name: 'Azure', bg: '#2d3c59', accent: '#e5ba41' },
+{ id: 'light-forest', name: 'Light Forest', bg: '#39c6a0', accent: '#ff0052' },
+{ id: 'light-earth', name: 'Light Earth', bg: '#f7f1de', accent: '#9d6638' },
+{ id: 'light', name: 'Light', bg: '#fffcf5', accent: '#ff8c00' },
+];
 ---
 <!doctype html>
 <html lang="en" data-theme="dark-glass">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title ? `${title} — kig.re` : 'kig.re'}</title>
+    <title>{title ? (exactTitle ? title : `${title} — kig.re`) : 'kig.re'}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
@@ -33,11 +46,14 @@ const navItems = [
     <link rel="manifest" href="/assets/images/favicon/site.webmanifest" />
     <link rel="alternate" type="application/rss+xml" title="kig.re" href="/rss.xml" />
     <script is:inline>
-      // set theme before paint to avoid flash; fall back to dark-glass (default) on unknown values
+      // set theme before paint to avoid flash. Priority: a theme carried in the
+      // URL hash (#azure — so shared links keep their scheme) > the saved choice
+      // > dark-glass (default).
       (function () {
       const themes = ['dark-glass', 'noir', 'azure', 'light-forest', 'light-earth', 'light'];
+      const hash = location.hash.replace(/^#/, '');
       const saved = localStorage.getItem('theme');
-      const theme = themes.includes(saved) ? saved : 'dark-glass';
+      const theme = themes.includes(hash) ? hash : (themes.includes(saved) ? saved : 'dark-glass');
       document.documentElement.setAttribute('data-theme', theme);
     })();
       // the collapsed-sidebar state is intentionally NOT persisted — every page
@@ -58,10 +74,25 @@ const navItems = [
               </svg>
             </a>
           </div>
-          <Search
-            className="pf-search"
-            searchboxOptions={{ placeholder: 'Search' }}
-            />
+          <div class="search-wrap">
+            <Search
+              className="pf-search"
+              searchboxOptions={{ placeholder: 'Search' }}
+              />
+            <div class="theme-swatches" id="themeSwatches" role="group" aria-label="Color theme">
+              {themeSwatches.map((t) => (
+              <button
+                type="button"
+                class="swatch"
+                data-theme-id={t.id}
+                data-name={t.name}
+                aria-label={`Color theme: ${t.name}`}
+                aria-pressed="false"
+                style={`--sw-bg:${t.bg};--sw-ac:${t.accent}`}
+              ></button>
+              ))}
+            </div>
+          </div>
           <div class="nav-right">
             <div class="links" id="navLinks">
               {navItems.map((it) => (
@@ -73,14 +104,6 @@ const navItems = [
                 <path d="M12 19V5M5 12l7-7 7 7" />
               </svg>
             </button>
-            <select class="theme-select" id="themeSelect" aria-label="Color theme">
-              <option value="dark-glass">Dark Glass</option>
-              <option value="noir">Noir</option>
-              <option value="azure">Azure</option>
-              <option value="light-forest">Light Forest</option>
-              <option value="light-earth">Light Earth</option>
-              <option value="light">Light</option>
-            </select>
             <button class="nav-toggle" id="navToggle" aria-label="Menu" aria-expanded="false" aria-controls="navLinks">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
                 <path d="M3 6h18M3 12h18M3 18h18" />
@@ -132,14 +155,37 @@ const navItems = [
     </script>
 
     <script>
-      // theme dropdown: sync the control to the active theme, persist on change
-      const sel = document.getElementById('themeSelect');
-      if (sel) {
-        sel.value = document.documentElement.getAttribute('data-theme') || 'dark-glass';
-        sel.addEventListener('change', () => {
-          document.documentElement.setAttribute('data-theme', sel.value);
-          localStorage.setItem('theme', sel.value);
-        });
+      // theme swatches: click sets + persists the theme and writes it to the URL
+      // hash so the link is shareable; the active swatch shows a ring. A theme in
+      // the incoming hash (shared link) is adopted and persisted on load.
+      const swatchBox = document.getElementById('themeSwatches');
+      if (swatchBox) {
+        const root = document.documentElement;
+        const swatches = Array.from(swatchBox.querySelectorAll('.swatch'));
+        const ids = swatches.map((s) => s.dataset.themeId);
+        const sync = () => {
+          const active = root.getAttribute('data-theme');
+          swatches.forEach((s) =>
+            s.setAttribute('aria-pressed', String(s.dataset.themeId === active))
+          );
+        };
+        const apply = (id, push) => {
+          if (!ids.includes(id)) return;
+          root.setAttribute('data-theme', id);
+          localStorage.setItem('theme', id);
+          if (push) history.replaceState(null, '', '#' + id);
+          sync();
+        };
+        // a theme carried in the URL on load wins and gets persisted
+        apply(location.hash.replace(/^#/, ''), false);
+        sync();
+        swatches.forEach((s) =>
+          s.addEventListener('click', () => apply(s.dataset.themeId, true))
+        );
+        // back/forward or a hand-edited hash should still switch the theme
+        window.addEventListener('hashchange', () =>
+          apply(location.hash.replace(/^#/, ''), false)
+        );
       }
     </script>
 
