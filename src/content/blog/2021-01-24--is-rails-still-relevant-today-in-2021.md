@@ -21,7 +21,7 @@ Community values:: The values behind the framework/language, and do they match p
 
 In my experience, Ruby/Rails software engineers tend to be good at:
 
-Velocity:: that's why Pivotal Labs consultancy chose Rails as their primary framework
+Velocity:: that's why [Pivotal Labs consultancy](/2020/09/11/turbo-agile-simplified-scrum-pivotal-process.html) chose Rails as their primary framework
 Automated-testing:: which means — maintainability in the future
 Onboarding:: rails apps are laid out very similarly and most rails devs know where to look for configuration
 Object-oriented design:: The community has very strong OOP design principles, and some of the best books on the subject, such as [POODR](https://www.poodr.com/)
@@ -49,14 +49,14 @@ New Rails sites come online all the time. 37Signals just recently launched a red
 * AWS/K8S
 
 > [!NOTE]
-> Personally, I would never use MySQL — I am a big PostgreSQL proponent for various reasons, from licensing to features, to scaling it. So that this blog post is my take on web development and Rails.
+> Personally, I would never use MySQL — I am a big PostgreSQL proponent for various reasons, from licensing to features, to [scaling it](/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html). So that this blog post is my take on web development and Rails.
 
 ## Summary
 
 [CAUTION]
 So, NO — **I don't think it's dying, if anything it changed from being the cool new kid on the block to a "pro" athlete that nobody can beat at the game. Yet.**
 
-Look, people thought that NodeJS would beat Rails, but the poor value system in Javascript, a heavily fragmented ecosystem, poor testing practices, and the async hell leads to unreliable code throughout. I've seen this again and again.
+Look, people thought that [NodeJS](/2016/04/07/mixmax-and-my-first-nodejs-app.html) would beat Rails, but the poor value system in Javascript, a heavily fragmented ecosystem, poor testing practices, and the async hell leads to unreliable code throughout. I've seen this again and again.
 
 Django is probably 2nd best choice of all shown, but it was always copying Rails' features to Python, and always a step behind, but never ahead. If you have a lot of people with Python knowledge, then, by all means, Django is a good choice. But that applies equally to Go and Rust. If you are outsourcing these apps, you want to optimize the cost of development, which is likely to be the cheapest with Rails and the fastest with Rails.
 

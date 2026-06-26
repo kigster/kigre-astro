@@ -17,7 +17,7 @@ A few times a day, when the need was strong, I'd go to the downstairs bathroom o
 
 You can likely see how this could be a frustrating and disruptive experience even just once or twice. Now multiply that by 35 employees and every work day of the year, and you end up with an actual productivity problem.
 
-Given my foray into Arduino over the last few months, I knew I could come up with a solution. I got approved for a small budget of about $200, and started looking around.
+Given my [foray into Arduino](/2014/07/18/back-seat-driver-autonomous-robot-maneuvering.html) over the last few months, I knew I could come up with a solution. I got approved for a small budget of about $200, and started looking around.
 
 > [!NOTE]
 > The problem was very simple: *people needed to know when each bathroom was occupied, or not*.  Just like on an airplane you can see bathroom light on/off, I wanted something similar for our two bathrooms. Something everyone could see.
@@ -156,7 +156,7 @@ The settings that can be changed are (and are cycled through by pressing the but
 Over the last few months, I built three separate Observer modules. The first two had sonar built into the laser-cut enclosure, so to aim it properly, you'd have to move the entire enclosure.
 
 ____
-By the way, need to make some laser-cut boxes?  Check out [MakeABox.io](http://makeabox.io). It's a tool I built after getting frustrated with the crowd favorite -- BoxMaker. But that's another blog post.
+By the way, need to make some laser-cut boxes?  Check out [MakeABox.io](http://makeabox.io). It's a tool I built after getting frustrated with the crowd favorite -- BoxMaker. But that's [another blog post](/2014/11/21/announcing-laser-cutter-makeabox-dot-io.html).
 ____
 
 Since it is not practical to be tilting or leaning the enclosure itself to aim at the toilet, I updated the design, moving the Sonar sensor to the top of the box, using an arm I designed.  It's incredible what can be created in 2D and then turned into a 3D object!

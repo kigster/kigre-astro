@@ -330,7 +330,7 @@ $ githuh repo list --api-token=NNNN \
 ### Command `githuh issue export`
 
 > [!NOTE]
-> This functionality was written to migrate a bunch of Github Issues into Pivotal Tracker, using PT's CSV Import feature.
+> This functionality was written to migrate a bunch of Github Issues into [Pivotal Tracker](/2020/09/11/turbo-agile-simplified-scrum-pivotal-process.html), using PT's CSV Import feature.
 
 This command allows you to [export Github Issues](https://github.com/kigster/githuh#11-issue-export) from a Github repo/project into to a CSV file, so that it can be imported into a [Pivotal Tracker](https://www.pivotaltracker.com/) — arguably, the most streamlined tool for software development project management out there.
 

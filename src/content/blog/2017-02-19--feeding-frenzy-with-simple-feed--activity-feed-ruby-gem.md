@@ -104,7 +104,7 @@ So why do I know so much about these feeds, you might ask?
 
 Well, funny you should ask. You see, I built more than a few feeds for various social networks I worked for, and they are _all remarkably still live and in production_.
 
-My previous employer -- [Wanelo.com](https://wanelo.co) -- uses activity feeds for both the "Magic" and "My Feed" features. In Wanelo's case, the feeds are populated with products, and the software powering these feeds did experience the "Bieber Problem," except not with Justin Bieber, but with the very popular store [Urban Outfitters](https://wanelo.co/urbanoutfitters), that amassed over 3M followers on that social network. Whenever the store would post a new product, three million users must see that product in their feeds. That's no simple feat.
+My previous employer -- [Wanelo.com](https://wanelo.co) -- uses activity feeds for both the "Magic" and "My Feed" features. In Wanelo's case, the feeds are populated with products, and the software powering these feeds did experience the "Bieber Problem," except not with Justin Bieber, but with the very popular store [Urban Outfitters](https://wanelo.co/urbanoutfitters), that amassed over 3M followers on that social network. Whenever the store would post a new product, [three million users must see that product in their feeds](/2013/02/05/the-case-for-vertical-sharding.html). That's no simple feat.
 
 The company I work for now -- [Simbi](https://simbi.com) -- is a social network for a symbiotic economy: where people can barter services with each other. The social feed was a natural fit, if not a real necessity.
 

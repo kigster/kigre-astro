@@ -147,7 +147,7 @@ Otherwise it rotates 90 degrees, to now be at +45 degrees to the original direct
 direction isn't better than the front, it turns for additional 135 degrees, making it a full 180'
 degrees from the original direction.
 
-This example algorithm is setup in a just a few lines of code using C/C++ style function
+This example algorithm is setup in a just a few lines of code using [C/C++](/2018/09/20/c++-newbie-tour-how-to-get-started-with-c++-on-mac-osx.html) style function
 pointers used as callbacks at the end of each maneuver, but provide for a pretty effective
 obstacle avoidance strategy (but albeit a random direction).
 

@@ -13,7 +13,7 @@ author: kig
 
 I was very happy to find out that my submission accepted at 2015 pgConfSV conference (where SV is for Silicone Valley) was accepted.
 
-For various reasons I was unable to cover everything I wanted during the talk, which is a note to self for future public speaking engagements! Time your talk! :). Well, below is an updated version of that presentation, which shows an incremental and methodical path to scaling web applications to millions of users using PostgreSQL, all the while covering a very range of material.
+For various reasons I was unable to cover everything I wanted during the talk, which is a note to self for future public speaking engagements! Time your talk! :). Well, below is an updated version of that presentation, which shows an incremental and methodical path to [scaling web applications to millions of users using PostgreSQL](/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html), all the while covering a very range of material.
 
 ### What was covered?
 
@@ -25,7 +25,7 @@ In general, the ideal audience for this is operationally and architecturally min
 
 But on the broader scale, I was intending for this presentation to be helpful to anyone trying to get a grasp on how to evolve their web application to where it's able to serve a rather high throughput of 5K-50K requests per second. This range is still far below what the internet 'giants' such as Facebook, Google, or Twitter get (if I had to guess, it would be in 1M/sec). But, it is also far from an early naive web application with just a few users.
 
-Turns out it _is_ possible to achieve high scalability on the cheap, and using PostgreSQL, which is what we did at Wanelo, and it turned out great.
+Turns out it _is_ possible to achieve high scalability on the cheap, and using PostgreSQL, which is what we did at [Wanelo](/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html), and it turned out great.
 
 ### The Presentation
 

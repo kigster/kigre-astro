@@ -47,7 +47,7 @@ class PostsController
 end
 ```
 
-In this blog post we'll examine an event-based approach to decoupling this business logic, a method that's been pretty successful within the Wanelo codebase thus far.
+In this blog post we'll examine an event-based approach to decoupling this business logic, a method that's been pretty successful within the [Wanelo codebase](/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html) thus far.
 
 ### Simple World
 
@@ -59,7 +59,7 @@ Another solution could be to create a layer of "services" -- standalone plain Ru
 
 #### Ultimate Goal?
 
-It's really important to decide what our goals are. At Wanelo, we want to be able to _build software that's easy to change,_ and to adapt to the _constantly moving product requirements_ and experiments, as well as to the high-scalability demands of the popular site that we've become.
+It's really important to decide what our goals are. At Wanelo, we want to be able to _build software that's easy to change,_ and to adapt to the _constantly moving product requirements_ and experiments, as well as to the [high-scalability demands](/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html) of the popular site that we've become.
 
 We want code that's easily testable, easy to understand, and easy to maintain. Tangled code of unrelated concerns inside controllers, models or services does not meet this standard: it's hard to test, and could be hard to change (assuming many more layers are added on top of the simple example, which tends to happen in larger apps).
 

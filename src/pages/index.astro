@@ -11,11 +11,12 @@ const authorOf = (post) =>
 const fmt = (d) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
-<BaseLayout title="Index" description="Engineering notes on scaling, Ruby, DevOps and questionable hardware — by Konstantin Gredeskoul.">
+<BaseLayout title="x.com/kig — Konstantin Gredeskoul — On Engineering, Life, and Everything Else." exactTitle description="Engineering notes on scaling, Ruby, DevOps and questionable hardware — by Konstantin Gredeskoul.">
   <header class="ghead">
-    <div class="eyebrow">// the archive · since 2012</div>
-    <h1>Everything I've <em>written</em>,<br />in order.</h1>
-    <div class="sub">{posts.length} posts · scaling, ruby, devops & questionable hardware</div>
+    <div class="eyebrow">// Konstantin Gredeskoul · loves coding in space</div>
+    <h2>Engineering is an art. <em>Everything else is an experiment.</em></h2>
+    <h1>Thirty years of building production systems, AI applications, Ruby, Python, PostgreSQL, Rails, distributed systems, hardware, and occasionally gloriously unnecessary projects.</h1>
+    <div class="sub">{posts.length} battle-tested stories, anecdotes, research, tangents, eg — how to build hardware to show toilet occupancy status</div>
   </header>
 
   <div class="idx">

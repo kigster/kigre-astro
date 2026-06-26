@@ -1,8 +1,8 @@
 ---
 title: "Objective Evals with the Pydantic Stack: PydanticAI, Logfire, and Choosing an Eval Framework"
-date: 2026-06-22
-permalink: "/2026/06/22/objective-evals-with-pydantic-ai-and-logfire.html"
-category: "programming"
+date: 2026-06-25
+permalink: "/2026/06/25/objective-evals-with-pydantic-ai-and-logfire.html"
+category: "Applied AI"
 tags: ["ai", "llm", "evals", "pydantic", "pydantic-ai", "logfire", "python", "testing"]
 description: "A sequel to the evals post: when your output has real ground truth, you don't need an LLM judge — you need an objective eval. A tour of the Pydantic stack (PydanticAI, Logfire, pydantic-evals) plus a verified comparison of Python eval frameworks through the objective-eval lens."
 draft: true
@@ -15,7 +15,8 @@ comments: true
   Pydantic-stack reference, and the eval-framework comparison — the research backbone. A new
   worked example is being chosen and will be slotted in. The original paint/color/LAB/Delta-E
   example was pulled out and parked in notes/drafts/color-matching-post.md for its own future
-  post. Do NOT publish until the example lands and frontmatter (incl. heroImage) is finalized.
+
+Do NOT publish until the example lands and frontmatter (incl. heroImage) is finalized.
   ==========================================================================================
 -->
 
@@ -190,8 +191,10 @@ _numeric thresholds_, gate _CI_, and tie into _tracing_ — rather than the usua
 LLM-judge-first framing. (Versions are what I read off the docs/PyPI in June 2026; pin
 and re-check.)
 
+<div class="zoom-table" tabindex="0">
+
 | Framework | Lang | Custom deterministic scorer | Numeric threshold | CI gate | Tracing tie-in | Local / hosted |
-|---|---|---|---|---|---|---|
+|---|:-:|:-:|:-:|:-:|---|---|
 | **pydantic-evals** | Python | `Evaluator` subclass; `evaluate()` returns `bool`/`float` | per-evaluator, in code | call from your own test, assert on report | **Logfire / OpenTelemetry, native** | open-source, local; UI optional |
 | **DeepEval** | Python | `BaseMetric` subclass; `measure()` sets `self.score`/`self.success` | `self.threshold` in `__init__` | **first-class**: `assert_test` + `deepeval test run` (pytest-style) | `@observe`/`trace`; Confident AI dashboard | open-source, local-first; optional SaaS |
 | **Inspect** (UK AISI) | Python | `@scorer` decorator returning a `Score`; rich built-ins (`exact`, `match`, `f1`, `pattern`…) | via metrics on the `Task` | CLI/`eval()` harness | own log viewer | **open-source, local-only** |
@@ -199,6 +202,8 @@ and re-check.)
 | **Ragas** | Python | `@numeric_metric` / `@discrete_metric` decorators; non-LLM metrics (Exact Match, BLEU, ROUGE) | your own assertion on the score | none native | LangChain + observability hooks | open-source, local |
 | **Braintrust** (`autoevals`) | Python/TS | scorer fn returns `{name, score}`; `autoevals` ships `ExactMatch`, `Levenshtein`, `NumericDiff`, `JSONDiff` | in your scorer | CI-supported; `bt eval` | **OpenTelemetry**; dashboards | SDK + `autoevals` open-source; **reports need the hosted platform** (local mode is terminal-only) |
 | **LangSmith** | Python/TS | code evaluators = "deterministic rule-based fns"; `t.log_feedback(key, score)` | your assertions | **first-class pytest**: `@pytest.mark.langsmith` | own tracing dashboard | SDK open-source; **reporting expects the hosted platform** (pytest dry-run aside) |
+
+</div>
 
 A few honest reads from that table:
 

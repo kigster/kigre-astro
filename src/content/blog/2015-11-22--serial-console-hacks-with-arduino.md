@@ -13,7 +13,7 @@ author: kig
 
 ### Motivation
 
-I always hate Serial port windows.  They do not automatically reconnect, and if they try (Eclipse) they don't always work (Teensy). So I went searching for a reliable solution that will automatically reconnect after loosing a connection.
+I always hate Serial port windows.  They do not automatically reconnect, and if they try ([Eclipse](/2014/08/02/arduino-ide-alternatives.html)) they don't always work (Teensy). So I went searching for a reliable solution that will automatically reconnect after loosing a connection.
 
 I found it! It's called minicom!
 

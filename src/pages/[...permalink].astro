@@ -18,7 +18,12 @@ export async function getStaticPaths() {
 }
 
 const { post, recent } = Astro.props;
-const { Content } = await render(post);
+const { Content, headings } = await render(post);
+// Table of contents for the left popup sidebar: the body's h2–h4 (the title is
+// rendered separately, not part of Content). Indent is relative to the
+// shallowest heading present, so a post that starts at h3 isn't over-indented.
+const toc = headings.filter((h) => h.depth >= 2 && h.depth <= 4);
+const tocMinDepth = toc.length ? Math.min(...toc.map((h) => h.depth)) : 2;
 const author = post.data.author ? await getEntry(post.data.author) : null;
 const isDigest = post.data.type === 'digest';
 const d = post.data.date;
@@ -26,8 +31,13 @@ const fmtLong = d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', 
 const fmtShort = (x) =>
   `${x.getFullYear()}.${String(x.getMonth() + 1).padStart(2, '0')}.${String(x.getDate()).padStart(2, '0')}`;
 const fullUrl = `https://kig.re${post.data.permalink}`;
+// MM/DD/YYYY for the <title>; UTC so the date matches the frontmatter regardless
+// of the build machine's timezone (a local read shifts the 06-25 post to 06-24)
+const fmtSlash = `${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}/${d.getUTCFullYear()}`;
+const authorName = author ? author.data.name : 'Konstantin Gredeskoul';
+const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
 ---
-<BaseLayout title={post.data.title} description={post.data.description} canonical={fullUrl}>
+<BaseLayout title={pageTitle} exactTitle description={post.data.description} canonical={fullUrl}>
   <div class="post">
     <article class={isDigest ? 'article is-digest' : 'article'} data-pagefind-body>
       {isDigest ? (
@@ -101,6 +111,40 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
       <span>Recent</span>
     </button>
 
+    {toc.length > 0 && (
+      <>
+        <!-- left-edge grab tab: opens the table-of-contents popup -->
+        <button class="toc-tab" id="tocTab" aria-label="Table of contents" aria-expanded="false" aria-controls="tocPanel" title="Table of contents">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01" />
+          </svg>
+          <span>Contents</span>
+        </button>
+
+        <!-- left popup sidebar: the post's table of contents -->
+        <aside class="toc-panel" id="tocPanel" aria-label="Table of contents" aria-hidden="true">
+          <div class="toc-head">
+            <span>// on this page</span>
+            <button class="toc-close" id="tocClose" aria-label="Close table of contents" title="Close">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 6l-6 6 6 6" />
+              </svg>
+            </button>
+          </div>
+          <nav class="toc-nav">
+            {toc.map((h) => (
+              <a
+                class="toc-link"
+                href={`#${h.slug}`}
+                data-toc-slug={h.slug}
+                style={`--toc-indent:${h.depth - tocMinDepth}`}
+              >{h.text}</a>
+            ))}
+          </nav>
+        </aside>
+      </>
+    )}
+
     {post.data.comments && (
       <Comments identifier={post.data.permalink} title={post.data.title} url={fullUrl} />
     )}
@@ -120,5 +164,62 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
     collapseBtn?.setAttribute('aria-expanded', String(!root.classList.contains('sb-collapsed')));
     collapseBtn?.addEventListener('click', () => setCollapsed(true));
     reopenBtn?.addEventListener('click', () => setCollapsed(false));
+  </script>
+
+  <script>
+    // Left table-of-contents popup. "toc-open" on <html> is the single source of
+    // truth (not persisted). Opens from the left edge; closes on the X, on a
+    // click outside, on Escape, or after jumping to a section.
+    const docEl = document.documentElement;
+    const tocTab = document.getElementById('tocTab');
+    const tocPanel = document.getElementById('tocPanel');
+    const tocClose = document.getElementById('tocClose');
+    if (tocTab && tocPanel) {
+      const setTocOpen = (open: boolean) => {
+        docEl.classList.toggle('toc-open', open);
+        tocTab.setAttribute('aria-expanded', String(open));
+        tocPanel.setAttribute('aria-hidden', String(!open));
+      };
+      tocTab.addEventListener('click', () => setTocOpen(!docEl.classList.contains('toc-open')));
+      tocClose?.addEventListener('click', () => setTocOpen(false));
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTocOpen(false); });
+      // click-outside: close when the click lands off both the panel and the tab
+      document.addEventListener('click', (e) => {
+        if (!docEl.classList.contains('toc-open')) return;
+        const t = e.target as Node;
+        if (tocPanel.contains(t) || tocTab.contains(t)) return;
+        setTocOpen(false);
+      });
+      const links = Array.from(tocPanel.querySelectorAll<HTMLAnchorElement>('.toc-link'));
+      links.forEach((a) => a.addEventListener('click', () => setTocOpen(false)));
+
+      // scroll-spy: highlight the TOC entry for the section currently in view
+      const bySlug = new Map(links.map((a) => [a.dataset.tocSlug, a]));
+      const heads = links
+        .map((a) => document.getElementById(a.dataset.tocSlug || ''))
+        .filter((el): el is HTMLElement => !!el);
+      if (heads.length && 'IntersectionObserver' in window) {
+        let active: HTMLAnchorElement | null = null;
+        const setActive = (slug: string | undefined) => {
+          if (!slug) return;
+          const a = bySlug.get(slug);
+          if (!a || a === active) return;
+          active?.classList.remove('is-active');
+          a.classList.add('is-active');
+          active = a;
+        };
+        const io = new IntersectionObserver(
+          (entries) => {
+            const visible = entries
+              .filter((en) => en.isIntersecting)
+              .sort((x, y) => x.boundingClientRect.top - y.boundingClientRect.top)[0];
+            if (visible) setActive(visible.target.id);
+          },
+          // bias the "active" band toward the top of the viewport, under the header
+          { rootMargin: '-110px 0px -65% 0px', threshold: 0 }
+        );
+        heads.forEach((h) => io.observe(h));
+      }
+    }
   </script>
 </BaseLayout>

@@ -43,7 +43,7 @@ DevOps movement coincided with the general availability of public cloud. The clo
 
 And so around 2007-2008 the devops movement meant that a newly formed startup did not have to hire a single Ops person. Some of the startups adopted IaC (Infrastructure as Code) mantra, and the infrastructure code was finally committed to a git repo, often changed, and deployed.
 
-The engineers at Wanelo, as an example, learned and delivered Chef recipes and cookbooks that configured components on the cloud together with delivering their feature in Rails.
+The engineers at [Wanelo](/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html), as an example, learned and delivered Chef recipes and cookbooks that configured components on the cloud together with delivering their feature in Rails.
 
 ### Reaching DevOps Nirvana
 
@@ -62,7 +62,7 @@ As it turned out, having a central database of all of your servers, their roles,
 But, and this is an important but — we had to first provision the EC2 server using `aws` CLI or web UI, and only then could Chef connect and install itself, and then run pulling all the tasks from the cental server, and then running them until the machine came up with the application (if that was its role) or some other software dictated by the role assigned to the machine.
 
 > [!TIP]
-> As an example: when we configured our load balancers, we configured _nginx_ to be a  front-loading HTTP/HTTPS service, routing requests to a local _haproxy_ instance, with the configuration file generated entirely by Chef. The `haproxy` recipe performed _a search for all servers marked with the "app-web" role, and added them to haproxy's backend_. As we added or removed the servers, by say deleting them, haproxy would first blacklist them as they were unresponsive, and once they were removed from Chef, and `chef-client` ran on load balancers, the dead server entries would be removed from the backend in the `haproxy` config file.
+> As an example: when we configured our load balancers, we configured _nginx_ to be a  front-loading HTTP/HTTPS service, routing requests to a local [_haproxy_ instance](/2016/05/06/building-scalable-performant-and-cheap-distributed-applications-part-1.html), with the configuration file generated entirely by Chef. The `haproxy` recipe performed _a search for all servers marked with the "app-web" role, and added them to haproxy's backend_. As we added or removed the servers, by say deleting them, haproxy would first blacklist them as they were unresponsive, and once they were removed from Chef, and `chef-client` ran on load balancers, the dead server entries would be removed from the backend in the `haproxy` config file.
 
 This ability to search for a particular role, automate routing of all requests in the system using Chef was a pinnacle of my personal DevOps experience.
 
