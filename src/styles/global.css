@@ -1238,6 +1238,38 @@ button:focus-visible {
   font-size: inherit;
 }
 
+/* Mermaid diagrams — the HTML shell comes from src/lib/remark-mermaid.mjs, the
+   SVG from MermaidRenderer.astro. Same 22px rhythm as .prose pre. */
+.prose .mermaid-diagram {
+  margin: 22px 0;
+  max-width: 100%;
+  overflow-x: auto; /* wide diagrams scroll instead of blowing out the column */
+  text-align: center;
+}
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+/* the hidden fence source — kept in the DOM as the source of truth so theme
+   switches can re-render the diagram from it */
+.mermaid-src {
+  display: none;
+}
+/* render failure: unhide the raw source styled like a normal code block, so
+   a broken diagram never leaves a blank hole in the post */
+.mermaid-error .mermaid-src {
+  display: block;
+  text-align: left;
+  background: var(--panel);
+  border-radius: 8px;
+  padding: 18px 20px;
+  overflow-x: auto;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 14.5px;
+  line-height: 1.4;
+}
+
 .article .tags {
   margin-top: 30px;
   display: flex;

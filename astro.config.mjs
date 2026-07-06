@@ -5,6 +5,7 @@ import sitemap from "@astrojs/sitemap";
 import pagefind from "astro-pagefind";
 import tailwindcss from "@tailwindcss/vite";
 import { remarkAlert } from "remark-github-blockquote-alert";
+import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 
 // https://astro.build/config
 export default defineConfig({
@@ -15,7 +16,9 @@ export default defineConfig({
     format: "file",
   },
   markdown: {
-    remarkPlugins: [remarkAlert],
+    // remarkMermaid swaps ```mermaid fences for an HTML shell before Shiki
+    // can highlight them; the SVG is drawn client-side (MermaidRenderer.astro)
+    remarkPlugins: [remarkAlert, remarkMermaid],
     shikiConfig: {
       // Gruvbox Dark for code blocks, always (per design decision)
       theme: "ayu-mirage",

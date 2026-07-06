@@ -1,0 +1,152 @@
+<script>
+  // Theme-aware client-side Mermaid rendering. The guard below keeps mermaid
+  // (~500KB) out of pages without diagrams: it's a dynamic import that only
+  // fires when a .mermaid-diagram shell (emitted by src/lib/remark-mermaid.mjs)
+  // exists on the page. Colors come from the CURRENT theme's CSS custom
+  // properties, and a MutationObserver re-renders every diagram when the theme
+  // picker flips data-theme — so diagrams look native to all six themes
+  // instead of mermaid's stock white.
+  const diagrams = Array.from(
+    document.querySelectorAll<HTMLElement>('.mermaid-diagram')
+  );
+  if (diagrams.length > 0) {
+    (async () => {
+      const mermaid = (await import('mermaid')).default;
+
+      // Resolve any CSS color (hex, #rrggbbaa, rgb(), color-mix, …) to opaque
+      // [r,g,b] by letting the browser compute it on a probe element.
+      // Semi-transparent values (light-forest's --bg) composite over white,
+      // matching how the page itself renders them.
+      const probe = document.createElement('span');
+      probe.style.display = 'none';
+      document.body.appendChild(probe);
+      const resolve = (cssColor: string): number[] | null => {
+        probe.style.color = '';
+        probe.style.color = cssColor;
+        const m = getComputedStyle(probe).color.match(/[\d.]+/g);
+        if (!m) return null;
+        const [r, g, b, a = 1] = m.map(Number);
+        return [r, g, b].map((c) => Math.round(c * a + 255 * (1 - a)));
+      };
+      const toHex = (rgb: number[]) =>
+        '#' + rgb.map((c) => c.toString(16).padStart(2, '0')).join('');
+      // linear blend of color x toward color y (t=0 → x, t=1 → y)
+      const mix = (x: number[], y: number[], t: number) =>
+        toHex(x.map((c, i) => Math.round(c + (y[i] - c) * t)));
+
+      // Map the site palette onto mermaid's "base" theme. --panel is the same
+      // surface code blocks and callouts sit on; borders/lines are fg pulled
+      // toward bg (softer than full-contrast text); --o2 is the accent that
+      // .prose links use.
+      const themeVariables = () => {
+        const css = getComputedStyle(document.documentElement);
+        const v = (name: string) => css.getPropertyValue(name).trim();
+        const bg = resolve(v('--bg')) ?? [255, 255, 255];
+        const fg = resolve(v('--fg')) ?? [0, 0, 0];
+        const panel = resolve(v('--panel')) ?? bg;
+        const accent = v('--o2') || toHex(fg);
+        const border = mix(fg, bg, 0.5); // node/actor outlines
+        const line = mix(fg, bg, 0.3); // edges + arrowheads, a bit stronger
+        return {
+          background: toHex(bg),
+          fontFamily: v('--font-body') || 'system-ui, sans-serif',
+          primaryColor: toHex(panel),
+          primaryTextColor: toHex(fg),
+          primaryBorderColor: border,
+          textColor: toHex(fg),
+          lineColor: line,
+          secondaryColor: mix(panel, bg, 0.5),
+          tertiaryColor: mix(panel, bg, 0.75),
+          titleColor: accent,
+          nodeTextColor: toHex(fg),
+          edgeLabelBackground: toHex(bg),
+          // sequence diagrams
+          actorBkg: toHex(panel),
+          actorTextColor: toHex(fg),
+          actorBorder: border,
+          labelBoxBkgColor: toHex(panel),
+          labelBoxBorderColor: border,
+          labelTextColor: toHex(fg),
+          signalColor: line,
+          signalTextColor: toHex(fg),
+          noteBkgColor: mix(panel, fg, 0.08),
+          noteTextColor: toHex(fg),
+          noteBorderColor: border,
+          activationBkgColor: mix(panel, bg, 0.5),
+          activationBorderColor: accent,
+          // flowchart subgraphs
+          clusterBkg: mix(panel, bg, 0.6),
+          clusterBorder: border,
+        };
+      };
+
+      let pass = 0; // render ids must be unique across theme-switch re-renders
+      const renderAll = async () => {
+        pass++;
+        const tv = themeVariables();
+        mermaid.initialize({
+          startOnLoad: false,
+          theme: 'base',
+          themeVariables: tv,
+          // top-level fontFamily drives mermaid's text MEASUREMENT, while
+          // themeVariables.fontFamily only styles the output — set both or
+          // labels are measured in the default font and overflow their nodes
+          fontFamily: tv.fontFamily,
+          // mermaid detects a too-long label by comparing its measured width
+          // to wrappingWidth with === — but the site-wide :root zoom scales
+          // getBoundingClientRect, the comparison never matches, and the
+          // label silently overflows its node instead of wrapping. Keep
+          // wrappingWidth above any realistic label line (diagrams here
+          // break lines explicitly with <br/>) so the clamp never engages.
+          flowchart: { wrappingWidth: 1000 },
+        });
+        for (let i = 0; i < diagrams.length; i++) {
+          const holder = diagrams[i];
+          const srcEl = holder.querySelector('.mermaid-src');
+          if (!srcEl) continue;
+          let out = holder.querySelector('.mermaid-render');
+          if (!out) {
+            out = document.createElement('div');
+            out.className = 'mermaid-render';
+            holder.appendChild(out);
+          }
+          const id = `mermaid-d${i}-p${pass}`;
+          try {
+            const { svg } = await mermaid.render(id, srcEl.textContent ?? '');
+            out.innerHTML = svg;
+            holder.classList.remove('mermaid-error');
+          } catch (err) {
+            // never a blank hole: unhide the raw source (styled as a code
+            // block via .mermaid-error in global.css) and log the reason
+            out.innerHTML = '';
+            holder.classList.add('mermaid-error');
+            document.getElementById(id)?.remove(); // mermaid's leftover temp node
+            console.error('[mermaid] render failed:', err);
+          }
+        }
+      };
+
+      // fonts.ready is NOT enough: font faces load lazily on first use, so a
+      // bold/italic label line measured before its face arrives gets sized
+      // with regular metrics and overflows its node once the real (wider)
+      // face paints. Request every variant of the body font explicitly.
+      const family =
+        getComputedStyle(document.documentElement)
+          .getPropertyValue('--font-body')
+          .trim() || 'system-ui, sans-serif';
+      await Promise.all(
+        ['', 'bold ', 'italic ', 'bold italic '].map((variant) =>
+          document.fonts.load(`${variant}16px ${family}`).catch(() => {})
+        )
+      );
+      await document.fonts.ready;
+      await renderAll();
+      new MutationObserver(() => {
+        renderAll();
+      }).observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ['data-theme'],
+      });
+    })();
+  }
+</script>

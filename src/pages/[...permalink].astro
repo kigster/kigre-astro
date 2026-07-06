@@ -2,6 +2,7 @@
 import { getCollection, getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Comments from '../components/Comments.astro';
+import MermaidRenderer from '../components/MermaidRenderer.astro';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -149,6 +150,8 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
       <Comments identifier={post.data.permalink} title={post.data.title} url={fullUrl} />
     )}
   </div>
+
+  <MermaidRenderer />
 
   <script>
     // Collapsible recent-posts sidebar. The "sb-collapsed" class on <html> is the
