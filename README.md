@@ -7,7 +7,7 @@ Migrated from Jekyll/AsciiDoc to Astro/Markdown, with a weekly AI-paper digest p
 a fully static, client-side search.
 
 - **Design:** "Editorial Index" — a numbered reading list, warm orange→yellow gradient, sans-serif only.
-- **Themes:** six switchable color themes (default **Dark Glass**, plus Noir, Azure, Light Forest, Light Earth, Light), chosen from the nav dropdown and remembered in `localStorage`.
+- **Themes:** five switchable color themes (default **Dark Glass**, plus Azure, Light Forest, Light Earth, Light), chosen from the nav dropdown and remembered in `localStorage`.
 - **Search:** full-text, client-side via [Pagefind](https://pagefind.app) — indexes the built HTML, no server.
 - **Comments:** Disqus (existing threads preserved by keeping legacy URLs).
 - **Code:** syntax highlighting via Shiki, Fantasque Sans Mono (self-hosted) → Cascadia Code.

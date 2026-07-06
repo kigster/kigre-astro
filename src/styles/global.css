@@ -170,8 +170,7 @@
   --maxw: 864px;
 }
 
-:root,
-[data-theme="noir"] {
+:root {
   --bg: #140c02;
   --fg: #fff8ec;
   --panel: #1d1305;
