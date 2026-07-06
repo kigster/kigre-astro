@@ -4,8 +4,7 @@ set shell := ["bash", "-eu", "-o", "pipefail", "-c"]
 
 set dotenv-load
 
-version := `cat package.json | jq .version | tr -d '"'`
-
+version := `jq '.version' package.json | tr -d '"'`
 
 [no-exit-message]
 recipes:
@@ -26,16 +25,10 @@ build: setup
     @bun run build
 
 # Preview the production build locally
-preview: build
+preview: 
     @bun run preview
 
-# Convert AsciiDoc posts to Markdown
-convert:
     @bun run convert
-
-# Generate the weekly AI digest post locally (needs one provider API key)
-digest:
-    @bun run digest
 
 # Typecheck the tools/ TypeScript toolchain
 typecheck:
@@ -47,6 +40,8 @@ deploy: build
 test:
     @bun test tools/
 
+check_all: build test typecheck digest
+
 version: 
     @echo "Site version is {{ version }}"
 
@@ -54,5 +49,15 @@ release:
     @git tag -f 'v{{ version }}'
     @git push --tags
     @gh release create --generate-notes
+
+#━━━━━━━━━━━━━━━AI Content Generation & One Time Migraiton ━━━━━━━━━━━━━━━━━━━━━━━━━
+
+# @deprecated Convert AsciiDoc posts to Markdown
+convert:
+    @bun convert 
+
+# Generate the weekly AI digest post locally (needs one provider API key)
+digest:
+    @bun run digest
 
 

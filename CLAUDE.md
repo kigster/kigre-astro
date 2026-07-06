@@ -96,6 +96,20 @@ indexes the built HTML *after* `astro build` (a post-build pass over `dist/`, wr
   `astro.config.mjs`). The README describes the intended look as Gruvbox Dark.
 - Callouts: GitHub-style `> [!NOTE]` admonitions via `remark-github-blockquote-alert`
   (types: NOTE, TIP, IMPORTANT, WARNING, CAUTION).
+- Mermaid diagrams: a ` ```mermaid ` fence in a post renders client-side.
+  `src/lib/remark-mermaid.mjs` swaps the fence for a hidden `.mermaid-src` shell
+  before Shiki sees it; `src/components/MermaidRenderer.astro` lazy-imports mermaid,
+  maps the active theme's CSS variables into `themeVariables`, and re-renders on
+  theme switch. Two non-obvious constraints, both consequences of the site-wide
+  `:root { zoom }` (see below): the renderer must preload all four body-font
+  variants before measuring (lazy-loading bold/italic faces mis-measure labels),
+  and `flowchart.wrappingWidth` is kept above any real label line because zoom
+  breaks mermaid's `bbox.width === wrappingWidth` wrap detection (labels would
+  silently overflow their nodes instead of wrapping). Prefer explicit `<br/>`
+  line breaks in diagram labels.
+- The whole site scales via `:root { zoom: 1.2 }` on desktop / `1.3` on tablets
+  (end of `global.css`). Any library that measures the DOM with
+  `getBoundingClientRect` gets zoomed values — beware exact-width comparisons.
 - `site: "https://kig.re"`, `trailingSlash: "ignore"`.
 
 ## Weekly AI digest pipeline (`tools/digest/`)
