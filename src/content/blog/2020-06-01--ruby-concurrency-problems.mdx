@@ -12,9 +12,9 @@ author: kig
 
 > [!NOTE]
 >
-> Time travel — from 2026: today we have Ruby 4 with its Ractors, promising multi-core saturation with a single Ruby MRI process (a claim that desererves its own blog post).
+> Time travel — from 2026: today we have Ruby 4 with its Ractors, promising multi-core saturation with a single Ruby MRI process (a claim that deserves its own blog post).
 >
-> But back in 2020, way before "Ractors" were a thing, I put together this little "self-test", so you can find out how well you understand ruby concurrency model, and how it maps onto a real deployment archivecture.
+> But back in 2020, way before "Ractors" were a thing, I put together this little "self-test", so you can find out how well you understand ruby concurrency model, and how it maps onto a real deployment architecture.
 
 > [!IMPORTANT]
 >
@@ -56,8 +56,8 @@ So we go around the Room. And ask every member their opinion documenting it in a
 | Engineer/Role | Their Answer | Their Reasoning |
 | -------- | ------- | -------- |
 | Junior Engineer | `P=1` `W=1` `T=8` | One master Puma is just fine, in fact one worker is just fine. That's what threads are for, right? |
-| DevOps Engineer | `P=1` `W=8` `T=1` | She also tninks one master Puma is is just fine, and a worker per CPU makes sense, since she doesn't know Ruby too well and can't say whether threaeds will help or cause context switching contention that she saw in one of the troubleshooting sessions on Solaris. |
-| Front-end Engineer | `P=2` `W=4` `T=16` | Front-end engineer is concerned about socket contention. He heard that socket contension degrades performance and therefore he's voting for at least two master Puma processes on different ports each with four workers and 16 threads|
+| DevOps Engineer | `P=1` `W=8` `T=1` | She also thinks one master Puma is is just fine, and a worker per CPU makes sense, since she doesn't know Ruby too well and can't say whether threads will help or cause context switching contention that she saw in one of the troubleshooting sessions on Solaris. |
+| Front-end Engineer | `P=2` `W=4` `T=16` | Front-end engineer is concerned about socket contention. He heard that socket contention degrades performance and therefore he's voting for at least two master Puma processes on different ports each with four workers and 16 threads|
 | -------- | ------- | -------- |
 
 Your job is to play the role of the Staff Engineer and decide, as well as explain the correct answer.
@@ -88,12 +88,12 @@ So a reminder on variables we are working with:
   <form id="problem-1" class="quiz-form">
     <label>
       <input type="checkbox" value="A" name="A" />
-      <strong>&#127346;</strong>
+      <strong>&#127344;</strong>
       <span><code>P = 1,  W = 4,  T = 2    |  →  (P x W  x T) = 8</code></span>
     </label>
     <label>
       <input type="checkbox" value="B" name="B" />
-      <strong>&#127346;</strong>
+      <strong>&#127345;</strong>
       <span><code>P = 1,  W = 4,  T = 1    |  →  (P x W x T) = 4</code></span>
     </label>
     <label>
@@ -112,33 +112,33 @@ So a reminder on variables we are working with:
       <span><code>P = 2,  W = 4,  T = 12    |  →  (P x W x T) = 96</code></span>
     </label>
     <label>
-      <input type="checkbox" value="E" name="E" />
-      <strong>&#127348;</strong>
+      <input type="checkbox" value="F" name="F" />
+      <strong>&#127349;</strong>
       <span><code>P = 1,  W = 16,  T = 8    |  →  (P x W x T) = 128</code></span>
     </label>
     <label>
-      <input type="checkbox" value="I" name="I" />
-      <strong>&#127352;</strong>
+      <input type="checkbox" value="G" name="G" />
+      <strong>&#127350;</strong>
       <span><code>P = 1, W = 1, T = 8    |  →  (P x W x T) = 8</code></span>
-    </label>
-    <label>
-      <input type="checkbox" value="J" name="J" />
-      <strong>&#127353;</strong>
-      <span><code>P = 2, W = 4, T = 16    |  →  (P x W x T) = 128</code></span>
     </label>
     <label>
       <input type="checkbox" value="H" name="H" />
       <strong>&#127351;</strong>
+      <span><code>P = 2, W = 4, T = 16    |  →  (P x W x T) = 128</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="I" name="I" />
+      <strong>&#127352;</strong>
       <span><code>P = 1, T = 8</code> but not enough information to choose <code>W</code></span>
     </label>
     <label class="correct">
-      <input type="checkbox" value="G" name="G" />
-      <strong>&#127350;</strong>
+      <input type="checkbox" value="J" name="J" />
+      <strong>&#127353;</strong>
       <span><code>W = 8 & P = 1</code> but not enough information to choose <code>T</code></span>
     </label>
     <label>
-      <input type="checkbox" value="L" name="L" />
-      <strong>&#127355;</strong>
+      <input type="checkbox" value="K" name="K" />
+      <strong>&#127354;</strong>
       <span><code>None of the above</code></span>
     </label>
 
@@ -146,7 +146,7 @@ So a reminder on variables we are working with:
 
     <div class="solution">
       <div id="problem-1-solution" class="answer-content">
-        <h3>The correct answer is <strong class="correct-answer">&#127350;</strong></h3>
+        <h3>The correct answer is <strong class="correct-answer is-J">&#127353;</strong></h3>
         <div class="prose">
           <p>Let's break this down:</p>
           <p>Let's start with the number of Puma master processes. On a single box, two masters × 4 workers is strictly more complexity for zero throughput, and slightly worse on memory. The reasoning is worth spelling out because it hinges on a detail of Puma's architecture people routinely get wrong.</p>
@@ -161,7 +161,7 @@ So a reminder on variables we are working with:
           <p>To properly determine how many threads per process we should run, we need some sort of monitoring like DataDog or NewRelic (it can also be done without the monitoring giants, but it's much more involved).</p>
           <p>What we want to know is how much time each process (running with 1 thread) spends in CPU versus IO, and what latency that achieves. A typical ratio is 1:1 IO to CPU or even 2:1 IO to CPU. That gives us the ratio to figure out the <code>T</code> in question. If the ration is 3:1 IO to CPU, then we can run 3 threads per process to leverage that remaining CPU time. However, once we change this, we need to monitor the new ratio, especially the resulting latency. If the latency goes up significantly, we need to reduce the number of threads from 3 to 2 and retest.</p> 
           <hr/>
-          <p>In my personal experience, running 3-4 threads per Puma process is typically a good balance between CPU, IO utilization, and the resulting latency, but once again, that really depends on how well your database is tuned and how quickly your queries return, because if they're not returning fast enough, it meanss your time spent in the database calls is going to be much higher, resulting in likely high latency (anything more than 150ms is already considered high latency). And therefore your I/O weight is going to be high compared to CPU, and therefore you can afford to have much higher number of threads to compensate for that. Your requests won't get any faster, but at least you'll be able to process more of them concurrenly on the same box.</p>
+          <p>In my personal experience, running 3-4 threads per Puma process is typically a good balance between CPU, IO utilization, and the resulting latency, but once again, that really depends on how well your database is tuned and how quickly your queries return, because if they're not returning fast enough, it means your time spent in the database calls is going to be much higher, resulting in likely high latency (anything more than 150ms is already considered high latency). And therefore your I/O weight is going to be high compared to CPU, and therefore you can afford to have much higher number of threads to compensate for that. Your requests won't get any faster, but at least you'll be able to process more of them concurrently on the same box.</p>
 
           <p>Thanks for playing! And hope this exercise helps you understand the trade-offs of concurrency and how to properly configure Puma for your application.</p>
         </div>
@@ -204,33 +204,33 @@ __Will the overall operation be __faster__ if we created __8 threads within the 
   <strong>Choose one:</strong>
   <form id="problem-2" class="quiz-form">
     <label>
+      <input type="checkbox" value="A" name="A" />
+      <strong>&#127344;</strong>
+      <span>Nope, threads or no threads, all the same.</span>
+    </label>
+    <label>
+      <input type="checkbox" value="B" name="B" />
+      <strong>&#127345;</strong>
+      <span>Actually, with 8 threads it will be slower.</span>
+    </label>
+    <label class="correct">
       <input type="checkbox" value="C" name="C" />
       <strong>&#127346;</strong>
-      <span>Nope, threads or no threads, all the same.</span>
+      <span>On JRuby ~ 8x faster, on MRI ~ a bit slower.</span>
     </label>
     <label>
       <input type="checkbox" value="D" name="D" />
       <strong>&#127347;</strong>
-      <span>Actually, with 8 threads it will be slower.</span>
+      <span>Eight threads might give us ~ 10% speed boost.</span>
     </label>
-    <label class="correct">
+    <label>
       <input type="checkbox" value="E" name="E" />
       <strong>&#127348;</strong>
-      <span>On JRuby ~ 8x faster, on MRI ~ a bit slower.</span>
+      <span>Use C/MRI-Ruby, then it will be 8x faster.</span>
     </label>
     <label>
       <input type="checkbox" value="F" name="F" />
       <strong>&#127349;</strong>
-      <span>Eight threads might give us ~ 10% speed boost.</span>
-    </label>
-    <label>
-      <input type="checkbox" value="G" name="G" />
-      <strong>&#127351;</strong>
-      <span>Use C/MRI-Ruby, then it will be 8x faster.</span>
-    </label>
-    <label>
-      <input type="checkbox" value="H" name="H" />
-      <strong>&#127352;</strong>
       <span>None of the above.</span>
     </label>
 
@@ -238,7 +238,7 @@ __Will the overall operation be __faster__ if we created __8 threads within the 
 
     <div class="solution">
       <div id="problem-2-solution" class="answer-content">
-        <h3>The correct answer is <strong class="correct-answer">&#127348;</strong></h3>
+        <h3>The correct answer is <strong class="correct-answer is-C">&#127346;</strong></h3>
         <div class="prose">
           <p>Let's break this down:</p>
           <p>Because the task at hand is CPU-bound, MRI Ruby (with its GIL) will not be able to take advantage of multiple cores with just one Ruby process. In fact, if we did introduce a thread-pool, Ruby will have to do <em>more</em> work, since it will need to spend some CPU cycles on context switching: voluntary and involuntary.</p>
