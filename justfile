@@ -58,4 +58,6 @@ release:
 digest:
     @bun run digest
 
+clean:
+    /usr/bin/find . -type f -name .DS_Store
 

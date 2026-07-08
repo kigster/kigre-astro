@@ -8,6 +8,34 @@ import tailwindcss from "@tailwindcss/vite";
 import { remarkAlert } from "remark-github-blockquote-alert";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
 
+// the pdf.js worker ships as an .mjs asset; nginx (which now serves kig.re)
+// has no MIME mapping for .mjs and answers application/octet-stream, which
+// Chrome rejects for module scripts — the /speaking slide viewer then renders
+// nothing. Astro pins rollup's assetFileNames, so rename .mjs assets to .js
+// after bundling (and patch every reference) — text/javascript everywhere.
+const mjsAssetsAsJs = {
+  name: "mjs-assets-as-js",
+  generateBundle(_options, bundle) {
+    const renames = new Map();
+    for (const [fileName, entry] of Object.entries(bundle)) {
+      if (entry.type === "asset" && fileName.endsWith(".mjs")) {
+        const js = fileName.slice(0, -".mjs".length) + ".js";
+        entry.fileName = js;
+        bundle[js] = entry;
+        delete bundle[fileName];
+        renames.set(fileName, js);
+      }
+    }
+    if (renames.size === 0) return;
+    for (const entry of Object.values(bundle)) {
+      if (entry.type !== "chunk") continue;
+      for (const [from, to] of renames) {
+        entry.code = entry.code.replaceAll(from, to);
+      }
+    }
+  },
+};
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://kig.re",
@@ -57,6 +85,6 @@ export default defineConfig({
     pagefind(),
   ],
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), mjsAssetsAsJs],
   },
 });
