@@ -2018,6 +2018,32 @@ button:focus-visible {
   text-transform: uppercase;
   margin-top: 2px;
 }
+/* dedicated project site (bashmatic.dev, sopsy-cli.dev, …): a loud orange
+   pill with an ↗ signalling it opens in a new window */
+.oss .oss-site {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  margin-top: 12px;
+  padding: 5px 14px;
+  border: 1.5px solid var(--o2);
+  border-radius: 999px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--o2);
+  text-decoration: none;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.oss .oss-site .oss-site-arrow {
+  font-size: 12px;
+  line-height: 1;
+}
+.oss .oss-site:hover {
+  background: var(--o2);
+  color: var(--bg);
+}
+
 .oss p {
   font-size: 13px;
   color: var(--muted);
