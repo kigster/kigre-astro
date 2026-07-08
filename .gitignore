@@ -6,3 +6,6 @@ dist/
 *.log
 npm-debug.log*
 .claude/worktrees
+
+# talk-slide PDFs are mirrored from reinvent.one at build time (bin/fetch-talk-pdfs.sh)
+public/assets/talks/pdfs/

@@ -19,7 +19,6 @@ bun install        # install deps (use --frozen-lockfile in CI)
 bun run dev        # dev server at http://localhost:4321
 bun run build      # production build into dist/ (also runs the content-schema check — build FAILS on invalid frontmatter)
 bun run preview    # serve the production build locally
-bun run convert    # one-time AsciiDoc→Markdown migration (bin/convert.mjs); reads ../kig.re/jekyll/v2/_posts
 bun run digest     # generate the weekly AI digest locally (needs one provider key)
 bun run typecheck  # typecheck the tools/ TypeScript toolchain (tsc --noEmit)
 ```
@@ -110,6 +109,14 @@ indexes the built HTML *after* `astro build` (a post-build pass over `dist/`, wr
 - The whole site scales via `:root { zoom: 1.2 }` on desktop / `1.3` on tablets
   (end of `global.css`). Any library that measures the DOM with
   `getBoundingClientRect` gets zoomed values — beware exact-width comparisons.
+- `/speaking` slide viewer: talk data lives in `src/data/talks.json`; clicking a
+  talk opens a react-pdf modal (`TalkPdfModal.tsx` — the site's only React
+  island — lazy-loads `TalkSlidesViewer.tsx`), and `?talk=<slug>` deep-links to
+  an open deck. The PDFs (218MB) are NOT in git: `bin/fetch-talk-pdfs.sh`
+  mirrors them from reinvent.one into the gitignored
+  `public/assets/talks/pdfs/` — run locally via `just pdfs` (a `just build`
+  dependency) and in CI as a deploy.yml step. They must be same-origin because
+  react-pdf fetches via XHR and reinvent.one sends no CORS headers.
 - `site: "https://kig.re"`, `trailingSlash: "ignore"`.
 
 ## Weekly AI digest pipeline (`tools/digest/`)

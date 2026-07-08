@@ -26,6 +26,9 @@ jobs:
         with:
           bun-version-file: package.json
       - run: bun install --frozen-lockfile
+      # the /speaking page renders these same-origin with react-pdf; they are
+      # gitignored (218MB), so mirror them from reinvent.one into public/ here
+      - run: bin/fetch-talk-pdfs.sh
       - run: bun run build
       - uses: actions/upload-pages-artifact@v3
         with:

@@ -91,7 +91,6 @@ ______________________________________________________________________
 ## Project structure
 
 ```
-bin/convert.mjs            # one-time AsciiDoc → Markdown migration
 scripts/ai-digest.ts       # weekly AI paper digest generator
 src/
   content/blog/*.md        # posts (the content)
@@ -156,23 +155,6 @@ In CI it runs automatically (`.github/workflows/weekly-digest.yml`, Sundays 14:0
 **opens a pull request** with the draft rather than publishing directly — so you always review
 before it goes live. To publish: open the post in `src/content/blog/`, set `draft: false`, and
 merge. Set `ANTHROPIC_API_KEY` as a repository secret (Settings → Secrets and variables → Actions).
-
-______________________________________________________________________
-
-## Migrating the old AsciiDoc posts
-
-The old Jekyll `.adoc` posts are converted by a one-time script:
-
-```bash
-just convert                                  # reads ../kig.re/jekyll/v2/_posts → src/content/blog/*.md
-bun bin/convert.mjs /path/to/_posts src/content/blog   # or specify paths
-```
-
-It maps AsciiDoc frontmatter → YAML, first-category-wins, `YYYY-MM-DD-slug.adoc` → permalink,
-admonitions → GitHub callouts, `[source,lang]` → fenced blocks, and `lightbox_image` →
-standard Markdown images. `{% include %}` tags (e.g. interactive quizzes) become
-`<!-- TODO -->` markers for manual porting. A verification summary is saved to
-`scripts/migration-report.json` (confirms permalinks are unique and every post has one category).
 
 ______________________________________________________________________
 

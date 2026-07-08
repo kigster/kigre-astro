@@ -4,6 +4,7 @@ date: 2020-09-11
 permalink: "/2020/09/11/turbo-agile-simplified-scrum-pivotal-process.html"
 category: "programming"
 tags: ["pivotal", "tracker", "project management"]
+description: "A simplified, story-estimation-centric take on Agile/SCRUM distilled from five-plus years running engineering at Wanelo — sprint planners, design breakouts, daily stand-ups, retros, a consistent point system, and the common planning mistakes that sink most teams."
 heroImage: "/assets/images/posts/agile/process-00.jpg"
 comments: true
 author: kig

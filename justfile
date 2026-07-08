@@ -20,15 +20,17 @@ dev: setup build
     @bash -c "sleep 3 && open http://127.0.0.1:4321" &
     @bun run dev --host
 
+# Mirror the talk-slide PDFs into public/ (gitignored; skips ones already present)
+pdfs:
+    @bin/fetch-talk-pdfs.sh
+
 # Build production site into dist/
-build: setup
+build: setup pdfs
     @bun run build
 
 # Preview the production build locally
-preview: 
+preview:
     @bun run preview
-
-    @bun run convert
 
 # Typecheck the tools/ TypeScript toolchain
 typecheck:
@@ -50,11 +52,7 @@ release:
     @git push --tags
     @gh release create --generate-notes
 
-#━━━━━━━━━━━━━━━AI Content Generation & One Time Migraiton ━━━━━━━━━━━━━━━━━━━━━━━━━
-
-# @deprecated Convert AsciiDoc posts to Markdown
-convert:
-    @bun convert 
+#━━━━━━━━━━━━━━━ AI Content Generation ━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # Generate the weekly AI digest post locally (needs one provider API key)
 digest:

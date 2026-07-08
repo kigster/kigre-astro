@@ -1,0 +1,62 @@
+[
+  {
+    "year": "2026",
+    "title": "Inquirex: Deterministic DSL meets Probabilistic LLM",
+    "blurb": "A collection of gems defining a flexible DSL for deterministic, type-safe lead-qualification forms — with AST branching, TTY and HTML interfaces, and an LLM extracting answers from free-form text. Presented at SF Ruby.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2026.inquirex.pdf"
+  },
+  {
+    "year": "2025",
+    "title": "Thread Safety in Ruby and Rails",
+    "blurb": "Thread-safety concepts, synchronization techniques, and race-condition prevention in Ruby and Rails using Mutex, Queue, and concurrency patterns.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2025.thread-safety-in-ruby-and-rails.pdf"
+  },
+  {
+    "year": "2025",
+    "title": "Terraform Is Better as a Terragrunt Sandwich",
+    "blurb": "Terraform fundamentals and the pain of pure-Terraform projects, then Terragrunt as the fix — with refactoring examples and guidance on when the added layer pays off.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2025.terraform-with-terragrunt.pdf"
+  },
+  {
+    "year": "2025",
+    "title": "Dev Tooling for You and Me",
+    "blurb": "When shell scripting is appropriate, how to write self-documenting dev scripts, and practical tooling for Rails workflows.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2025.bash-tooling-for-rails.pdf"
+  },
+  {
+    "year": "2024",
+    "title": "Concurrency in Ruby 3",
+    "blurb": "A deep dive into Ruby 3 concurrency — Threads, Fibers, Processes, EventMachine, and Ractors — and when to reach for each.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2024.ruby-3-concurrency.pdf"
+  },
+  {
+    "year": "2024",
+    "title": "Design for Loose Coupling",
+    "blurb": "How tight coupling emerges, and strategies for modularizing codebases with clear, enforceable boundaries. Presented at the Ruby SF Meetup.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2024.design-for-loose-coupling.pdf"
+  },
+  {
+    "year": "2023",
+    "title": "Loose Coupling with Gems and Packwerk",
+    "blurb": "Part 1 of an advancing-Ruby series on libraries, gems, and Rails — what makes software easy to change, well-tested, and properly decoupled.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2023.loose-coupling-with-gems-and-packwerk.pdf"
+  },
+  {
+    "year": "2021",
+    "title": "Designing Distributed Software for Scale",
+    "blurb": "Software design in three views — Data Model, State Model, System Model — and why early team collaboration on design has lasting implications.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2021.software-design.pdf"
+  },
+  {
+    "year": "2018",
+    "title": "Behold, the Unix Command Line",
+    "blurb": "An introduction to Unix, shells, and the command line — from MULTICS and Ken Thompson to practical power-user skills.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2018.be-friends-with-unix.pdf"
+  },
+  {
+    "year": "2015",
+    "title": "From Obvious to Ingenious — Scaling Web Apps",
+    "blurb": "A 100+ slide deep dive on incrementally scaling web applications on PostgreSQL — caching, sharding, and beyond. SF PostgreSQL User Group.",
+    "pdf": "https://reinvent.one/images/talks/pdfs/2015.from-obvious-to-ingenius--scaling-web-apps.pdf"
+  }
+]

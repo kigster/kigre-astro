@@ -4,6 +4,7 @@ date: 2021-01-24
 permalink: "/2021/01/24/is-rails-still-relevant-today-in-2021.html"
 category: "programming"
 tags: ["ruby", "rails", "software", "ruby on rails"]
+description: "Weighing velocity, scalability, maintainability, staffing, and community against what Rails actually delivers in 2021 — with HEY's stack as a case study — to answer whether Rails is still the right choice, or just the comfortable one."
 heroImage: "/assets/images/posts/rails/ruby-on-rails.png"
 comments: true
 author: kig

@@ -1,45 +1,67 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import TalkPdfModal from '../components/TalkPdfModal.tsx';
+import talks from '../data/talks.json';
 
-// Sourced from reinvent.one/#speaking — edit this array to add new talks.
-const talks = [
-  { year: '2026', title: 'Inquirex: Deterministic DSL meets Probabilistic LLM', blurb: 'A collection of gems defining a flexible DSL for deterministic, type-safe lead-qualification forms — with AST branching, TTY and HTML interfaces, and an LLM extracting answers from free-form text. Presented at SF Ruby.', pdf: 'https://reinvent.one/images/talks/pdfs/2026.inquirex.pdf' },
-  { year: '2025', title: 'Thread Safety in Ruby and Rails', blurb: 'Thread-safety concepts, synchronization techniques, and race-condition prevention in Ruby and Rails using Mutex, Queue, and concurrency patterns.', pdf: 'https://reinvent.one/images/talks/pdfs/2025.thread-safety-in-ruby-and-rails.pdf' },
-  { year: '2025', title: 'Terraform Is Better as a Terragrunt Sandwich', blurb: 'Terraform fundamentals and the pain of pure-Terraform projects, then Terragrunt as the fix — with refactoring examples and guidance on when the added layer pays off.', pdf: 'https://reinvent.one/images/talks/pdfs/2025.terraform-with-terragrunt.pdf' },
-  { year: '2025', title: 'Dev Tooling for You and Me', blurb: 'When shell scripting is appropriate, how to write self-documenting dev scripts, and practical tooling for Rails workflows.', pdf: 'https://reinvent.one/images/talks/pdfs/2025.bash-tooling-for-rails.pdf' },
-  { year: '2024', title: 'Concurrency in Ruby 3', blurb: 'A deep dive into Ruby 3 concurrency — Threads, Fibers, Processes, EventMachine, and Ractors — and when to reach for each.', pdf: 'https://reinvent.one/images/talks/pdfs/2024.ruby-3-concurrency.pdf' },
-  { year: '2024', title: 'Design for Loose Coupling', blurb: 'How tight coupling emerges, and strategies for modularizing codebases with clear, enforceable boundaries. Presented at the Ruby SF Meetup.', pdf: 'https://reinvent.one/images/talks/pdfs/2024.design-for-loose-coupling.pdf' },
-  { year: '2023', title: 'Loose Coupling with Gems and Packwerk', blurb: 'Part 1 of an advancing-Ruby series on libraries, gems, and Rails — what makes software easy to change, well-tested, and properly decoupled.', pdf: 'https://reinvent.one/images/talks/pdfs/2023.loose-coupling-with-gems-and-packwerk.pdf' },
-  { year: '2021', title: 'Designing Distributed Software for Scale', blurb: 'Software design in three views — Data Model, State Model, System Model — and why early team collaboration on design has lasting implications.', pdf: 'https://reinvent.one/images/talks/pdfs/2021.software-design.pdf' },
-  { year: '2018', title: 'Behold, the Unix Command Line', blurb: 'An introduction to Unix, shells, and the command line — from MULTICS and Ken Thompson to practical power-user skills.', pdf: 'https://reinvent.one/images/talks/pdfs/2018.be-friends-with-unix.pdf' },
-  { year: '2015', title: 'From Obvious to Ingenious — Scaling Web Apps', blurb: 'A 100+ slide deep dive on incrementally scaling web applications on PostgreSQL — caching, sharding, and beyond. SF PostgreSQL User Group.', pdf: 'https://reinvent.one/images/talks/pdfs/2015.from-obvious-to-ingenius--scaling-web-apps.pdf' },
-];
-
-// derive a slug + local cover image from each pdf filename
+// Talk data lives in src/data/talks.json (sourced from reinvent.one/#speaking —
+// edit it there to add new talks; bin/fetch-talk-pdfs.sh reads the same file).
+// Each talk derives from its pdf filename: a slug (also the header anchor and
+// the ?talk= deep-link value), a local cover image, and the same-origin PDF
+// mirror that react-pdf renders in the modal.
 const items = talks.map((t) => {
   const slug = t.pdf.split('/').pop().replace(/\.pdf$/, '');
-  return { ...t, slug, img: `/assets/images/talks/${slug}.jpg` };
+  return {
+    ...t,
+    slug,
+    img: `/assets/images/talks/${slug}.jpg`,
+    localPdf: `/assets/talks/pdfs/${slug}.pdf`,
+  };
 });
 ---
 <BaseLayout title="Speaking" description="Talks and presentations on software architecture, Ruby, DevOps, concurrency, and scaling distributed systems.">
   <div class="page">
     <div class="eyebrow">// speaking</div>
     <h1>Talks & <em>Presentations</em></h1>
-    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to open the slides (PDF) in a new tab.</p>
+    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to open the slides right here — or share a deck with <code>?talk=…</code> in the URL.</p>
   </div>
-  <div>
+  <div class="talks">
     {items.map((t) => (
       <div class="talk">
         <div class="yr">{t.year}</div>
         <div class="talk-body">
-          <a class="talk-thumb" href={t.pdf} target="_blank" rel="noopener" aria-label={`Open the slides (PDF, new tab): ${t.title}`}>
+          <a class="talk-thumb" href={t.localPdf} target="_blank" rel="noopener" data-talk={t.slug} aria-label={`Open the slides: ${t.title}`}>
             <img src={t.img} alt="" loading="lazy" />
           </a>
-          <h3>{t.title}</h3>
+          <h3 id={t.slug}><a class="talk-title" href={`#${t.slug}`}>{t.title}</a></h3>
           <p>{t.blurb}</p>
-          <a class="pdf" href={t.pdf} target="_blank" rel="noopener">View slides ↗</a>
+          <a class="pdf" href={t.localPdf} target="_blank" rel="noopener" data-talk={t.slug}>View slides ↗</a>
         </div>
       </div>
     ))}
   </div>
+
+  {/* clicking a [data-talk] link above opens this react-pdf modal instead of
+      the raw PDF; ?talk=<slug> deep-links straight into an open deck */}
+  <TalkPdfModal
+    client:only="react"
+    talks={items.map(({ slug, year, title, localPdf, pdf }) => ({ slug, year, title, pdf: localPdf, remote: pdf }))}
+  />
+
+  <script>
+    // GitHub-style permalink icons on each talk header — same pattern as the
+    // blog post headings in [...permalink].astro, so any talk can be
+    // shared/deep-linked by its #slug anchor.
+    const LINK_ICON =
+      '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"></path></svg>';
+    document
+      .querySelectorAll<HTMLHeadingElement>('.talks h3[id]')
+      .forEach((heading) => {
+        const a = document.createElement('a');
+        a.className = 'heading-anchor';
+        a.href = `#${heading.id}`;
+        a.innerHTML = LINK_ICON;
+        a.setAttribute('aria-label', `Link to "${heading.textContent ?? ''}"`);
+        heading.prepend(a);
+      });
+  </script>
 </BaseLayout>

@@ -170,6 +170,51 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
   </script>
 
   <script>
+    // GitHub-style permalink icons: prepend a hover-revealed "#slug" link to
+    // every heading in the post body, so any header can be shared/deep-linked.
+    // Injected client-side (not in markdown) to keep post source clean.
+    const LINK_ICON =
+      '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M7.775 3.275a.75.75 0 0 0 1.06 1.06l1.25-1.25a2 2 0 1 1 2.83 2.83l-2.5 2.5a2 2 0 0 1-2.83 0 .75.75 0 0 0-1.06 1.06 3.5 3.5 0 0 0 4.95 0l2.5-2.5a3.5 3.5 0 0 0-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 0 1 0-2.83l2.5-2.5a2 2 0 0 1 2.83 0 .75.75 0 0 0 1.06-1.06 3.5 3.5 0 0 0-4.95 0l-2.5 2.5a3.5 3.5 0 0 0 4.95 4.95l1.25-1.25a.75.75 0 0 0-1.06-1.06l-1.25 1.25a2 2 0 0 1-2.83 0Z"></path></svg>';
+    document
+      .querySelectorAll<HTMLHeadingElement>('.prose :is(h2, h3, h4, h5, h6)[id]')
+      .forEach((heading) => {
+        const a = document.createElement('a');
+        a.className = 'heading-anchor';
+        a.href = `#${heading.id}`;
+        a.innerHTML = LINK_ICON;
+        a.setAttribute('aria-label', `Link to "${heading.textContent ?? ''}"`);
+        a.addEventListener('click', () => {
+          (window as any).gtag?.('event', heading.id.toLowerCase());
+        });
+        heading.prepend(a);
+      });
+  </script>
+
+  <script>
+    // Interactive quiz "show the answer" reveal, ported from the old Jekyll
+    // site's jQuery buttonToggler (right/wrong coloring is pure CSS — see
+    // .prose .quiz-form in global.css). Delegated + generic, so any post that
+    // embeds a `.quiz` block gets this for free.
+    document.querySelectorAll<HTMLButtonElement>('.prose .quiz .answer-button').forEach((button) => {
+      // Markdown wraps a bare inline <button> in a <p> (only block-level tags
+      // like <div> suppress that), so don't assume strict sibling adjacency —
+      // search the whole quiz form instead.
+      const solution = button.closest('form')?.querySelector<HTMLElement>('.solution');
+      if (!solution) return;
+      const openLabel = 'Show me the answer!';
+      const closedLabel = 'Hide the solution...';
+      button.addEventListener('click', () => {
+        const opening = !solution.classList.contains('is-open');
+        solution.classList.toggle('is-open', opening);
+        button.textContent = opening ? closedLabel : openLabel;
+        (window as any).gtag?.('event', 'quiz_reveal', {
+          event_label: solution.querySelector('[id]')?.id ?? '',
+        });
+      });
+    });
+  </script>
+
+  <script>
     // Left table-of-contents popup. "toc-open" on <html> is the single source of
     // truth (not persisted). Opens from the left edge; closes on the X, on a
     // click outside, on Escape, or after jumping to a section.

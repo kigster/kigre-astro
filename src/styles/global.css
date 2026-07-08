@@ -1071,6 +1071,50 @@ button:focus-visible {
   font-size: 19px;
   margin-top: 24px;
 }
+
+/* Hover-to-reveal permalink icon, GitHub-style: sits in the left gutter so it
+   never shifts the heading text, and is a real <a href="#slug"> (injected by
+   the script in [...permalink].astro for posts, and by speaking.astro for the
+   talk headers on /speaking) so clicking it updates the URL hash. */
+:is(.prose, .talks) :is(h2, h3, h4, h5, h6) {
+  position: relative;
+}
+:is(.prose, .talks) .heading-anchor {
+  position: absolute;
+  left: -26px;
+  top: 0;
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  color: var(--muted);
+  text-decoration: none;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+:is(.prose, .talks) .heading-anchor svg {
+  width: 15px;
+  height: 15px;
+}
+:is(.prose, .talks) :is(h2, h3, h4, h5, h6):hover .heading-anchor,
+:is(.prose, .talks) .heading-anchor:focus-visible {
+  opacity: 1;
+}
+:is(.prose, .talks) .heading-anchor:hover {
+  color: var(--o2);
+  text-decoration: underline;
+}
+/* touch devices have no hover — keep the icon faintly visible so it's
+   discoverable without a hidden gesture */
+@media (hover: none) {
+  :is(.prose, .talks) .heading-anchor {
+    opacity: 0.4;
+  }
+}
+@media (max-width: 760px) {
+  :is(.prose, .talks) .heading-anchor {
+    left: -22px;
+  }
+}
 .prose a {
   color: var(--o2);
   text-decoration: none;
@@ -1137,6 +1181,105 @@ button:focus-visible {
 }
 .prose tbody tr:hover {
   background: color-mix(in srgb, var(--panel), transparent 35%);
+}
+
+/* Interactive multiple-choice quiz (ported from the Jekyll site's
+   _quizes.scss). Checkboxes are visually hidden and toggled by clicking
+   their label; whether a label reads red (wrong) or green (correct) is
+   pure CSS via the :checked sibling selector below — no JS involved.
+   The reveal button/panel IS scripted, in [...permalink].astro. */
+.prose .quiz {
+  margin: 28px 0 40px;
+}
+.prose .quiz-form {
+  margin-top: 14px;
+}
+.prose .quiz-form label {
+  border-bottom: 1px solid var(--hair);
+  border-radius: 5px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 6px;
+  margin-bottom: 4px;
+}
+.prose .quiz-form label:hover {
+  background: color-mix(in srgb, var(--o2) 10%, transparent);
+}
+.prose .quiz-form label input[type="checkbox"] {
+  position: absolute;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+}
+.prose .quiz-form label strong {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  width: 32px;
+  flex: none;
+}
+.prose .quiz-form label code,
+.prose .quiz-form label span {
+  color: var(--fg);
+}
+/* wrong answer, once checked: red */
+.prose .quiz-form label input:checked + strong,
+.prose .quiz-form label input:checked + strong + span {
+  color: #d1383a;
+}
+.prose .quiz-form label input:checked + strong + span code {
+  color: #d1383a;
+}
+/* the correct answer overrides to green */
+.prose .quiz-form label.correct input:checked + strong,
+.prose .quiz-form label.correct input:checked + strong + span {
+  color: #2e7d32;
+  font-weight: 700;
+}
+.prose .quiz-form label.correct input:checked + strong + span code {
+  color: #2e7d32;
+  font-weight: 700;
+}
+.prose .quiz-form .answer-button {
+  margin-top: 18px;
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--bg);
+  background: var(--grad);
+  border: 0;
+  border-radius: 999px;
+  padding: 10px 22px;
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+.prose .quiz-form .answer-button:hover {
+  transform: translateY(-1px);
+}
+/* Collapsible solution panel: grid-rows 0fr -> 1fr animates any content
+   height without a hardcoded max-height (the jQuery original used
+   .toggle('slow'); this is the CSS-only equivalent). */
+.prose .quiz-form .solution {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.3s ease;
+}
+.prose .quiz-form .solution.is-open {
+  grid-template-rows: 1fr;
+}
+.prose .quiz-form .answer-content {
+  overflow: hidden;
+  min-height: 0;
+}
+.prose .quiz-form .answer-content > :first-child {
+  margin-top: 18px;
+}
+.prose .quiz-form strong.correct-answer {
+  color: #2e7d32;
 }
 
 /* Zoom table: a very wide reference table that would otherwise blow out the
@@ -1611,6 +1754,17 @@ button:focus-visible {
   font-size: 20px;
   letter-spacing: -0.01em;
 }
+/* the title is a self-anchor (#slug): clicking scrolls the talk to the top
+   and puts its name in the URL, so it should read as a link on hover */
+.talk h3 .talk-title {
+  color: inherit;
+  text-decoration: none;
+  cursor: pointer;
+}
+.talk h3 .talk-title:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
 .talk p {
   font-size: 13.5px;
   color: var(--muted);
@@ -1668,59 +1822,60 @@ button:focus-visible {
   text-decoration: underline;
 }
 
-/* ===== PDF presentation modal (speaking page) ===== */
-.pdf-modal {
+/* ===== PDF slide-deck modal on /speaking =====
+   Markup comes from the React island (TalkPdfModal.tsx); the slides are drawn
+   into a <canvas> by react-pdf (TalkSlidesViewer.tsx). */
+.talk-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.72);
+  backdrop-filter: blur(2px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.talk-modal {
   width: min(94vw, 1080px);
-  height: 90vh;
-  padding: 0;
+  max-height: 92dvh;
   border: 1px solid var(--hair);
   border-radius: 14px;
   background: var(--panel);
   color: var(--fg);
   overflow: hidden;
-  flex-direction: column;
-}
-.pdf-modal[open] {
   display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.5);
 }
-.pdf-modal::backdrop {
-  background: rgba(0, 0, 0, 0.72);
-  backdrop-filter: blur(2px);
-}
-.pdf-modal .pm-head {
+.talk-modal-head {
   flex: 0 0 auto;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   padding: 12px 16px;
   border-bottom: 1px solid var(--hair);
 }
-.pdf-modal .pm-head h2 {
+.talk-modal-title {
   font-family: var(--font-head);
-  font-weight: 400;
   font-size: 15px;
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
-.pdf-modal .pm-actions {
-  flex: 0 0 auto;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-.pdf-modal .pm-ext {
+.talk-modal-open {
   font-family: var(--font-mono);
   font-size: 12px;
   color: var(--o2);
   text-decoration: none;
   white-space: nowrap;
 }
-.pdf-modal .pm-ext:hover {
+.talk-modal-open:hover {
   text-decoration: underline;
 }
-.pdf-modal .pm-close {
+.talk-modal-close {
   background: transparent;
   border: 1px solid var(--hair);
   color: var(--muted);
@@ -1731,18 +1886,95 @@ button:focus-visible {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  font-size: 13px;
+  font-size: 15px;
+  line-height: 1;
 }
-.pdf-modal .pm-close:hover {
+.talk-modal-close:hover {
   color: var(--fg);
   border-color: var(--muted);
 }
-.pdf-modal iframe {
+/* the canvas is sized to this container's width, so the deck fits and any
+   taller-than-viewport remainder scrolls */
+.talk-modal-body {
   flex: 1 1 auto;
-  width: 100%;
-  border: 0;
+  overflow: auto;
+  background: #000;
+}
+.talk-modal-body canvas {
   display: block;
-  background: #fff;
+  max-width: 100%;
+  height: auto !important;
+}
+/* cross-fade between slides (TalkSlidesViewer.tsx): the layers share one grid
+   cell; the incoming slide starts transparent and fades in over the old one
+   once pdf.js has painted it. Removing .is-shown snaps back instantly, so a
+   retargeted fade never plays in reverse. */
+.talk-slide-stack {
+  display: grid;
+}
+.talk-slide-stack > div {
+  grid-area: 1 / 1;
+}
+.talk-slide-incoming {
+  opacity: 0;
+  z-index: 1;
+}
+.talk-slide-incoming.is-shown {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+/* next-slide pre-raster buffer — never visible, exists only to warm the canvas */
+.talk-slide-preload {
+  display: none;
+}
+.talk-modal-nav {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 10px 16px;
+  border-top: 1px solid var(--hair);
+}
+.talk-modal-nav button {
+  background: transparent;
+  border: 1px solid var(--hair);
+  color: var(--fg);
+  width: 34px;
+  height: 30px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 17px;
+  line-height: 1;
+}
+.talk-modal-nav button:hover:not(:disabled) {
+  color: var(--o2);
+  border-color: var(--muted);
+}
+.talk-modal-nav button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.talk-modal-pages {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  color: var(--muted);
+  min-width: 72px;
+  text-align: center;
+}
+.talk-modal-loading,
+.talk-modal-fallback {
+  padding: 70px 24px;
+  text-align: center;
+  color: var(--muted);
+  font-size: 14px;
+}
+.talk-modal-fallback a {
+  color: var(--o2);
+}
+/* anchor jumps (#slug) land below the sticky nav */
+.talks h3[id] {
+  scroll-margin-top: 90px;
 }
 
 .oss-grid {
@@ -2234,7 +2466,7 @@ html.toc-open .toc-panel {
 }
 
 /* anchor jumps land below the fixed header instead of under it */
-.prose :is(h2, h3, h4) {
+.prose :is(h2, h3, h4, h5, h6) {
   scroll-margin-top: 110px;
 }
 @media (prefers-reduced-motion: no-preference) {

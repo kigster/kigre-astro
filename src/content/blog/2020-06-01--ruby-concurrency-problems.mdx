@@ -1,0 +1,272 @@
+---
+title: "Test your Understanding of Ruby Concurrency"
+date: 2020-06-01
+permalink: "/2020/06/01/ruby-concurrency-problems.html"
+category: "programming"
+tags: ["concurrency", "puma", "sidekiq", "multi-threading", "multi-process", "fibers", "parallelism"]
+description: "Test your understanding of how Ruby 3 Concurrency works with these two simple multiple-choice questions."
+heroImage: "/assets/images/posts/concurrency/multi-process-3d.png"
+comments: true
+author: kig
+---
+
+> [!NOTE]
+>
+> Time travel — from 2026: today we have Ruby 4 with its Ractors, promising multi-core saturation with a single Ruby MRI process (a claim that desererves its own blog post).
+>
+> But back in 2020, way before "Ractors" were a thing, I put together this little "self-test", so you can find out how well you understand ruby concurrency model, and how it maps onto a real deployment archivecture.
+
+> [!IMPORTANT]
+>
+> Watch out for the blog post testing Ractors and whether a single Ruby process can finally saturate all cores.
+
+This post is for those who think they truly understand Ruby Concurrency well enough to plan a deployment for a very popular social network that runs of on Puma — a multi-threaded web server.
+
+## Parallelize This 👇🏻
+
+The associated talk on Ruby Concurrency, was born out of hearing senior engineers discuss an out-of-place optimization of a business process, which demonstrated an obvious lack of understand of Ruby Concurrency, their limitations and trade-offs. And no wonder — concurrency is hard. In any language. 
+
+Ruby, actually, makes it pretty damn easy. And yet, just as it's easy to write `Thread.new { }` it is just as easy to shoot yourself in the __foot, foot, foo, ..t, fo, ooot ,....__
+
+> Did you get my joke? I know, I know. Very clever. HA!
+
+Without further ado, let's get to it. Below you'll find two concurrency questions with multiple choice answers. Your answers are not recorded, so don't worry — try as many times as you like.Room and collect everyone's opinion and document it in the following table
+
+## Problem [A]: "Getting Ruby to Utilize all Cores"
+
+Let's say we are running a very popular [Rails website](/2021/01/24/is-rails-still-relevant-today-in-2021.html), and we purchased a "beefy" multi-core server with 8 cores and lots of RAM. Our site is very popular, and so we need to squeeze as much throughput from the server as possible.
+
+We are trying to decide how to configure Puma on this server. In particular we are looking to agree on three most important numbers for Our Puma configuration.
+
+1. How many master puma processes to start (on different ports) in the case the socket is the point of contention (we'll call this number `P`)
+2. How many workers to run **per single master process** (we'll call this number `W`)
+3. How many threads should be in each worker (we'll call this number `T`)
+
+So we are in the room arguing about this, and our esteemed recently hired Staff Engineer went out for lunch. So we are left to our own devices, and without an authority figure to help us decide based on their vast experience and deep knowledge of the UNIX sockets, concurrent processing, as well as Ruby. 
+
+__God dammit, where is a Staff Engineer where you need one?__
+
+Anyway, we decide to go around the room and ask each of the technical member present their opinion. Surely it'll work the democratic way since it clearly works in politics so well 😂
+
+So we go around the Room. And ask every member their opinion documenting it in a following table
+
+| Engineer/Role | Their Answer | Their Reasoning |
+| -------- | ------- | -------- |
+| Junior Engineer | `P=1` `W=1` `T=8` | One master Puma is just fine, in fact one worker is just fine. That's what threads are for, right? |
+| DevOps Engineer | `P=1` `W=8` `T=1` | She also tninks one master Puma is is just fine, and a worker per CPU makes sense, since she doesn't know Ruby too well and can't say whether threaeds will help or cause context switching contention that she saw in one of the troubleshooting sessions on Solaris. |
+| Front-end Engineer | `P=2` `W=4` `T=16` | Front-end engineer is concerned about socket contention. He heard that socket contension degrades performance and therefore he's voting for at least two master Puma processes on different ports each with four workers and 16 threads|
+| -------- | ------- | -------- |
+
+Your job is to play the role of the Staff Engineer and decide, as well as explain the correct answer.
+
+### The Problem
+
+> [!TIP]
+>
+> NOTE that your answers are definitely not sent to NSA and the CIA, or recorded onto the the very large and secure tape, so when the government suddenly needs brilliant engineers to join the fight against the inevitable alien invasion, they know who to call. Definitely not 😂
+
+So a reminder on variables we are working with:
+
+| Variable | Description                                                   |
+|----------|--------------------------------------------------------------|
+| P        | Number of Puma master processes that bind to a socket        |
+| W        | Number of workers each Puma master process spawns            |
+| T        | Number of threads in each worker                             |
+
+> [!TIP]
+>
+> How to play: Choose an answer you believe is correct. If you selected the wrong answer, it will turn red, while the correct answer will be green. Press the button below the quiz to see the explanation and the reasoning. But, before you do that, you can try as many times as you like.
+> 
+> For each option, we also provide the number that's a product of all of the variables. You may find it useful.
+
+> __To optimally saturate this 8-core server with a Ruby Application that runs on MRI Ruby (C-Ruby), to drive server utilization as close to 80%-90%, without sacrificing latency, we should set `P`, `W`, and `T` as follows:__
+
+<div class="quiz">
+  <form id="problem-1" class="quiz-form">
+    <label>
+      <input type="checkbox" value="A" name="A" />
+      <strong>&#127346;</strong>
+      <span><code>P = 1,  W = 4,  T = 2    |  →  (P x W  x T) = 8</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="B" name="B" />
+      <strong>&#127346;</strong>
+      <span><code>P = 1,  W = 4,  T = 1    |  →  (P x W x T) = 4</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="C" name="C" />
+      <strong>&#127346;</strong>
+      <span><code>P = 1,  W = 4,  T = 4    |  →  (P x W x T) = 16</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="D" name="D" />
+      <strong>&#127347;</strong>
+      <span><code>P = 1,  W = 8,  T = 8    |  →  (P x W x T) = 64</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="E" name="E" />
+      <strong>&#127348;</strong>
+      <span><code>P = 2,  W = 4,  T = 12    |  →  (P x W x T) = 96</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="E" name="E" />
+      <strong>&#127348;</strong>
+      <span><code>P = 1,  W = 16,  T = 8    |  →  (P x W x T) = 128</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="I" name="I" />
+      <strong>&#127352;</strong>
+      <span><code>P = 1, W = 1, T = 8    |  →  (P x W x T) = 8</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="J" name="J" />
+      <strong>&#127353;</strong>
+      <span><code>P = 2, W = 4, T = 16    |  →  (P x W x T) = 128</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="H" name="H" />
+      <strong>&#127351;</strong>
+      <span><code>P = 1, T = 8</code> but not enough information to choose <code>W</code></span>
+    </label>
+    <label class="correct">
+      <input type="checkbox" value="G" name="G" />
+      <strong>&#127350;</strong>
+      <span><code>W = 8 & P = 1</code> but not enough information to choose <code>T</code></span>
+    </label>
+    <label>
+      <input type="checkbox" value="L" name="L" />
+      <strong>&#127355;</strong>
+      <span><code>None of the above</code></span>
+    </label>
+
+    <button type="button" id="problem-1-button" class="answer-button">Show me the answer!</button>
+
+    <div class="solution">
+      <div id="problem-1-solution" class="answer-content">
+        <h3>The correct answer is <strong class="correct-answer">&#127350;</strong></h3>
+        <div class="prose">
+          <p>Let's break this down:</p>
+          <p>Let's start with the number of Puma master processes. On a single box, two masters × 4 workers is strictly more complexity for zero throughput, and slightly worse on memory. The reasoning is worth spelling out because it hinges on a detail of Puma's architecture people routinely get wrong.</p>
+          <p>The master is not in the request path. People carry an nginx-shaped mental model where the master process accepts connections and dispatches to workers — a proxy that could become a bottleneck worth duplicating. Puma doesn't work that way. In cluster mode, the master opens the listening socket once, forks the workers, and each worker inherits the file descriptor and calls accept() on it directly. The kernel distributes incoming connections across whichever workers are blocked in accept. The master's remaining job is babysitting: forking, reaping, signaling, restarts. Duplicating a babysitter doesn't add throughput; there was no contention to relieve.</p>
+          <p>So one master with W=8 already gives you 8 independent processes pulling from one shared accept queue with kernel-level distribution. Two masters gives you 8 independent processes pulling from two accept queues — plus a new problem you didn't have before: something now has to split traffic between the two ports. An nginx upstream, a load balancer, iptables tricks. Naive round-robin between the two ports is worse than the single shared socket, because the kernel's shared-queue behavior is naturally work-conserving (an idle worker grabs the next connection regardless of which "half" it's in), whereas round-robin across two sockets can queue a request behind a busy group while the other group sits idle. You'd be re-implementing, badly, in userspace, what the kernel already does well.</p>
+          <hr/>
+          <p>Now let's look at the number of workers. <code>W</code> is the number of workers per master process.</p>
+          <p>Since MRI Ruby can only max out a single CPU core, one process limits us to a single core. Therefore we typically want to run **at least** the same number of MRI Ruby processes as we have CPU cores available to us.</p>
+          <p>However any realistic Rails application spends a portion of it's time __waiting on IO__, which means waiting for DB queries to return, waiting on Redis network calls, even logging to a file, counts as IO, as well as caching (via filesystem or memcached)  we are not able to push each process to the max, and that typically means that by increasing the number of threads we can utilize that IO wait time doing something on CPU, like rendering a view or processing incoming JSON requests.</p> 
+          <hr/>
+          <p>This brings us to the last value: <code>T</code> — the number of threads per worker.</p>
+          <p>To properly determine how many threads per process we should run, we need some sort of monitoring like DataDog or NewRelic (it can also be done without the monitoring giants, but it's much more involved).</p>
+          <p>What we want to know is how much time each process (running with 1 thread) spends in CPU versus IO, and what latency that achieves. A typical ratio is 1:1 IO to CPU or even 2:1 IO to CPU. That gives us the ratio to figure out the <code>T</code> in question. If the ration is 3:1 IO to CPU, then we can run 3 threads per process to leverage that remaining CPU time. However, once we change this, we need to monitor the new ratio, especially the resulting latency. If the latency goes up significantly, we need to reduce the number of threads from 3 to 2 and retest.</p> 
+          <hr/>
+          <p>In my personal experience, running 3-4 threads per Puma process is typically a good balance between CPU, IO utilization, and the resulting latency, but once again, that really depends on how well your database is tuned and how quickly your queries return, because if they're not returning fast enough, it meanss your time spent in the database calls is going to be much higher, resulting in likely high latency (anything more than 150ms is already considered high latency). And therefore your I/O weight is going to be high compared to CPU, and therefore you can afford to have much higher number of threads to compensate for that. Your requests won't get any faster, but at least you'll be able to process more of them concurrenly on the same box.</p>
+
+          <p>Thanks for playing! And hope this exercise helps you understand the trade-offs of concurrency and how to properly configure Puma for your application.</p>
+        </div>
+      </div> 
+    </div>
+  </form>
+</div>
+
+## Problem [B]: "Speeding up a Computation by Parallelization"
+
+![Computing SHA256](/assets/images/posts/misc/sha256.png)
+
+In this problem, we have a large queue (i.e. an Array) pre-filled with various objects, and we need to compute a SHA256 of each object using a SHA-function provided to us.  Memory is not an issue.
+
+We know a few things about these objects, and in addition we've been given some important constraints by our Operations team, and we must follow them:
+
+> [!NOTE]
+>
+> * All objects in the array are independent of each other, and so the SHA can be computed in any order, on any object.
+>
+> * Computing SHA requiring no IO, just CPU.
+>
+> * We are allowed one and only one active/running Ruby process at all times.
+>
+> * We can choose any Ruby implementation for this task.
+>
+> * We still have access to the same 8 cores from the previous section, since we are still running on the same hypothetical server.
+>
+> * We can not modify the actual SHA routine — this is provided like a black box.
+
+Well, we are unhappy with how long it takes to compute 10,000 SHA, and We would like to optimize this function and speed up the computation somehow.
+
+### Question
+
+__Will the overall operation be __faster__ if we created __8 threads within the single Ruby process we are allowed to start__, and then split the SHA256 computation across the eight running threads?__
+
+### Answers
+
+<div class="quiz">
+  <strong>Choose one:</strong>
+  <form id="problem-2" class="quiz-form">
+    <label>
+      <input type="checkbox" value="C" name="C" />
+      <strong>&#127346;</strong>
+      <span>Nope, threads or no threads, all the same.</span>
+    </label>
+    <label>
+      <input type="checkbox" value="D" name="D" />
+      <strong>&#127347;</strong>
+      <span>Actually, with 8 threads it will be slower.</span>
+    </label>
+    <label class="correct">
+      <input type="checkbox" value="E" name="E" />
+      <strong>&#127348;</strong>
+      <span>On JRuby ~ 8x faster, on MRI ~ a bit slower.</span>
+    </label>
+    <label>
+      <input type="checkbox" value="F" name="F" />
+      <strong>&#127349;</strong>
+      <span>Eight threads might give us ~ 10% speed boost.</span>
+    </label>
+    <label>
+      <input type="checkbox" value="G" name="G" />
+      <strong>&#127351;</strong>
+      <span>Use C/MRI-Ruby, then it will be 8x faster.</span>
+    </label>
+    <label>
+      <input type="checkbox" value="H" name="H" />
+      <strong>&#127352;</strong>
+      <span>None of the above.</span>
+    </label>
+
+    <button type="button" id="problem-2-button" class="answer-button">Show me the answer!</button>
+
+    <div class="solution">
+      <div id="problem-2-solution" class="answer-content">
+        <h3>The correct answer is <strong class="correct-answer">&#127348;</strong></h3>
+        <div class="prose">
+          <p>Let's break this down:</p>
+          <p>Because the task at hand is CPU-bound, MRI Ruby (with its GIL) will not be able to take advantage of multiple cores with just one Ruby process. In fact, if we did introduce a thread-pool, Ruby will have to do <em>more</em> work, since it will need to spend some CPU cycles on context switching: voluntary and involuntary.</p>
+          <p>JRuby, on the other hand, is able to fully utilize a multi-core environment with Java's <a href="https://en.wikipedia.org/wiki/Green_threads" target="_blank" rel="noopener">green threads</a>.</p>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>
+
+## Conclusion
+
+So, how did you do?
+
+Hopefully, this was helpful to folks trying to tune Sidekiq and Puma for their multi-threaded environments.
+
+Have any questions? Suggestions? Please leave a comment below!
+
+Best regards,
+Konstantin
+
+San Francisco, CA, June 3, 2020.
+
+## References
+
+* [Opening The Ruby Concurrency Toolbox](https://www.honeybadger.io/blog/ruby-concurrency-parallelism) from Honeybadger
+
+* [Ruby Concurrency and Parallelism: A Practical Tutorial](https://www.toptal.com/ruby/ruby-concurrency-and-parallelism-a-practical-primer) first of the two TopTal blog posts I highly recommend.
+
+* [The Many Interpreters and Runtimes of the Ruby Programming Language](https://www.toptal.com/ruby/the-many-shades-of-the-ruby-programming-language) from the fantastic TopTal blog
+
+* [Scalable Ruby — Concurrency and Parallelism Explained](https://medium.com/better-programming/scalable-ruby-concurrency-and-parallelism-explained-68b09a7aeb53)
+
+And if you are looking for something a bit off Topic, checkout this somewhat controversial talk by Dave Thomas — [The Future is Function, or, OO is Dead](https://www.youtube.com/watch?v=3TlEqzptWr0) from 2017 RubyHACK Conference.
