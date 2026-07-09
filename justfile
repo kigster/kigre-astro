@@ -55,8 +55,8 @@ release:
 #━━━━━━━━━━━━━━━ AI Content Generation ━━━━━━━━━━━━━━━━━━━━━━━━━
 
 # Generate the weekly AI digest post locally (needs one provider API key)
-digest:
-    @bun run digest
+digest *args:
+    @bun run digest {{ args }}
 
 clean:
     /usr/bin/find . -type f -name .DS_Store
