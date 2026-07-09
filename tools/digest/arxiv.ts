@@ -6,20 +6,46 @@
  * simple enough to slice by `<entry>` and grab tags with a small regex.
  */
 export interface Paper {
-  id: string
-  title: string
-  summary: string
-  published: string
-  category: string
+  id: string;
+  title: string;
+  summary: string;
+  published: string;
+  category: string;
 }
 
 export interface FetchOptions {
   /** arXiv categories, e.g. ['cs.AI', 'cs.LG', 'cs.CL']. */
-  categories: string[]
+  categories: string[];
   /** How many days back to include. */
-  daysBack: number
+  daysBack: number;
   /** Hard cap on total papers returned. */
-  max: number
+  max: number;
+  /** Optional topic filter, narrowing the arXiv query to matching papers. */
+  theme?: string;
+}
+
+/**
+ * Build the arXiv Atom query URL for one category. When a theme is given,
+ * each comma-separated phrase becomes an `all:"…"` clause (OR-ed together)
+ * AND-ed with the category filter.
+ */
+export function buildArxivUrl(
+  category: string,
+  max: number,
+  theme?: string,
+): string {
+  let query = `cat:${category}`;
+  const phrases = (theme ?? "")
+    .split(",")
+    .map((p) => p.trim())
+    .filter(Boolean);
+  if (phrases.length > 0) {
+    query += ` AND (${phrases.map((p) => `all:"${p}"`).join(" OR ")})`;
+  }
+  return (
+    `http://export.arxiv.org/api/query?search_query=${encodeURIComponent(query)}` +
+    `&sortBy=submittedDate&sortOrder=descending&max_results=${max}`
+  );
 }
 
 /**
@@ -33,40 +59,37 @@ export function parseArxivFeed(
   since: Date,
   into: Paper[],
 ): void {
-  const entries = xml.split('<entry>').slice(1)
+  const entries = xml.split("<entry>").slice(1);
 
   for (const e of entries) {
     const grab = (tag: string): string => {
-      const m = e.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`))
-      return (m?.[1] ?? '').trim()
-    }
+      const m = e.match(new RegExp(`<${tag}>([\\s\\S]*?)</${tag}>`));
+      return (m?.[1] ?? "").trim();
+    };
 
-    const published = grab('published')
-    if (new Date(published) < since) continue
+    const published = grab("published");
+    if (new Date(published) < since) continue;
 
-    const title = grab('title').replace(/\s+/g, ' ')
-    const summary = grab('summary').replace(/\s+/g, ' ')
-    const id = grab('id')
+    const title = grab("title").replace(/\s+/g, " ");
+    const summary = grab("summary").replace(/\s+/g, " ");
+    const id = grab("id");
 
     // skip untitled entries and duplicates (by arXiv id or title)
-    if (!title || into.some((p) => p.id === id || p.title === title)) continue
-    into.push({ id, title, summary, published, category })
+    if (!title || into.some((p) => p.id === id || p.title === title)) continue;
+    into.push({ id, title, summary, published, category });
   }
 }
 
 export async function fetchArxiv(opts: FetchOptions): Promise<Paper[]> {
-  const since = new Date(Date.now() - opts.daysBack * 864e5)
-  const all: Paper[] = []
+  const since = new Date(Date.now() - opts.daysBack * 864e5);
+  const all: Paper[] = [];
 
   for (const cat of opts.categories) {
-    const url =
-      `http://export.arxiv.org/api/query?search_query=cat:${cat}` +
-      `&sortBy=submittedDate&sortOrder=descending&max_results=${opts.max}`
-
-    const res = await fetch(url)
-    if (!res.ok) throw new Error(`arXiv API ${res.status} for ${cat}`)
-    parseArxivFeed(await res.text(), cat, since, all)
+    const url = buildArxivUrl(cat, opts.max, opts.theme);
+    const res = await fetch(url);
+    if (!res.ok) throw new Error(`arXiv API ${res.status} for ${cat}`);
+    parseArxivFeed(await res.text(), cat, since, all);
   }
 
-  return all.slice(0, opts.max)
+  return all.slice(0, opts.max);
 }
