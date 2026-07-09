@@ -123,8 +123,9 @@ function emit(
   isoDate: string,
 ): string {
   const [y, m, d] = isoDate.split("-");
-  const slug = `ai-papers-digest-${isoDate}`;
-  const permalink = `/${y}/${m}/${d}/${slug}.html`;
+  // filename follows the blog post convention: date prefix, slug after
+  const filename = `${isoDate}-ai-papers-digest.md`;
+  const permalink = `/${y}/${m}/${d}/ai-papers-digest.html`;
   const flagged = !verdict.ok;
 
   const banner = flagged
@@ -155,7 +156,7 @@ function emit(
   ].join("\n");
 
   fs.mkdirSync(OUT_DIR, { recursive: true });
-  const outPath = path.join(OUT_DIR, `${slug}.md`);
+  const outPath = path.join(OUT_DIR, filename);
   fs.writeFileSync(outPath, frontmatter);
   return outPath;
 }
