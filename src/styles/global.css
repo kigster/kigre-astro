@@ -2507,6 +2507,17 @@ html.toc-open .toc-panel {
   .toc-panel {
     width: min(320px, 88vw);
   }
+  /* the closed grab tab overlaps the full-width reading column on phones —
+     drop it to the lower-left corner and slim it down so it stops covering
+     the opening paragraphs */
+  .toc-tab {
+    top: auto;
+    bottom: 84px;
+    padding: 9px 4px;
+    gap: 5px;
+    font-size: 10.5px;
+    letter-spacing: 0.1em;
+  }
 }
 
 /* ============================================================
