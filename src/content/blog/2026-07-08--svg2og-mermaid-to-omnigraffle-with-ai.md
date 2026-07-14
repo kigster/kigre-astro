@@ -5,11 +5,12 @@ permalink: "/2026/07/08/svg2og-mermaid-to-omnigraffle-with-ai.html"
 category: "programming"
 tags: ["ai", "claude", "swift", "svg", "mermaid", "omnigraffle", "cli", "macos", "diagrams"]
 description: "Mermaid exports SVGs that OmniGraffle imports as a diagram of empty boxes. In under an hour I diagnosed why (their SVGs are built for browsers, not native apps) and shipped svg2og — a working Swift CLI — despite never having written a line of Swift in my life. A short story about what the age of AI actually changes."
-heroImage: "/assets/images/posts/svg2og/omnigraffle-import-fixed.png"
+heroImage: "/assets/images/posts/svg2og/omnigraffle-import-fixed-small.png"
 comments: true
 draft: false
 author: kig
 ---
+
 I need to open with a confession: I still use [OmniGraffle](https://www.omnigroup.com/omnigraffle). Version 7. A **native macOS diagramming app**, with a perpetual license, from an era when software was something you *bought* rather than something you *rent until the venture funding runs out*.
 
 If you're under 35, OmniGraffle was — for a solid couple of decades — what Visio would have been if Visio had taste. Every architecture diagram in every fancy San Francisco engineering deck circa 2012 was made in it. Then the web ate the category: Figma, Lucidchart, Miro, Excalidraw, draw.io, and now [Mermaid](https://mermaid.js.org), where the diagram is *text* and the AI writes it for you. The Omni Group [had a rough 2020](https://news.ycombinator.com/item?id=22745001), and while they're very much still at it — [OmniGraffle 8 is on their 2026 roadmap](https://www.omnigroup.com/blog/omni-roadmap-2026), good for them, sincerely — let's just say the center of gravity moved into the browser tab and did not leave a forwarding address.
@@ -49,7 +50,7 @@ A browser shrugs and renders it — a browser has an HTML engine lying around, i
 And once we were in there, two accomplices turned up:
 
 1. **`x`/`y` offsets on `<tspan>` are ignored** — Mermaid positions edge and cluster labels with em-based tspan offsets, so even the labels that *do* survive render one line too high. Bonus: OmniGraffle honors `text-anchor: middle` as CSS but ignores it as an XML attribute, so those labels also drift sideways. Naturally, Mermaid uses the attribute.
-2. **Zero-size `<rect/>` placeholders render as dots** — Mermaid leaves empty `<rect/>` elements inside label groups. Browsers draw nothing. OmniGraffle draws a proud little dot in the middle of every shape, like the diagram has measles.
+1. **Zero-size `<rect/>` placeholders render as dots** — Mermaid leaves empty `<rect/>` elements inside label groups. Browsers draw nothing. OmniGraffle draws a proud little dot in the middle of every shape, like the diagram has measles.
 
 That's the whole disease: three quirks, all downstream of one root cause. The SVG was authored for exactly one consumer — a web browser — and every other consumer can go pound sand.
 
@@ -93,12 +94,10 @@ brew install svg2og
 ```
 
 > [!IMPORTANT]
-> 
+>
 > If you install via Homebrew, for each new version you may need to re-execute the trust command again, and then do `brew update kigster/tap` and then `brew install svg2og`.
 
-
-> [!TIP]
-> If you control the Mermaid config, `htmlLabels: false` in the frontmatter avoids the `foreignObject` problem at the source. The tspan drift and the measles dots remain, though — so the converter earns its keep either way.
+> [!TIP] If you control the Mermaid config, `htmlLabels: false` in the frontmatter avoids the `foreignObject` problem at the source. The tspan drift and the measles dots remain, though — so the converter earns its keep either way.
 
 ## The Actual Point
 
@@ -119,15 +118,14 @@ So no, I still haven't *learned* Swift. But there's a Swift CLI with my name on 
 
 Have questions? Found another Mermaid export quirk OmniGraffle chokes on? Leave a comment — or better, open an issue. Apparently I fix things in languages I don't know now.
 
-Best regards,
-Konstantin
+Best regards, Konstantin
 
 San Francisco, CA, July 8, 2026.
 
 ## References
 
-* [svg2og on GitHub](https://github.com/kigster/svg2og) — the converter
-* [Mermaid](https://mermaid.js.org) — text-to-diagram, the thing your AI already writes fluently
-* [OmniGraffle](https://www.omnigroup.com/omnigraffle) — the native diagramming app worth saving SVGs for
-* [Omni Roadmap 2026](https://www.omnigroup.com/blog/omni-roadmap-2026) — OmniGraffle 8 is coming, the dinosaur has plans
-* [SVG `<foreignObject>` on MDN](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) — the trench coat itself
+- [svg2og on GitHub](https://github.com/kigster/svg2og) — the converter
+- [Mermaid](https://mermaid.js.org) — text-to-diagram, the thing your AI already writes fluently
+- [OmniGraffle](https://www.omnigroup.com/omnigraffle) — the native diagramming app worth saving SVGs for
+- [Omni Roadmap 2026](https://www.omnigroup.com/blog/omni-roadmap-2026) — OmniGraffle 8 is coming, the dinosaur has plans
+- [SVG `<foreignObject>` on MDN](https://developer.mozilla.org/en-US/docs/Web/SVG/Element/foreignObject) — the trench coat itself
