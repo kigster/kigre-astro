@@ -3,7 +3,7 @@
 # kig.re
 
 Personal engineering blog of Konstantin Gredeskoul, built on [Astro](https://astro.build).
-Migrated from Jekyll/AsciiDoc to Astro/Markdown, with a weekly AI-paper digest pipeline and
+Migrated from Jekyll/AsciiDoc to Astro/Markdown, with an occastional weekly AI-paper digest pipeline and
 a fully static, client-side search.
 
 - **Design:** "Editorial Index" — a numbered reading list, warm orange→yellow gradient, sans-serif only.
@@ -15,6 +15,17 @@ a fully static, client-side search.
 - **Images:** click-to-zoom via medium-zoom.
 
 ______________________________________________________________________
+
+## Generating Content
+
+On occasion, Claude will be asked to produce a blog contents based on a new tool that the author just launched, or a project they just completed. If you are authoring the initial verison of the post, stick to the following rules:
+
+1. Lead with the main point of the blog, but leave out a potential main conclusion or a reveal.
+2. Use humor freely, but review the blog with an editorial critic using the /copywriting skill to ensure it does not sound robotic or AI-written. 
+3. Use dashes and em-dashes in about 60/40% ratio. Em-dashes are considered first tell-sign the blog was written by an AI.
+4. Use diagrams where appropriate, you can use mermaid to start with, but if you have the capability to launch the blog via playwrite and take a screenshot of the diagram, save it in the /public/assets/images/posts/<topic>/image-name.png
+5. Before you start on a topic, perform a substantial research on the web to ensure the article contains a unique perspective. 
+6. The last thing is to find a hero image using Google Image search that matches the tone and the topic of the article.
 
 ## Quick start
 

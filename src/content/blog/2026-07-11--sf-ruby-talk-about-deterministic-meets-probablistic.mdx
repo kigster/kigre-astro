@@ -1,0 +1,213 @@
+---
+title: "Deterministic Meets Probabilistic: How I Solved Forms by Writing Four Ruby Gems and Made my Wife Happy"
+date: "2026-07-11"
+permalink: "/2026/07/11/ruby-talk-about-deterministic-meets-probablistic.html"
+category: "programming"
+tags: ["ai", "claude", "ruby", "cli", "tui", "javascript", "architecture", "copilot", "llms", "forms"]
+description: "Famous last words: 'How hard can a small intake form be?' Several months and four interconnected open-source gems later, I have achieved peak engineering enlightenment. Here is how Inquirex turns messy free-text into deterministic, typed graph states."
+heroImage: "/public/assets/images/posts/ruby/inquirex-dsl.png"
+comments: true
+draft: false
+author: kig
+---
+
+import { YouTube } from 'astro-embed'
+
+## Famous Last Words: "How Hard Can a Form Be?"
+
+It all started when my wife passed her third exam to become an Enrolled Agent. For the uninitiated, that means she can legally battle the IRS on behalf of mortal taxpayers. Naturally, she started a tax preparation business. But as an inherently impatient person married to another inherently impatient person, she quickly encountered a scaling bottleneck: the phone.
+
+She was spending 30 minutes on every single intake call asking the exact same series of baseline questions. *"Are you single or married? Do you have dependents? Do you have a W-2, or are you running a side hustle involving artisanal goat cheese and/or volatile crypto bags?"*
+
+She looked at me and said, **"Can you just put a little form on my website so people fill this out before we talk?"**
+
+As a startup veteran and CTO who has survived decades of architectural paradigms—from CORBA object brokers and SOAP envelopes to the modern ecosystem of microservices that are really just distributed monoliths with worse latency—I uttered the absolute most dangerous phrase in computer science:
+
+> "A small form? How hard can it be?"
+
+Fast forward through a blur of caffeine, existential dread, and deep graph theory, and I didn't just build a form. I built **Inquirex**: a family of four interconnected, medium-independent Ruby gems that implement a declarative, typed, branching directed-graph engine with probabilistic LLM state pre-filling. 
+
+Because why use a 10-line HTML form when you can over-engineer a bulletproof, decades-spanning solution to human-data collection?
+
+---
+
+> [!IMPORTANT]
+>
+> I spoke about this at a recent SF Ruby Meetup, in April 2026. Here is the video, which is also referenced in the end of the post.
+> 
+> <YouTube id="iaoKW7Ap3_M" autoplay="1" />
+
+---
+
+## The Landscape of Disappointment
+
+Before writing a single line of code, I did what any responsible engineer does: I looked for something to steal. I combed through Python, JavaScript, and Ruby looking for an existing solution. 
+
+I found plenty of things, but they all missed the mark:
+- **Form Wizards & State Machines:** Too linear. They expect you to go from Page A to Page B to Page C like a corporate drone executing a legacy payroll process.
+- **Workflow & Rules Engines:** Too heavy. I didn't want to spin up a BPEL server or write an XML schema that looks like an enterprise enterprise enterprise blueprint.
+- **Survey Gems:** Lacked deep, native data typing and real-time state serializability.
+
+Nothing combined a **declarative DSL**, a **directed graph with custom rule-based transitions**, **strict data typing**, **JSON serialization**, and **probabilistic LLM extraction**. 
+
+If a user is a simple W-2 filer, they need exactly 8 questions. If they own three LLCs and an offshore trust, they need 17 entirely different questions. Furthermore, my wife needed a running estimate—an *accumulator*—that dynamically adjusts the estimated price based on their complexity. *"Oh, you have crypto investments? Add $200 and a bottle of ibuprofen to the bill."*
+
+Enter **Inquirex**.
+
+---
+
+## The Core Engine: Declarative DSL and Graph Mastery
+
+The foundational gem, `inquirex`, handles the heavy lifting of state management, graph traversal, and validation. It supports 11 strict data types (strings, integers, currencies, enums, multi-select enums, etc.). 
+
+Here is a look at the Ruby DSL. It looks clean, declarative, and entirely un-Ruby-like if you squint hard enough:
+
+```ruby
+Inquirex.form :tax_intake do
+  start_at :filing_status
+
+  question :filing_status do
+    type :enum
+    options single: "Single", married_jointly: "Married Filing Jointly"
+    hint "Your legal status as of Dec 31st. No, 'it's complicated' is not an option."
+    
+    # The Accumulator: Modifying state on the fly
+    accumulator :estimated_price do
+      apply single: 200, married_jointly: 400
+    end
+
+    # Explicit graph edge transitions
+    transition to: :dependents
+  end
+
+  question :dependents do
+    type :integer
+    hint "How many miniature humans rely on you for sustenance?"
+    
+    accumulator :estimated_price do
+      multiply_by 50 # $50 per child tax credit headache
+    end
+
+    # Conditional branching using custom rules
+    transition to: :business_owner, if: ->(ans) { ans > 0 }
+    transition to: :w2_income
+  end
+  
+  # More steps follow...
+end
+```
+
+Every single question is a node in a directed graph. The edges are the transition rules. At any microsecond during the user's journey through this flow, the entire state—answers, current node, historical path, and accumulated values—serializes into a clean JSON blob. No hidden state, no "well, it's mostly in the object but also a bit in the DOM." All of it, on demand.
+
+And because it serializes perfectly, the engine doesn't care where it runs. Terminal, browser, a REST endpoint, a smoke signal—the presentation layer is somebody else's problem. It's completely medium-independent.
+
+## Enter the AI: `inquirex-llm`
+
+This is where things get truly wild. Pull in `inquirex-llm` and you inject four new probabilistic verbs into your architectural lexicon: `clarify`, `describe`, `summarize`, and `detour`.
+
+Instead of frog-marching a human through 17 tedious form controls like it's 1998 and the page is loading over a 56k modem, you drop a single big text box at the top of the flow and say: *"Tell us your life story in plain English."* People are delighted to tell you their life story. The hard part was never getting them to talk—it's turning that ramble into a typed data structure without losing your mind.
+
+The user types:
+
+> "Hey! I'm married, we have two kids. I work a regular W-2 job at Google, but my wife runs a small consulting business on the side. We also bought some Bitcoin last year."
+
+We take that messy, unformatted human string and feed it to an LLM alongside a strict JSON schema derived directly from our deterministic DSL. Then we crank the temperature down to a frostbitten `0.0`—because nobody ordered a poet. We don't want creativity, we don't want hallucinated dependents, and we absolutely do not want a Shakespearean sonnet about the alternative minimum tax. We want boring, repeatable, structural extraction.
+
+```json
+{
+  "filing_status": "Married Filing Jointly",
+  "dependents": 2,
+  "business_owner": false,
+  "w2_income": true
+}
+```
+
+The LLM returns a clean, populated data structure that matches our form steps. The Inquirex engine ingests it, validates the data types, maps them to the respective questions, and marks them as completed.
+
+> [!TIP]
+> 
+> The Insight: The DSL defines what data you need deterministically. The LLM extracts what it can probabilistically. The engine then calculates the delta and only asks the user the questions that are left.
+
+If the user already told us they have two kids and a spouse, the engine quietly crosses `filing_status` and `dependents` off the list and jumps straight to whatever it still doesn't know—email, home state, that one field nobody ever volunteers. The user never sees the questions they already answered. They just feel like the form *read their mind*, which, arguably, it did.
+
+## Because Terminals Are Superior: `inquirex-tty`
+
+Look, I had to. A web UI is a security hazard, a RAM glutton, and an affront to everything good and holy—so naturally the very first frontend I built was for the terminal. `inquirex-tty` runs these complex, branching, AI-powered intake forms right inside your favorite terminal emulator, using the excellent `tty-toolkit` to render genuinely nice interactive radio buttons, checkboxes, and text inputs.
+
+It also throws in utility commands to validate your DSL graph, export flows to JSON/YAML, or auto-generate a structural flowchart with Mermaid.js—because a form engine that can't draw a picture of itself is just being coy.
+
+Here's what a session looks like when the LLM pre-fills the initial brain-dump and hands you the rest to finish by hand:
+
+```bash
+$ inquirex run examples/tax_heavy.rb
+
+[Inquirex AI Intake Engine Initialized]
+> Please describe your situation in your own words:
+> I am married with a kid, working a W2 job, my wife has a business, and we trade crypto.
+
+Processing free-text via probabilistic extraction...
+✔ Extracted: dependents = 1
+✔ Extracted: income_types = [:w2, :business, :crypto]
+⚠ Missing critical context for: filing_status, state_jurisdiction
+
+Moving to first unfulfilled graph node...
+
+? Select your exact Filing Status:
+  ❯ Married Filing Jointly
+    Single
+    Married Filing Separately
+
+? Which state do you reside in? California
+? Enter your full name: Konstantin Gredeskoul
+
+Form Complete! 
+Accumulated Estimated Price: $650.00
+Data Payload serialized to JSON. Sending upstream...
+```
+
+## Moving to the Browser: `inquirex-js`
+
+> [!NOTE]
+>
+> This package is going to appear on npmjs shortly. For now you can use it's [github](git@github.com:inquirex/inquirex-js) repo.
+
+Of course, unless you are onboarding senior Linux kernel maintainers, you will eventually have to expose these forms to normal citizens who expect a graphical interface.
+
+That is where inquirex-js comes in. It's a lightweight, pure JavaScript frontend package built using Lit and standard Web Components. Because it relies on the Shadow DOM, it encapsulates its styles entirely, meaning it won't conflict with your host site's chaotic CSS rules or get accidentally overridden by a global bootstrap theme from 2014.
+
+It reads the exact same JSON structure exported by the Ruby engine and handles the client-side navigation, rendering native HTML widgets for single-selects, checkboxes, and multi-selects while respecting the edge transition logic perfectly.
+
+## The Catch (And an Invitation to Collaborate)
+
+As it stands today, `inquirex` is arguably one of the most cohesive, extensible open-source form engines available—especially given its architectural bifurcation between deterministic graphs and probabilistic text extraction. But I'd be lying if I said it was finished. There is one honest structural limitation in `inquirex-js`.
+
+Because `inquirex-js` is a pure client-side framework, it doesn't support the LLM keywords (`clarify`, `describe`, `detour`) out of the box on the frontend. Why? Because stashing your OpenAI or Anthropic API keys inside a client-side JavaScript file is an excellent way to wake up to a $50,000 bill before breakfast, courtesy of the first script-kiddie who views your source.
+
+So the DSL compiler cheats, honestly: when it detects an LLM-based keyword, it injects a `"require_server": true` flag into the compiled JSON payload. The frontend takes one look, realizes it's out of its depth, and phones home—an RPC call back to a secure backend that actually holds the secrets.
+
+## The Roadmap
+
+I am currently working on a production-ready Rails engine that acts as the orchestration server—managing your keys, handling the LLM mapping securely, and acting as the state backend for inquirex-js.
+But what we really need is to build native server proxy hooks into inquirex-js so it can talk to any backend framework (Node, Go, Python, or Rails) to resolve those probabilistic LLM steps.
+If you like writing clean Ruby DSLs, working with stateful directed graphs, or messing with Lit web components, check out the source repositories:
+
+- Core Engine: inquirex
+- AI Layer: inquirex-llm
+- Terminal UI: inquirex-tty
+- Web Component: inquirex-js
+
+Drop a star, submit a PR, or let me know how much you enjoy seeing state machines rescue us from form-field hell. Now, if you'll excuse me, I need to go sync some Plaid bank feeds to figure out if we actually owe taxes on that goat cheese venture.
+
+## Next Steps
+
+Watch out for the launch of [qualified.at](https://qualified.at) that will enable you to take advantage of all of the above with little to know technical know how.
+
+***
+
+### Referenced Links:
+
+* Presentation Video: [http://youtube.com/watch?v=iaoKW7Ap3_M](http://youtube.com/watch?v=iaoKW7Ap3_M)
+
+> [!IMPORTANT]
+>
+> This site is being actively developed and will be ready for testing very, very shortly. Watch this space.
