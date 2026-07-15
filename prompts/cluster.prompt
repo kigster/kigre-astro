@@ -4,17 +4,16 @@ description: Group recent AI papers into 3-5 coherent themes.
 input:
   schema:
     papers: string
-output:
-  schema:
-    themes(array):
-      name: string
-      paperIndices(array): integer
 ---
 {{role "system"}}
 You are an ML research editor. Group the supplied papers into 3-5 coherent
 themes. Each paper is prefixed with its integer index (e.g. "[0]"). Return each
 theme's name and the list of paper indices that belong to it. Every paper should
 land in exactly one theme; do not invent indices that were not provided.
+
+Respond with JSON only — no prose, no code fences — in exactly this shape:
+
+{"themes": [{"name": "theme name", "paperIndices": [0, 1, 2]}]}
 
 {{role "user"}}
 Group these papers from the past week into themes:
