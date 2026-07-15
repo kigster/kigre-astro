@@ -20,7 +20,9 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import { z } from "genkit";
 import { createAI, resolveProvider } from "../ai/genkit";
+import { promptJson } from "../ai/structured";
 import { fetchArxiv, type Paper } from "./arxiv";
 
 const OUT_DIR = process.env.DIGEST_OUT_DIR ?? "notes/drafts/ai-digests";
@@ -34,17 +36,24 @@ export interface DigestConfig {
   theme?: string;
 }
 
-interface Theme {
-  name: string;
-  paperIndices: number[];
-}
-interface ClusterOutput {
-  themes: Theme[];
-}
-interface VerifyOutput {
-  ok: boolean;
-  issues: string[];
-}
+// Response shapes for the two JSON stages. These are the single source of truth:
+// the prompts describe the shape in prose (see ../ai/structured for why they
+// cannot declare `output.schema`), and these schemas enforce it.
+const ClusterOutput = z.object({
+  themes: z.array(
+    z.object({
+      name: z.string(),
+      paperIndices: z.array(z.number().int()),
+    }),
+  ),
+});
+
+const VerifyOutput = z.object({
+  ok: z.boolean(),
+  issues: z.array(z.string()),
+});
+
+type VerifyOutput = z.infer<typeof VerifyOutput>;
 
 export async function runDigest(config: DigestConfig): Promise<void> {
   const resolved = resolveProvider();
@@ -71,8 +80,12 @@ export async function runDigest(config: DigestConfig): Promise<void> {
   const papersList = papers
     .map((p, i) => `[${i}] ${p.title}\n${p.summary.slice(0, 400)}`)
     .join("\n\n");
-  const clusterRes = await ai.prompt("cluster")({ papers: papersList });
-  const themes = (clusterRes.output as ClusterOutput | undefined)?.themes ?? [];
+  const { themes } = await promptJson(
+    ai,
+    "cluster",
+    { papers: papersList },
+    ClusterOutput,
+  );
   console.log(`CLUSTER: ${themes.length} themes`);
 
   // ---------- 3. DRAFT ----------
@@ -98,11 +111,12 @@ export async function runDigest(config: DigestConfig): Promise<void> {
   const abstracts = papers
     .map((p) => `"${p.title}": ${p.summary}`)
     .join("\n\n");
-  const verifyRes = await ai.prompt("verify")({ abstracts, draft: body });
-  const verdict = (verifyRes.output as VerifyOutput | undefined) ?? {
-    ok: false,
-    issues: ["verifier returned no structured output"],
-  };
+  const verdict = await promptJson(
+    ai,
+    "verify",
+    { abstracts, draft: body },
+    VerifyOutput,
+  );
   console.log(
     `VERIFY: ${verdict.ok ? "PASS" : "ISSUES"} (${verdict.issues.length})`,
   );

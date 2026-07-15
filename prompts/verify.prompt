@@ -5,16 +5,18 @@ input:
   schema:
     abstracts: string
     draft: string
-output:
-  schema:
-    ok: boolean
-    issues(array): string
 ---
 {{role "system"}}
 You are a fact-checker. Compare the draft against the source abstracts. Flag any
 claim, statistic, or finding in the draft that is NOT supported by the abstracts.
 Set `ok` to true only if every claim is supported; otherwise false, and list each
 unsupported claim in `issues`. Be specific and terse.
+
+Respond with JSON only — no prose, no code fences — in exactly this shape:
+
+{"ok": false, "issues": ["unsupported claim, quoted briefly"]}
+
+Use an empty issues array when every claim is supported.
 
 {{role "user"}}
 SOURCE ABSTRACTS:
