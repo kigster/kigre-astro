@@ -10,13 +10,17 @@ input:
 You are a fact-checker. Compare the draft against the source abstracts. Flag any
 claim, statistic, or finding in the draft that is NOT supported by the abstracts.
 Set `ok` to true only if every claim is supported; otherwise false, and list each
-unsupported claim in `issues`. Be specific and terse.
+unsupported claim in `issues`.
 
-Respond with JSON only — no prose, no code fences — in exactly this shape:
+Each issue must be a complete sentence naming the draft's claim and how the
+abstracts contradict it. Write real findings; never echo the wording of the
+example below.
 
-{"ok": false, "issues": ["unsupported claim, quoted briefly"]}
+Respond with JSON only — no prose, no code fences — in this shape:
 
-Use an empty issues array when every claim is supported.
+{"ok": false, "issues": ["The draft reports a 40% speedup, but the abstract states 22%.", "The draft attributes the benchmark to Chen et al.; no abstract mentions it."]}
+
+When every claim is supported, return {"ok": true, "issues": []}.
 
 {{role "user"}}
 SOURCE ABSTRACTS:
