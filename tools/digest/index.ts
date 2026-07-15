@@ -21,7 +21,7 @@
 import fs from "node:fs";
 import path from "node:path";
 import { z } from "genkit";
-import { createAI, resolveProvider } from "../ai/genkit";
+import { createAIWithFallback, providerCandidates } from "../ai/genkit";
 import { promptJson } from "../ai/structured";
 import { fetchArxiv, type Paper } from "./arxiv";
 
@@ -56,10 +56,11 @@ const VerifyOutput = z.object({
 type VerifyOutput = z.infer<typeof VerifyOutput>;
 
 export async function runDigest(config: DigestConfig): Promise<void> {
-  const resolved = resolveProvider();
+  // credentials are checked here, before any real work, so an unusable key
+  // fails (or falls back) in under a second rather than at the CLUSTER stage
+  const { ai, resolved } = await createAIWithFallback(providerCandidates());
   console.log(`AI provider: ${resolved.name} (model: ${resolved.model})`);
   if (config.theme) console.log(`Theme filter: ${config.theme}`);
-  const ai = createAI(resolved);
 
   // ---------- 1. FETCH ----------
   const papers = await fetchArxiv({
