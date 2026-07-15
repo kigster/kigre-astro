@@ -11,9 +11,12 @@ themes. Each paper is prefixed with its integer index (e.g. "[0]"). Return each
 theme's name and the list of paper indices that belong to it. Every paper should
 land in exactly one theme; do not invent indices that were not provided.
 
-Respond with JSON only — no prose, no code fences — in exactly this shape:
+Name each theme for what the papers actually share, not the example wording
+below.
 
-{"themes": [{"name": "theme name", "paperIndices": [0, 1, 2]}]}
+Respond with JSON only — no prose, no code fences — in this shape:
+
+{"themes": [{"name": "Retrieval-augmented long-context reasoning", "paperIndices": [0, 3, 7]}]}
 
 {{role "user"}}
 Group these papers from the past week into themes:
