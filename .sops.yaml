@@ -1,0 +1,5 @@
+creation_rules:
+- path_regex: \.env\.encrypted$
+  age: age1se1q03mmy4d3gd4krnggvw7rzle3dfqpc4r2q7tfncgerfcdp26s2f0gyc4l53,age1rzch7ekn54hv66sc4f46h4h7q2qvzhdgcjkl07c0dcac2snt45uq70pml5
+- path_regex: \.encrypted$
+  age: age1se1q03mmy4d3gd4krnggvw7rzle3dfqpc4r2q7tfncgerfcdp26s2f0gyc4l53,age1rzch7ekn54hv66sc4f46h4h7q2qvzhdgcjkl07c0dcac2snt45uq70pml5

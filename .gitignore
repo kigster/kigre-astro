@@ -9,3 +9,10 @@ npm-debug.log*
 
 # talk-slide PDFs are mirrored from reinvent.one at build time (bin/fetch-talk-pdfs.sh)
 public/assets/talks/pdfs/
+.env.*
+!.env.example
+!*.encrypted
+*.key
+*.pem
+*.private
+*.public

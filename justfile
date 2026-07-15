@@ -36,6 +36,10 @@ preview:
 typecheck:
     @bun run typecheck
 
+permissions: clean
+    /usr/bin/find src \! -path './node_modules/*' -and -type f -exec chmod 644 {} \; -print
+    /usr/bin/find . \! -path './node_modules/*' -and \! -path './.claude/*' -and \! -path './.git/*' -and -type d -exec chmod 751 {} \; -print
+
 deploy: build
     @rsync -Pavz -e "ssh" ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
 
