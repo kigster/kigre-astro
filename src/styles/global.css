@@ -568,11 +568,27 @@ button:focus-visible {
   gap: 16px;
   align-items: center;
 }
+/* two rows of three, filled column-by-column (nav items are declared in
+   column-major order in BaseLayout); a hairline runs between the rows */
 .nav .links {
-  display: flex;
-  gap: 22px;
+  position: relative;
+  display: grid;
+  grid-auto-flow: column;
+  grid-template-rows: repeat(2, auto);
+  column-gap: 22px;
+  row-gap: 12px;
   align-items: center;
   white-space: nowrap;
+}
+.nav .links::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: var(--hair);
+  pointer-events: none;
 }
 /* hamburger: hidden on desktop, revealed in the mobile media query */
 .nav-toggle {
@@ -2132,6 +2148,10 @@ a.cat:hover {
   }
   .nav .links.open {
     display: flex;
+  }
+  /* the desktop two-row divider has no place in the dropdown panel */
+  .nav .links::after {
+    display: none;
   }
   .nav .links a {
     font-size: 16px;

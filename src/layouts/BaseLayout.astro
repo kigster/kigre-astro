@@ -12,13 +12,17 @@ const pathname = Astro.url.pathname;
 const cleanPath = pathname.replace(/index\.html$/, '').replace(/\.html$/, '') || '/';
 const canonicalURL = canonical ?? new URL(cleanPath, Astro.site).href;
 const isActive = (p) => (p === '/' ? pathname === '/' : pathname.startsWith(p));
+// Column-major order for the desktop two-row grid (grid-auto-flow: column):
+//   Home    Speaking     Categories
+//   About   Open Source  Tags
+// The mobile overlay renders the same array top-to-bottom.
 const navItems = [
 { href: '/', label: 'Home' },
+{ href: '/about', label: 'About' },
 { href: '/speaking', label: 'Speaking' },
 { href: '/open-source', label: 'Open Source' },
-{ href: '/about', label: 'About' },
-{ href: '/tags', label: 'Tags' },
 { href: '/categories', label: 'Categories' },
+{ href: '/tags', label: 'Tags' },
 ];
 // Color-scheme swatches (replaces the old dropdown). `id` doubles as the URL
 // hash a shared link carries (#azure, #light-earth, …); bg/accent are a small
