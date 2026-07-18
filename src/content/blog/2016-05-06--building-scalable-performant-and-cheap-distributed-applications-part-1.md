@@ -2,8 +2,8 @@
 title: "Building Scalable Performant And Cheap Distributed Applications Part 1"
 date: 2016-05-06
 permalink: "/2016/05/06/building-scalable-performant-and-cheap-distributed-applications-part-1.html"
-category: "programming"
-tags: ["sre", "resilience", "scalability", "uptime"]
+category: "Production"
+tags: ["sre", "resilience", "scalability", "uptime", "distributed-systems", "architecture"]
 description: "With this post, I'd like to start a series of *DevOps*-related conversations about building distributed applications (read: common web-apps). Folks running enterprise application use different technologies and are hosted across a range of cloud providers, and yet are often faced with very similar problems."
 heroImage: "/assets/images/posts/haproxy/haproxy-router.png"
 comments: true

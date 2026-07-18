@@ -2,8 +2,8 @@
 title: "How to Write Awesome CLI tools in Ruby and test them with RSpec and Aruba"
 date: 2020-09-07
 permalink: "/2020/09/07/writing-cli-tools-ruby-migrating-github-issues-to-pivotal-tracker.html"
-category: "programming"
-tags: ["ruby", "cli", "dry-cli", "dry-rb", "rspec", "aruba", "github api"]
+category: "Software"
+tags: ["ruby", "cli", "dry-cli", "dry-rb", "rspec", "aruba", "github-api", "testing", "tutorial"]
 description: "This post details how to use dry-cli gem to create multi-command and sub-command CLI tools, and how to test them using RSpec and Aruba."
 heroImage: "/assets/images/posts/ruby/githuh.png"
 comments: true

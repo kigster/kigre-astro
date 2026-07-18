@@ -2,8 +2,8 @@
 title: "Mixmax And My First Nodejs App."
 date: 2016-04-07
 permalink: "/2016/04/07/mixmax-and-my-first-nodejs-app.html"
-category: "programming"
-tags: ["nodejs", "mixmax", "gmail", "slash commands", "calendar", "polls"]
+category: "Software"
+tags: ["nodejs", "javascript", "mixmax", "gmail", "slash-commands", "calendar", "polls", "api"]
 description: "MixMax enhances, enriches, extends (EEE!) the standard Gmail functionality with a lot of goodies, accessible from both the GUI as well as via the slash commands while composing an email."
 heroImage: "/assets/images/posts/mixmax/mixmax.gif"
 comments: true

@@ -2,8 +2,8 @@
 title: "Scaling Web Applications On Postgresql A Walkthrough Presentation"
 date: 2015-11-28
 permalink: "/2015/11/28/scaling-web-applications-on-postgresql-a-walkthrough-presentation.html"
-category: "programming"
-tags: ["scalability", "performance", "postgresql", "web-apps", "caching", "zfs", "haproxy"]
+category: "Production"
+tags: ["scalability", "performance", "postgresql", "web-apps", "caching", "zfs", "haproxy", "databases", "presentation"]
 description: "In this exciting and informative talk, presented at PgConf Silicon Valley 2015, Konstantin cut through the theory to deliver a clear set of practical solutions for scaling applications atop PostgreSQL, eventually supporting millions of active users, tens of thousands concurrently, and with the application stack that responds to requests with a 100ms average."
 heroImage: "/assets/images/posts/postgres/scaling-web-applications-on-postgresql.png"
 comments: true

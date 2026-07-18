@@ -2,8 +2,8 @@
 title: "The Case For Vertical Sharding"
 date: 2013-02-05
 permalink: "/2013/02/05/the-case-for-vertical-sharding.html"
-category: "programming"
-tags: ["rails", "databases", "scalability", "wanelo", "postgresql", "vertical sharding"]
+category: "Production"
+tags: ["rails", "databases", "scalability", "wanelo", "postgresql", "vertical-sharding", "sharding", "architecture"]
 description: "In this post I share the story of overcoming a massive scalability bottleneck from too many writes ino the Analytics database table used for Event collection, using Vertical Sharding."
 heroImage: "/assets/images/posts/abstract/shiny-db-cylinders.jpg"
 comments: true

@@ -2,8 +2,8 @@
 title: "Evaluating Terraform for DevOps Engineers"
 date: 2024-12-06
 permalink: "/2024/12/06/understanding-terraform.html"
-category: "devops"
-tags: ["terraform", "chef", "puppet", "cloud"]
+category: "Software"
+tags: ["terraform", "chef", "puppet", "cloud", "devops", "infrastructure-as-code", "tooling"]
 description: "This post is a quick introduction to HashiCorp Terraform. We compare the approach to Chef and Puppet, and explain some conceptual differences that could help you migrate from Chef or Puppet to Terraform quicker."
 heroImage: "/assets/images/posts/terraform/devops.jpg"
 comments: true

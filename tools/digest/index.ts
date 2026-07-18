@@ -154,7 +154,9 @@ function emit(
     `title: "AI Papers This Week — ${y}.${m}.${d}"`,
     `date: ${isoDate}`,
     `permalink: "${permalink}"`,
-    'category: "ai-research"',
+    // must be one of the canonical categories (see AGENT.md) or the schema
+    // rejects the digest the moment it moves into src/content/blog
+    'category: "AI"',
     'tags: ["ai", "machine-learning", "papers", "weekly-digest"]',
     `description: "A synthesized digest connecting ${paperCount} AI papers from the past week."`,
     "comments: true",

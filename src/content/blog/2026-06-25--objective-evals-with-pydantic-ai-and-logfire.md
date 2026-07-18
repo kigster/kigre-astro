@@ -2,8 +2,8 @@
 title: "Objective Evals with the Pydantic Stack: PydanticAI, Logfire, and Choosing an Eval Framework"
 date: 2026-06-25
 permalink: "/2026/06/25/objective-evals-with-pydantic-ai-and-logfire.html"
-category: "Applied AI"
-tags: ["ai", "llm", "evals", "pydantic", "pydantic-ai", "logfire", "python", "testing"]
+category: "AI"
+tags: ["ai", "llm", "evals", "pydantic", "pydantic-ai", "logfire", "python", "testing", "observability"]
 description: "A sequel to the evals post: when your output has real ground truth, you don't need an LLM judge — you need an objective eval. A tour of the Pydantic stack (PydanticAI, Logfire, pydantic-evals) plus a verified comparison of Python eval frameworks through the objective-eval lens."
 draft: true
 comments: true

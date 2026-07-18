@@ -2,8 +2,8 @@
 title: "Ultra-Fast External SSD Drives: Samsung X5 vs SanDisk Extreme Pro V2"
 date: 2021-06-02
 permalink: "/2021/06/02/comparing-samsung-x5-and-sandisk-extreme-pro-ssds.html"
-category: "consumer-electronics"
-tags: ["usb", "thunderbolt", "ssd", "write speed", "read speed", "performance"]
+category: "Hardware"
+tags: ["usb", "thunderbolt", "ssd", "write-speed", "read-speed", "performance", "benchmarks", "storage", "gadgets"]
 description: "Real-world read/write benchmarks pitting the Samsung X5 against the SanDisk Extreme PRO V2 — nearly 2x the price, but is it actually twice as fast? Testing against a sample-library workflow that punishes slow drives."
 heroImage: "/assets/images/posts/ssds/ssds-side-by-side.png"
 comments: true

@@ -2,8 +2,8 @@
 title: "Detangling Business Logic in Rails Apps with PORO Events and Observers"
 date: 2013-08-05
 permalink: "/2013/08/05/detangling-business-logic-in-rails-apps-with-poro-events-and-observers.html"
-category: "programming"
-tags: ["ruby on rails", "observable", "ventable", "even-driven", "rails 5"]
+category: "Software"
+tags: ["ruby-on-rails", "observable", "ventable", "event-driven", "rails", "architecture", "design-patterns", "poro"]
 description: "With any Rails app that evolves along with substantial user growth and active feature development, pretty soon a moment comes when there appears to be a decent amount of tangled logic, AKA technical debt."
 heroImage: "/assets/images/posts/ruby/rails-models.png"
 comments: true

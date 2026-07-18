@@ -23,8 +23,17 @@ const blog = defineCollection({
     permalink: z.string().regex(/^\/\d{4}\/\d{2}\/\d{2}\/.+\.html$/, {
       message: 'permalink must match /YYYY/MM/DD/slug.html'
     }),
-    // RULE 2: exactly ONE category (a single string, never an array)
-    category: z.string(),
+    // RULE 2: exactly ONE category, from the canonical set (see AGENT.md).
+    // The build fails on anything else — same enforcement as permalinks.
+    category: z.enum([
+      'Production',
+      'Software',
+      'AI',
+      'Open Source',
+      'Hardware',
+      'Essays',
+      'Music & Elsewhere'
+    ]),
     // RULE 3: any number of tags
     tags: z.array(z.string()).default([]),
     description: z.string().optional(),

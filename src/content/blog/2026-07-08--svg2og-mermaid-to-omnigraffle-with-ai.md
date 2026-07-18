@@ -2,8 +2,8 @@
 title: "How I Shipped a Swift CLI in an Hour, with Tests & CI. My First Ever Swift."
 date: 2026-07-08
 permalink: "/2026/07/08/svg2og-mermaid-to-omnigraffle-with-ai.html"
-category: "programming"
-tags: ["ai", "claude", "swift", "svg", "mermaid", "omnigraffle", "cli", "macos", "diagrams"]
+category: "AI"
+tags: ["ai", "claude", "swift", "svg", "mermaid", "omnigraffle", "cli", "macos", "diagrams", "ai-assisted-development"]
 description: "Mermaid exports SVGs that OmniGraffle imports as a diagram of empty boxes. In under an hour I diagnosed why (their SVGs are built for browsers, not native apps) and shipped svg2og — a working Swift CLI — despite never having written a line of Swift in my life. A short story about what the age of AI actually changes."
 heroImage: "/assets/images/posts/svg2og/omnigraffle-import-fixed-small.png"
 comments: true

@@ -2,8 +2,8 @@
 title: "Arduino IDE Alternatives"
 date: 2014-08-02
 permalink: "/2014/08/02/arduino-ide-alternatives.html"
-category: "programming"
-tags: ["ide", "c++", "visual studio", "xcode", "eclipse"]
+category: "Hardware"
+tags: ["arduino", "ide", "c++", "visual-studio", "xcode", "eclipse", "tooling"]
 description: "Review of Arduino IDE Alternatives."
 heroImage: "/assets/images/posts/arduino/ide-arduino-arduino.jpg"
 comments: true

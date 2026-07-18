@@ -2,8 +2,8 @@
 title: "How to configure PostgreSQL for very high read/write throughput"
 date: 2013-02-13
 permalink: "/2013/02/13/high-read-write-performance-postgres-on-joyent-cloud.html"
-category: "programming"
-tags: ["postgresql", "joyent", "cloud", "high-performance", "scaling", "wanelo", "zfs", "postgresql.conf"]
+category: "Production"
+tags: ["postgresql", "joyent", "cloud", "high-performance", "scaling", "wanelo", "zfs", "postgresql.conf", "tuning"]
 description: "In this post, I'll go over some of our settings in postgresql.conf, which have been adjusted for high-performance/throughput and large RAM sizes. I would like to credit Josh Berkus and his PGExperts consultancy for providing us with timely and necessary assistance in tuning PostgreSQL these last few months."
 heroImage: "/assets/images/posts/postgres/animated-distributed-postgres.svg"
 comments: true

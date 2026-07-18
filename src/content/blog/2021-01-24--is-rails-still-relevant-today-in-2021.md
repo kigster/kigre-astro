@@ -2,8 +2,8 @@
 title: "Yes! It's 2021, and Ruby 3.0, and Ruby on Rails 6.1 are alive and thriving. Are you?"
 date: 2021-01-24
 permalink: "/2021/01/24/is-rails-still-relevant-today-in-2021.html"
-category: "programming"
-tags: ["ruby", "rails", "software", "ruby on rails"]
+category: "Essays"
+tags: ["ruby", "rails", "software", "ruby-on-rails", "opinion", "ecosystem"]
 description: "Weighing velocity, scalability, maintainability, staffing, and community against what Rails actually delivers in 2021 — with HEY's stack as a case study — to answer whether Rails is still the right choice, or just the comfortable one."
 heroImage: "/assets/images/posts/rails/ruby-on-rails.png"
 comments: true

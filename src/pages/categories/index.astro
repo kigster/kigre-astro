@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const posts = await getCollection('blog', ({ data }) => !data.draft);
+const counts = {};
+for (const p of posts) counts[p.data.category] = (counts[p.data.category] || 0) + 1;
+
+// Category cloud: same treatment as the tag cloud — alphabetical order, with
+// size + brightness encoding how many posts live in each category.
+const categories = Object.entries(counts).sort((a, b) => a[0].localeCompare(b[0]));
+const nums = categories.map(([, n]) => n);
+const min = Math.min(...nums);
+const max = Math.max(...nums);
+// map a count onto [0,1]; guard the all-equal case (max === min)
+const scale = (n) => (max === min ? 0.5 : (n - min) / (max - min));
+const MIN_PX = 13;
+const MAX_PX = 32;
+const size = (n) => (MIN_PX + scale(n) * (MAX_PX - MIN_PX)).toFixed(1);
+// brighter (closer to --fg) the more a category is used
+const tone = (n) => (45 + scale(n) * 55).toFixed(0);
+---
+<BaseLayout title="Categories" description="Browse posts by category.">
+  <div class="page">
+    <div class="eyebrow">// categories</div>
+    <h1>Browse by <em>category</em></h1>
+    <p class="lead">{categories.length} categories across {posts.length} posts.</p>
+    <div class="tag-cloud">
+      {categories.map(([c, n]) => (
+        <a
+          href={`/categories/${encodeURIComponent(c)}`}
+          style={`font-size:${size(n)}px; color:color-mix(in srgb, var(--fg) ${tone(n)}%, var(--muted))`}
+          title={`${n} post${n === 1 ? '' : 's'}`}
+        >{c}<span class="cnt">{n}</span></a>
+      ))}
+    </div>
+  </div>
+</BaseLayout>

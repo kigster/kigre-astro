@@ -2,8 +2,8 @@
 title: "C++ Newbie Tour: Getting Started with C++ on Mac OSX"
 date: 2018-09-20
 permalink: "/2018/09/20/c++-newbie-tour-how-to-get-started-with-c++-on-mac-osx.html"
-category: "programming"
-tags: ["c99", "c++", "cmake", "coding", "beginner"]
+category: "Software"
+tags: ["c++", "c99", "cmake", "coding", "beginner", "tutorial", "macos"]
 description: "In this post we'll explore some of the things that a beginner C++ programmers (but not general beginner programmers) might find useful in getting quickly up to speed."
 heroImage: "/assets/images/posts/cpp/c-cpp.jpg"
 comments: true

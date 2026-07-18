@@ -2,8 +2,8 @@
 title: "The silent genius of the DNS protocol — the story of my life."
 date: 2026-07-17
 permalink: "/2026/07/17/dns-with-dnsmadeeasy.html"
-category: "devops"
-tags: ["ruby", "ai", "claude", "codex", "dnsmadeeasy", "dns", "zone", "cli", "rfc1035"]
+category: "Open Source"
+tags: ["ruby", "ai", "claude", "codex", "dnsmadeeasy", "dns", "zone", "cli", "rfc1035", "rubygems", "terraform"]
 description: "Hundreds of companies sell DNS, yet almost none can import another provider's export, even though the standard interchange format has existed since the eighties: the zone file. The 1.0 rewrite of my dnsmadeeasy Ruby gem finally embraces it, Terraform-style: export, edit, plan, apply. Includes a live demo on this blog's own domain, and the story of thirty years that led here."
 heroImage: "/assets/images/posts/dns/dme-2022.png"
 comments: true

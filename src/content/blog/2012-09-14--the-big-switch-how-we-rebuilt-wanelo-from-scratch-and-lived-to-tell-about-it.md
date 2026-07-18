@@ -2,8 +2,8 @@
 title: "The Big Switch How We Rebuilt Wanelo From Scratch And Lived To Tell About It"
 date: 2012-09-14
 permalink: "/2012/09/14/the-big-switch-how-we-rebuilt-wanelo-from-scratch-and-lived-to-tell-about-it.html"
-category: "programming"
-tags: ["wanelo", "java", "rails", "postgresql", "mysql", "tomcat", "devops", "scalability", "performance", "fastly", "full-rewrite"]
+category: "Production"
+tags: ["wanelo", "java", "rails", "postgresql", "mysql", "tomcat", "devops", "scalability", "performance", "fastly", "full-rewrite", "migration"]
 description: "In this post we share the details of what we did and what we learned, in case someone out there ever finds themselves in a similar situation, weighing the risks of either working with a legacy stack or going full steam ahead with a rewrite."
 heroImage: "/assets/images/posts/misc/wanelo.png"
 comments: true
