@@ -1,21 +1,23 @@
 ---
-title: "When the cost of building incredible tooling is so low, how (and should you) resist the urge?"
+title: "The silent genius of the DNS protocol — the story of my life."
 date: 2026-07-17
 permalink: "/2026/07/17/dns-with-dnsmadeeasy.html"
 category: "devops"
 tags: ["ruby", "ai", "claude", "codex", "dnsmadeeasy", "dns", "zone", "cli", "rfc1035"]
-description: "Hundreds of companies sell DNS, yet almost none can import another provider's export, even though the standard interchange format has existed since the eighties: the zone file. Version 1.0.1 of my dnsmadeeasy Ruby gem finally embraces it, Terraform-style: export, edit, plan, apply. Includes a live demo on this blog's own domain, and the story of thirty years that led here."
+description: "Hundreds of companies sell DNS, yet almost none can import another provider's export, even though the standard interchange format has existed since the eighties: the zone file. The 1.0 rewrite of my dnsmadeeasy Ruby gem finally embraces it, Terraform-style: export, edit, plan, apply. Includes a live demo on this blog's own domain, and the story of thirty years that led here."
 heroImage: "/assets/images/posts/dns/dme-2022.png"
 comments: true
 draft: false
 author: kig
 ---
 
-Earlier today I pushed version 1.0.1 of my Ruby gem [dnsmadeeasy](https://rubygems.org/gems/dnsmadeeasy) to RubyGems. The gem is seven years old. The previous release was in April of 2020. Some people age whiskey; apparently I age gems.
+Earlier today I pushed version 1.0.1 of my Ruby gem [dnsmadeeasy](https://rubygems.org/gems/dnsmadeeasy) to RubyGems. Then, before the day was over, version 1.0.2. We'll get to why. The gem is seven years old. The previous release was in April of 2020. Some people age whiskey; apparently I age gems.
 
 The new version can export an entire DNS zone into a standard RFC zone file, diff that file against production, and apply the difference back. Change, plan, apply. Terraform, minus the HCL, minus the state file, minus the existential dread.
 
 Later in this post I run the whole loop live against `kig.re`, the domain serving the very page you are reading, including a record I create and then delete in front of you. But first, some history. It's my blog and I get to tell it.
+
+If you are here for the DNS and the gem changes only, feel free to [skip forward, I won't be offended](#dns).
 
 ## A Bit of a Back Story
 
@@ -63,17 +65,61 @@ The community we arrived into was packed densely around St Kilda and Balaklava R
 >
 > A slight tangent: I don't believe you could run any HTTP server software for free on Microsoft Windows, so the only option was Linux, which was at that point pre-1.0 and installable via some 40+ floppy disks, each holding 1.4Mb. Let's just say that getting Linux to boot on your PC, after inserting and swapping forty disks in exactly the right order, felt like pure magic. Around then I purchased a book, still one of my favorite technical books to date: ["The Underground Guide to UNIX"](https://www.amazon.com/Underground-Guide-UNIX-TM-Slightly/dp/0201406535). This is the one technical book that had me literally LOLing before LOL was a thing. Funny as hell. And probably quite applicable still.
 
+### So, what was the point of all of that?
+
+The point is that when most of you weren't even in your parents' plans yet, or were just learning to walk, I was running one of the first web servers on the planet off the PC in my living room.
+
+One day we get a letter inviting Vitaly and me to a black-tie ceremony at Melbourne's Hilton Hotel. Neither of us even owned a tux at that point. Long story short, the first category to be announced was our category — "The Best Community Site". Mind you, all of this is happening within the first twenty minutes of us getting there, finding and sitting down at our table. Everyone in the room seems to have arrived at the Oscars. Tuxedos everywhere, ballroom dresses, flowers, chic and booze.
+
+In fact, in the middle of each table was a giant bottle of Grey Goose vodka. I am not a fan of alcohol due to some absurdly high genetic tolerance, so I didn't partake. Meanwhile, Vitaly didn't waste any time, as both of us were quite sure there was no way we would win anything.
+
+Well, lo and behold, they announce the winner, and the winner is us! "Ruscom" — the community site for the Russian-speaking community of Melbourne.
+
+Wait, what? We are supposed to go to the stage now? Speak into the microphone. Oh God!
+
+Long story short — we both stumble to the stage, Vitaly because he was already quite wasted (food had not been served yet, and he had managed to consume a good part of that bottle), and I in disbelief.
+
+Seeing the state Vitaly was in, I rushed in to grab the mic. I said thanks for this award, it is entirely unexpected, but thanks anyway and let's keep building the Internet together. Short and sweet.
+
+Before I notice, Vitaly sneaks up behind me, grabs the mic, and yells: "We are coming!" The hall burst out laughing, and I wrestled the microphone out of his hands and handed it back. We did receive an absolutely astonishing-looking award, which has since gotten lost somehow. I can't even find a picture of the Telstra Internet Awards on the internet, let alone the award.
+
+But — imagine a glass globe with golden letters around it spelling "WWW", on a base with our site's address. I bet I could've sold that on eBay for a few pennies now. LOL.
+
+Believe it or not, every bit of this story happened, and if Vitaly or I ever find any photos of that day, I'll make sure to put them here.
+
+### Back to DNS
+
+So how does this relate to DNS?
+
+Well, because DNS is freaking amazing, and is one of the gold standards in hierarchical, tree-like lookup systems that scale logarithmically with the number of sites and domains on the Internet. It is widely recognized by computer scientists as a _**masterpiece of distributed engineering that scales exceptionally well**_. Paul Mockapetris designed it in 1983, and his and Kevin Dunlap's 1988 paper ["Development of the Domain Name System"](https://dl.acm.org/doi/10.1145/52324.52338) remains a classic on getting a planetary-scale distributed system right on the first serious try.
+
+People who designed the internet back in the 70s and 80s couldn't have predicted the boom that was to follow, and that by 2025, six billion people — three-quarters of humanity — would be using the Internet daily ([ITU, Facts and Figures 2025](https://www.itu.int/en/mediacentre/Pages/PR-2025-11-17-Facts-and-Figures.aspx)). And yet they designed the protocols, from DNS to TCP/IP, from SMTP to BGP — that managed to scale and keep the Internet usable with astonishingly high uptime. Technically, Telnet and FTP belong to this list as well, but given how both send passwords in clear text, they didn't age as well as the rest.
+
+> [!NOTE]
+>
+> Something you may or may not know — BGP (Border Gateway Protocol) is often called the "glue" or the "routing protocol" of the internet, and its foundational design dates back to the very end of the 1980s.
+>
+> BGP was designed in January 1989 by Kirk Lougheed of Cisco and Yakov Rekhter of IBM (with Cisco co-founder Len Bosack at the table), during the 12th IETF meeting in Austin, Texas. They famously sketched the first version on the back of two ketchup-stained napkins — it is known to this day as ["the two-napkin protocol"](https://computerhistory.org/blog/the-two-napkin-protocol/), and the napkins were preserved. It was quickly published as [RFC 1105](https://datatracker.ietf.org/doc/html/rfc1105) in June 1989.
+>
+> Before BGP, the internet used a protocol called EGP (Exterior Gateway Protocol). EGP only worked for networks arranged in a strict, tree-like structure. As the internet expanded rapidly into a decentralized web of competing networks, EGP could no longer handle the traffic loops. BGP was built to allow decentralized, arbitrary network routing. Today BGP is a "Path Vector" protocol. It does not just look at the fastest route; it looks at the entire path of autonomous systems (networks run by ISPs, universities, and tech giants) a piece of data must pass through. Every time you load a webpage, BGP is the protocol determining which giant networks your data must hop across to reach its destination. The current version used across the globe today is BGP-4, which was defined in 1994 to support classless routing (CIDR) and remains the global internet routing standard.
+>
+> Reference: [What Is BGP? Border Gateway Protocol Explained.](https://www.kentik.com/kentipedia/what-is-bgp-border-gateway-protocol/)
+
 ## All About the DNS
+
+Having just called DNS a "masterpiece" of scalable engineering, I should probably substantiate my own claims and dive into it a bit deeper.
+
+<a name="dns"></a>
 
 ### How DNS Works
 
 Quick refresher, because the rest of this post depends on it.
 
-When someone types `kig.re` into a browser, their machine asks a resolving name server. The resolver asks a root server: who runs `.re`? The root points at the `.re` TLD servers. The TLD servers point at whoever is *authoritative* for `kig.re`. Only that last box actually knows my records. Everything before it is just directions.
+When someone types `kig.re` into a browser, their machine asks a resolving name server. The resolver asks a root server: who runs `.re`? The root points at the `.re` TLD servers. The TLD servers point at whoever is _authoritative_ for `kig.re`. Only that last box actually knows my records. Everything before it is just directions.
 
 ![How DNS works: the resolver walks root, then TLD, then the authoritative server](/assets/images/posts/dns/how-dns-works.png)
 
-Here's the part people mix up constantly: the company where you *buy* a domain and the company that *answers* for it don't have to be the same company. I register domains at [Namecheap](https://www.namecheap.com) or [Gandi](https://www.gandi.net), whoever prices that TLD better this year. Then the first thing I do, before the confirmation email even lands, is go into their panel and point the NS records at DNS Made Easy. The registrar keeps the paperwork. DME answers the questions.
+Here's the part people mix up constantly: the company where you _buy_ a domain and the company that _answers_ for it don't have to be the same company. I register domains at [Namecheap](https://www.namecheap.com) or [Gandi](https://www.gandi.net), whoever prices that TLD better this year. Then the first thing I do, before the confirmation email even lands, is go into their panel and point the NS records at DNS Made Easy. The registrar keeps the paperwork. DME answers the questions.
 
 ```bash
 $ dig +short NS kig.re
@@ -121,7 +167,7 @@ Every provider appears to have held the same product meeting sometime around 200
 
 ---
 
-The truly funny part is that DNS **already has a standard interchange format**.
+The truly funny part is that DNS **already has a standard interchange format**, and it has had one since 1987 ([RFC 1035, §5](https://datatracker.ietf.org/doc/html/rfc1035#section-5)).
 
 _**Zone files.**_
 
@@ -225,13 +271,13 @@ The quickly put together gem had become a real piece of software.
 
 After fixing all the double double-quoting, we ran into a more interesting problem. DNSMadeEasy supports a very useful extension to standard DNS: the `ANAME` record.
 
-Here's the deal. You cannot put a CNAME at the apex of a zone. The RFC forbids it: the apex already holds your SOA and NS records, and a CNAME tolerates no neighbors. But everybody wants their bare domain pointing at a CDN hostname. So providers invented the ANAME (elsewhere called ALIAS): it looks like a CNAME in your zone, but the provider resolves it at the edge and serves plain A records to the world. The target moves, your apex follows. No RFC police involved.
+Here's the deal. You cannot put a CNAME at the apex of a zone. [RFC 1034](https://datatracker.ietf.org/doc/html/rfc1034) forbids it: the apex already holds your SOA and NS records, and a CNAME tolerates no neighbors. But everybody wants their bare domain pointing at a CDN hostname. So providers invented the ANAME (elsewhere called ALIAS): it looks like a CNAME in your zone, but the provider resolves it at the edge and serves plain A records to the world. The target moves, your apex follows. No RFC police involved.
 
 My own apex is exactly this. `kig.re` is an ANAME to `t.sni.global.fastly.net`, and in the export below you can see both the ANAME and the four A records it currently resolves to, side by side.
 
 Since `ANAME` doesn't exist in any RFC, it also doesn't exist in the standard zone-file grammar, so the parser treats it as a first-class extension. Exports keep `ANAME` as `ANAME` by default, because that round-trips cleanly through plan and apply. And when you need a strictly RFC-compliant file, for migrating away or feeding some ancient validator, there's `--strict-rfc`: ANAMEs get flattened into whatever A records they resolve to at that moment, which is exactly what DME's own export button does. The gem prints a warning for each flattened record, because a snapshot is a snapshot. If Fastly renumbers next week, flattened records won't follow.
 
-## Talk Is Cheap. Here Is My Actual Zone.
+## Talk Is Cheap. Here Is My Actual Zone
 
 Enough theory. Let's run the entire loop, live, on this blog's own domain. And yes, I am about to print my real DNS records in a blog post. Relax. DNS is the most public database on Earth; anyone with `dig` can read all of this. The only secret in DNS is knowing which questions to ask.
 
@@ -304,10 +350,10 @@ A few things worth noticing in there:
 
 ### Step 2: Plan, with nothing changed
 
-First, a confession I'm choosing to make in public. `plan` is supposed to infer the domain from `$ORIGIN`, and in 1.0.1 it grabs the origin with its trailing dot, sends `kig.re.` to the API, and gets a 404 for its trouble. I found this while writing this very post. Pass `--domain` explicitly for now. This is what 1.0.2 releases are for.
+First, a confession I'm choosing to make in public. In 1.0.1, `plan` inferred the domain from `$ORIGIN` — and grabbed it with its RFC-mandated trailing dot, sent `kig.re.` to the API, and got a 404 for its trouble. I found this while writing this very post. That's the whole story behind 1.0.2, released the same day: the domain is now simply the first argument of every zone command, the file's `$ORIGIN` is cross-checked against it before a single API call is made, and if you swap the two arguments, it politely tells you so instead of face-planting. A bug report that became a better CLI.
 
 ```bash
-$ dmez zone plan kig.re.zone --domain=kig.re
+$ dmez zone plan kig.re kig.re.zone
 
 ╔ ✔ OK ═══════════════════════════╗
 ║ Zone plan complete for kig.re.  ║
@@ -331,11 +377,11 @@ dmez-demo 60 IN TXT     "dmez 1.0.1 was here (zone apply demo)"
 Plan sees exactly one thing to do:
 
 ```bash
-$ dmez zone plan kig.re.zone --domain=kig.re
+$ dmez zone plan kig.re kig.re.zone
 Create
   - dmez-demo TXT dmez 1.0.1 was here (zone apply demo) (ttl=60)
 
-$ dmez zone apply kig.re.zone --domain=kig.re --add-only --yes
+$ dmez zone apply kig.re kig.re.zone --add-only --yes
 
 ╔ ✔ OK ═══════════════════════════╗
 ║ Zone apply complete for kig.re. ║
@@ -371,17 +417,17 @@ Adding email records to a live business domain with a mode that is structurally 
 Take the line back out of the file and plan again:
 
 ```bash
-$ dmez zone plan kig.re.zone --domain=kig.re
+$ dmez zone plan kig.re kig.re.zone
 Skipped Deletes
   - dmez-demo TXT dmez 1.0.1 was here (zone apply demo) (ttl=60) (Delete skipped by default)
 ```
 
-Look at that. The record is missing from the file, present in production, and the default answer is: *I see it, and I will not delete it unless you say so.* I have been burned by tools with default-aggressive diffs. Not this one.
+Look at that. The record is missing from the file, present in production, and the default answer is: _I see it, and I will not delete it unless you say so._ I have been burned by tools with default-aggressive diffs. Not this one.
 
 Say so:
 
 ```bash
-$ dmez zone apply kig.re.zone --domain=kig.re --delete-only --yes
+$ dmez zone apply kig.re kig.re.zone --delete-only --yes
 
 ╔ ✔ OK ═══════════════════════════╗
 ║ Zone apply complete for kig.re. ║
@@ -390,7 +436,7 @@ $ dmez zone apply kig.re.zone --domain=kig.re --delete-only --yes
 ║ Skipped: 0                      ║
 ╚═════════════════════════════════╝
 
-$ dmez zone plan kig.re.zone --domain=kig.re
+$ dmez zone plan kig.re kig.re.zone
 No changes.
 ```
 
@@ -431,9 +477,9 @@ I'd love to see a future where moving DNS providers looks like this:
 ```bash
 dmez zone export example.com --output=example.com.zone
 # edit the file
-dmez zone plan example.com.zone --domain=example.com
+dmez zone plan example.com example.com.zone
 # see the diff
-dmez zone apply example.com.zone --domain=example.com --yes
+dmez zone apply example.com example.com.zone --yes
 # watch the diff get applied to the provider via their API
 ```
 
