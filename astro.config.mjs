@@ -36,6 +36,36 @@ const mjsAssetsAsJs = {
   },
 };
 
+// Shiki bundles no grammar for DNS zone files (RFC 1035), so ```dns fences
+// would silently fall back to plaintext. This minimal TextMate grammar covers
+// what zone files actually contain: comments, $directives, record types
+// (incl. the non-standard ANAME), the IN class, quoted TXT values, IPs/TTLs.
+const dnsZoneLang = {
+  name: "dns",
+  scopeName: "source.dns-zone",
+  aliases: ["zone", "dns-zone"],
+  fileTypes: ["zone"],
+  patterns: [
+    { name: "comment.line.semicolon.dns-zone", match: ";.*$" },
+    { name: "keyword.control.directive.dns-zone", match: "^\\$(ORIGIN|TTL|INCLUDE|GENERATE)\\b" },
+    {
+      name: "string.quoted.double.dns-zone",
+      begin: "\"",
+      end: "\"",
+      patterns: [{ name: "constant.character.escape.dns-zone", match: "\\\\." }],
+    },
+    {
+      name: "storage.type.record.dns-zone",
+      match: "(?<=\\s)(SOA|AAAA|ANAME|ALIAS|CAA|CNAME|DNSKEY|DS|HTTPS|LOC|MX|NAPTR|NS|PTR|SPF|SRV|SSHFP|SVCB|TLSA|TXT|A)(?=\\s)",
+    },
+    { name: "keyword.other.class.dns-zone", match: "(?<=\\s)(IN|CH|HS)(?=\\s)" },
+    { name: "constant.numeric.ip.dns-zone", match: "\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b" },
+    { name: "constant.numeric.ttl.dns-zone", match: "(?<=\\s)\\d+(?=\\s|$)" },
+    { name: "variable.language.origin.dns-zone", match: "^@|(?<=\\s)@(?=\\s)" },
+    { name: "entity.name.tag.owner.dns-zone", match: "^[A-Za-z0-9_*][A-Za-z0-9._*-]*" },
+  ],
+};
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://kig.re",
@@ -52,6 +82,8 @@ export default defineConfig({
       // Gruvbox Dark for code blocks, always (per design decision)
       theme: "ayu-mirage",
       wrap: false,
+      // custom grammar so ```dns / ```zone fences highlight zone files
+      langs: [dnsZoneLang],
     },
   },
   // pagefind indexes the built HTML in dist/ after each build (static, client-side search)
