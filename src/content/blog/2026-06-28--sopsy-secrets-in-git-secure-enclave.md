@@ -2,8 +2,8 @@
 title: "Sopsy: Secrets in Git, Sealed by the Secure Enclave"
 date: 2026-06-28
 permalink: "/2026/06/28/sopsy-secrets-in-git-secure-enclave.html"
-category: "Security"
-tags: ["sops", "age", "secrets", "security", "rust", "cli", "secure-enclave", "macos", "devops", "git"]
+category: "Open Source"
+tags: ["sops", "age", "secrets", "security", "rust", "cli", "secure-enclave", "macos", "devops", "git", "encryption", "release"]
 description: "A small Rust CLI that lets your team commit encrypted secrets straight into git, with the private key locked inside your Mac's Secure Enclave and released only by your fingerprint. Here's what it does, the excellent little bugs I stepped on getting there, and why I think it is a genuinely nice way to run secrets on a team."
 comments: true
 heroImage: "/assets/images/posts/security/apple-enclave.jpg"

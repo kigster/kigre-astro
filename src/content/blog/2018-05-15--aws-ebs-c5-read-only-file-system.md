@@ -2,8 +2,8 @@
 title: "C5 class instance on EC2: cannot create file: Read-only file system"
 date: 2018-05-15
 permalink: "/2018/05/15/aws-ebs-c5-read-only-file-system.html"
-category: "devops"
-tags: ["aws", "ec2", "ubuntu", "nvme", "nvme-io-timeout", "fsck"]
+category: "Production"
+tags: ["aws", "ec2", "ubuntu", "nvme", "nvme-io-timeout", "fsck", "outage", "diagnostics", "linux"]
 description: "In this short post I describe the read-only file system issue that happened to one of our C5 hosts, and how we fixed it."
 heroImage: "/assets/images/posts/aws/nvme-disks.jpg"
 comments: true

@@ -982,6 +982,8 @@ button:focus-visible {
   padding-right: 44px;
 }
 .article .cat {
+  display: inline-block;
+  text-decoration: none;
   font-family: var(--font-mono);
   font-size: 15px;
   color: var(--o2);
@@ -1013,6 +1015,36 @@ button:focus-visible {
   height: 4px;
   border-radius: 50%;
   background: var(--o2);
+}
+a.cat:hover {
+  text-decoration: underline;
+}
+/* estimated read time: inverse-video bar under the byline (fg/bg swapped),
+   full article width, pill corners matching the tag chips */
+.article .read-time {
+  display: block;
+  margin-top: 12px;
+  padding: 3px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  background: var(--fg);
+  color: var(--bg);
+  border-radius: 999px;
+  text-align: center;
+}
+/* tags moved from the article footer up under the read-time badge */
+.article .read-time + .tags {
+  margin-top: 12px;
+}
+/* byline "Comments" link (count.js rewrites it to "N Comments" client-side) */
+.article .byline .byline-comments {
+  color: var(--o2);
+  text-decoration: none;
+}
+.article .byline .byline-comments:hover {
+  text-decoration: underline;
 }
 .article .hero-img {
   width: 100%;
@@ -1505,6 +1537,11 @@ button:focus-visible {
 .panel .ritem:hover h3 {
   color: #fff;
   text-decoration: underline;
+}
+/* light scheme: the white hover above vanishes on a light background — use
+   the same orange the post-body links use (var(--o2)), hover-only */
+[data-theme="light"] .panel .ritem:hover h3 {
+  color: var(--o2);
 }
 .panel .ritem .rd {
   font-family: var(--font-mono);

@@ -26,8 +26,22 @@ There is no test suite and no linter configured. The build is the gate: an inval
 These are load-bearing — they preserve SEO and existing Disqus comment threads. The Zod schema rejects violations at build time:
 
 1. **Permalinks are exact and permanent**: every post sets `permalink: "/YYYY/MM/DD/slug.html"` (regex-validated). This reproduces the old Jekyll URL so inbound links, SEO, and Disqus threads survive. **Never change a permalink after publishing.**
-1. **Exactly one category**: `category` is a single string, never an array.
+1. **Exactly one category**: `category` is a single string, never an array — and it must be one of the canonical categories below.
 1. **Any number of tags**: `tags` is an array; each tag auto-gets a page at `/tags/<tag>`.
+
+## Canonical categories (the only allowed values)
+
+Every post's `category` is exactly one of these seven. The tag examples show each category's flavor — tags themselves vary freely per post:
+
+- **Production** — outages, scaling, reliability, databases, diagnostics
+- **Software** — architecture, languages, frameworks, APIs, developer tooling
+- **AI** — agents, evals, embeddings, probabilistic systems
+- **Open Source** — gems, CLIs, libraries, releases, maintainer stories
+- **Hardware** — Arduino, sensors, electronics, physical projects
+- **Essays** — engineering judgment, history, careers, mental models
+- **Music & Elsewhere** — topics that genuinely sit outside engineering
+
+When writing or editing a post, pick the single best-fitting category from this list (do not invent new ones); categories get pages at `/categories/<name>`, mirroring tags.
 
 ## How URLs are produced (non-obvious)
 

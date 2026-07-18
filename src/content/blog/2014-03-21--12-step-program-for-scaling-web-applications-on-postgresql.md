@@ -2,8 +2,8 @@
 title: "Twelve Step Program For Scaling Web Applications On PostgreSQL"
 date: 2014-03-21
 permalink: "/2014/03/21/12-step-program-for-scaling-web-applications-on-postgresql.html"
-category: "programming"
-tags: ["scalability", "performance", "postgresql", "web-apps", "rapid growth", "wanelo"]
+category: "Production"
+tags: ["scalability", "performance", "postgresql", "web-apps", "rapid-growth", "wanelo", "databases"]
 description: "In this exciting and informative talk, presented at PgConf Silicon Valley 2015, Konstantin cut through the theory to deliver a clear set of practical solutions for scaling applications atop PostgreSQL, eventually supporting millions of active users, tens of thousands concurrently, and with the application stack that responds to requests with a 100ms average. He will share how his team solved one of the biggest challenges they faced: effectively storing and retrieving over 3B rows of 'saves' (a Wanelo equivalent of Instagram's likes or Pinterest's pins), all in PostgreSQL, with highly concurrent random access."
 heroImage: "/assets/images/posts/postgres/postgresql-cover.jpg"
 comments: true

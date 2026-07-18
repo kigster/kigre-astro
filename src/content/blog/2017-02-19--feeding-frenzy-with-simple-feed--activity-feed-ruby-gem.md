@@ -2,8 +2,8 @@
 title: "Add a Social Activity Feed for your Site in Minutes with the simple-feed Ruby Gem"
 date: 2017-02-19
 permalink: "/2017/02/19/feeding-frenzy-with-simple-feed--activity-feed-ruby-gem.html"
-category: "programming"
-tags: ["concurrency", "activity feed", "redis", "gem", "rubygems", "social network", "twemproxy"]
+category: "Open Source"
+tags: ["ruby", "simple-feed", "concurrency", "activity-feed", "redis", "gem", "rubygems", "social-network", "twemproxy"]
 description: "This gem implements a flexible time-ordered activity feeds commonly used within social networking applications. As events occur, they are pushed into the Feed and distributed to all users that need to see the event. Upon the user visiting their 'feed page', a pre-populated ordered list of events is returned by the library."
 heroImage: "/assets/images/posts/misc/social-connections.png"
 comments: true

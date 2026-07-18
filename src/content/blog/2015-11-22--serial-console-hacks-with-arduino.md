@@ -2,8 +2,8 @@
 title: "Serial Console Hacks With Arduino"
 date: 2015-11-22
 permalink: "/2015/11/22/serial-console-hacks-with-arduino.html"
-category: "programming"
-tags: ["console", "hacks", "serial", "minicom"]
+category: "Hardware"
+tags: ["arduino", "console", "hacks", "serial", "minicom", "uart"]
 description: "In this post I'll share a method that I use to connect to a Serial port of any Arduino I am using at any given moment.  This method has a caveat, in that if you have more than one Arduino connected, it will pick one of them at random."
 heroImage: "/assets/images/posts/arduino/arduino-board.jpg"
 comments: true

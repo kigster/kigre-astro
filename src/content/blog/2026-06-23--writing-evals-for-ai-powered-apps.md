@@ -2,8 +2,8 @@
 title: "Evals: The Unit Tests for the Non-Deterministic Parts of Your App"
 date: 2026-06-23
 permalink: "/2026/06/22/writing-evals-for-ai-powered-apps.html"
-category: "Applied AI"
-tags: ["ai", "llm", "evals", "claude", "ruby", "testing", "prompt-engineering"]
+category: "AI"
+tags: ["ai", "llm", "evals", "claude", "ruby", "testing", "prompt-engineering", "ai-engineering"]
 description: "Building an app on top of a language model means part of your code now returns a different answer every time you run it. How do you it consistent — and how do you know that any changes you make improve the results? Enter Evals."
 heroImage: "/assets/images/posts/evals/eval-harness.svg"
 comments: true

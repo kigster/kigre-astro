@@ -3,6 +3,7 @@ import { getCollection, getEntry, render } from 'astro:content';
 import BaseLayout from '../layouts/BaseLayout.astro';
 import Comments from '../components/Comments.astro';
 import MermaidRenderer from '../components/MermaidRenderer.astro';
+import { estimateReadTimeMinutes } from '../lib/read-time.mjs';
 
 export async function getStaticPaths() {
   const posts = (await getCollection('blog', ({ data }) => !data.draft)).sort(
@@ -37,6 +38,7 @@ const fullUrl = `https://kig.re${post.data.permalink}`;
 const fmtSlash = `${String(d.getUTCMonth() + 1).padStart(2, '0')}/${String(d.getUTCDate()).padStart(2, '0')}/${d.getUTCFullYear()}`;
 const authorName = author ? author.data.name : 'Konstantin Gredeskoul';
 const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
+const readMinutes = estimateReadTimeMinutes(post.body);
 ---
 <BaseLayout title={pageTitle} exactTitle description={post.data.description} canonical={fullUrl}>
   <div class="post">
@@ -44,7 +46,7 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
       {isDigest ? (
         <div class="ai-stamp">// AI in the News</div>
       ) : (
-        <div class="cat">// {post.data.category}</div>
+        <a class="cat" href={`/categories/${encodeURIComponent(post.data.category)}`}>// {post.data.category}</a>
       )}
       <h1>{post.data.title}</h1>
       <div class="byline">
@@ -55,7 +57,21 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
         ) : (
           <span>Konstantin Gredeskoul</span>
         )}
+        {post.data.comments && (
+          <>
+            <span class="dot"></span>
+            <a class="byline-comments" href="#disqus_thread">Comments</a>
+          </>
+        )}
       </div>
+      <div class="read-time">Estimated Read Time: {readMinutes} {readMinutes === 1 ? 'Minute' : 'Minutes'}</div>
+      {post.data.tags.length > 0 && (
+        <div class="tags">
+          {post.data.tags.map((t) => (
+            <a href={`/tags/${encodeURIComponent(t)}`}>#{t}</a>
+          ))}
+        </div>
+      )}
       {post.data.heroImage && (
         <img class="hero-img" src={post.data.heroImage} alt={post.data.title} />
       )}
@@ -76,13 +92,6 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
         )}
         <Content />
       </div>
-      {post.data.tags.length > 0 && (
-        <div class="tags">
-          {post.data.tags.map((t) => (
-            <a href={`/tags/${encodeURIComponent(t)}`}>#{t}</a>
-          ))}
-        </div>
-      )}
     </article>
 
     <aside class="panel">
@@ -149,6 +158,8 @@ const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
     {post.data.comments && (
       <Comments identifier={post.data.permalink} title={post.data.title} url={fullUrl} />
     )}
+    <!-- Disqus count.js (loaded globally in BaseLayout) rewrites the byline
+         "Comments" link into "N Comments"; links must point at #disqus_thread. -->
   </div>
 
   <MermaidRenderer />

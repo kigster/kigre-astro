@@ -2,8 +2,8 @@
 title: "Dead Simple Encryption with Sym"
 date: 2017-03-10
 permalink: "/2017/03/10/dead-simple-encryption-with-sym.html"
-category: "programming"
-tags: ["sym", "symmetric encryption", "gem", "rubygems", "keychain", "password"]
+category: "Open Source"
+tags: ["ruby", "sym", "symmetric-encryption", "gem", "rubygems", "keychain", "password", "cli", "security"]
 description: "Most of us are familiar with the concept of application secrets, how important it is is not to commit those to your version control system, and how challenging it is to distribute development and production secrets across the dev team in a consistent and, most importantly, secure fashion. In this post we introduce a new Ruby Gem called 'Sym' for symmetric encryption."
 heroImage: "/assets/images/posts/security/big-data.jpg"
 comments: true

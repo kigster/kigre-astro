@@ -2,8 +2,8 @@
 title: "Building IntelliJ Bazel Plugin from Sources"
 date: 2020-03-21
 permalink: "/2020/03/21/building-intellij-bazel-plugin.html"
-category: "programming"
-tags: ["bazel", "intellij", "docker", "build-systems", "ide"]
+category: "Software"
+tags: ["bazel", "intellij", "docker", "build-systems", "ide", "tooling"]
 description: "Overview of Bazel support in IntelliJ Family of products, and instructions on how to build the plugin from sources."
 heroImage: "/assets/images/bazel/bazel-build.png"
 comments: true
