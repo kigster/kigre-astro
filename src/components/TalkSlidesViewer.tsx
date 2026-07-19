@@ -18,7 +18,7 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 ).toString();
 
 type Props = {
-  /** same-origin PDF (mirrored by bin/fetch-talk-pdfs.sh) */
+  /** same-origin PDF from public/assets/talks/pdfs/ (see bin/rasterize-talk-pdfs.sh) */
   url: string;
   /** canonical copy on reinvent.one — fallback link if the local one 404s */
   remote: string;

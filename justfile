@@ -20,12 +20,8 @@ dev: setup build
     @bash -c "sleep 3 && open http://127.0.0.1:4321" &
     @bun run dev --host
 
-# Mirror the talk-slide PDFs into public/ (gitignored; skips ones already present)
-pdfs:
-    @bin/fetch-talk-pdfs.sh
-
 # Build production site into dist/
-build: setup pdfs
+build: setup
     @bun run build
 
 # Preview the production build locally
