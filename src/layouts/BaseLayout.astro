@@ -3,9 +3,11 @@ import '../styles/global.css';
 import Search from 'astro-pagefind/components/Search.astro';
 // `exactTitle` opts out of the global " — kig.re" suffix for pages that pass a
 // fully-composed <title> they want rendered verbatim (index + blog posts).
-// `headScripts` is a per-page list of script srcs injected right after <head>
-// opens — used by posts that declare `headScripts` in frontmatter (one-off
-// embeds like the qualified.at intake widget). Empty for everything else.
+// `headScripts` is a per-page list of scripts injected just before </head> —
+// each entry a src string or an {src, ...attrs} object (extra attributes like
+// data-trigger/data-element rendered verbatim). Declared per-post in
+// frontmatter for one-off embeds (qualified.at widget); empty everywhere else.
+// Rendered without defer so entries execute in list order (config before embed).
 const { title, description, canonical, exactTitle = false, headScripts = [] } = Astro.props;
 const pathname = Astro.url.pathname;
 // Canonical URL: posts pass their exact legacy permalink; every other page
@@ -41,7 +43,6 @@ const themeSwatches = [
 <!doctype html>
 <html lang="en" data-theme="dark-glass">
   <head>
-    {headScripts.map((src) => <script is:inline src={src} defer></script>)}
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title ? (exactTitle ? title : `${title} — kig.re`) : 'kig.re'}</title>
@@ -67,6 +68,9 @@ const themeSwatches = [
       // the collapsed-sidebar state is intentionally NOT persisted — every page
       // load starts with the sidebar visible.
     </script>
+    {headScripts.map((s) =>
+      typeof s === 'string' ? <script is:inline src={s}></script> : <script is:inline {...s}></script>
+    )}
   </head>
   <body>
     <header class="site-header" id="siteHeader">

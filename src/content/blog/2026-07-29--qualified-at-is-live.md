@@ -1,15 +1,19 @@
 ---
-title: "Qualified.at Is Live: When You Over-Engineer a Form, the Least You Can Do Is Charge for It"
+title: "Qualified.at Is Live: When You Over-Engineer a Form, the Least You Can Do is Launch the Damn Site..."
 date: "2026-07-29"
 permalink: "/2026/07/29/qualified-at-is-live.html"
 category: "AI"
 tags: ["ai", "llm", "inquirex", "forms", "lead-qualification", "saas", "rails", "javascript", "ruby", "launch"]
-description: "The four-gem form engine from my SF Ruby talk grew a pricing page. Qualified.at qualifies your leads while you sleep, extracts structured answers from human rambling, and refuses to store anybody's SSN. Come poke it."
+description: "The three-gems + one npmjs package form engine from my SF Ruby talk grew a SaaS site with a pricing page. Qualified.at gives you tools to create multi-branching forms, extract answers from free-form text using LLM, and ultimately it qualifies your leads while you sleep, and, importantly, refuses to store anybody's SSN. Come poke at it, hopefully you'll like it. Up to 1000 leads is free forever."
 heroImage: "/assets/images/posts/qualified/qualified-home.jpg"
 comments: true
 draft: false
 author: kig
-headScripts: ["/assets/js/qualified-blog-intake.js"]
+headScripts:
+  - "/assets/js/qualified-blog-intake.js"
+  - src: "https://qualified.at/embed/9a4eb508fd392c3bd05a11fad4f1bd35?origin=https%3A%2F%2Fkig.re%2F&sig=135c3df529de50306ec631a103ddc41278e397cb225a7469567abcdd9185ec90"
+    data-trigger: "element"
+    data-element: "#qualified-blog-intake"
 ---
 
 ## Previously, on "How Hard Can a Form Be"
@@ -19,6 +23,23 @@ headScripts: ["/assets/js/qualified-blog-intake.js"]
 There is exactly one dignified exit from a hole like that. You do not climb out. You install plumbing, put up a sign, and start charging admission.
 
 So: **[qualified.at](https://qualified.at)** is live. It's the hosted version of the Inquirex engine, and its entire job is to make sure you never again spend 30 minutes on the phone asking a prospect whether they're married.
+
+## Pricing
+
+There really are three levels of accounts:
+
+1. Free Forever accounts that are limited to up to two sites, and up to 1,000 leads total across the two. Once you reach that number, your account goes into hibernation until you bump it up to "Basic".
+2. "Basic" is the $29/month account, that also includes 1,000 leads, but since it's paid account — 1,000 leads **per months**. Any extra leads in any given month cost additional $10 per 1,000. Only the paid accounts have the `extract` LLM-based keyword, and a few other nice features. For details, please checkout the [pricing page](https://qualified.at/#pricing).
+3. "Pro" is the top tier account that includes up to 5,000 leads per month, with the same $10 per extra 1,000 overages as the Basic. But, being a Pro account, it includes Pro features such as:
+   - White-label branding
+   - Your own Google Analytics
+   - CRM webhooks
+   - 24-hour turnaround support
+4. Finally, there is an "Enterprise" account, which is negotiated with the business whose volume is significantly higher than that.
+
+> [!TIP]
+>
+> Once again, the pricing and the features are [available here](https://qualified.at/#pricing).
 
 ## What It Actually Is
 
@@ -71,7 +92,7 @@ There's a free tier — a thousand leads, no credit card — though the AI `extr
 Now, the fun part. This blog post is not just an announcement, it's a test bench. The button below starts an intake flow built specifically for this blog. Not a tax flow. Think of it as me qualifying *you*, dear reader, which seems only fair after everything we've been through together.
 
 <p style="text-align:center; margin: 36px 0 30px 0;">
-  <a class="intake-cta" id="qualified-blog-intake" href="https://qualified.at" target="_blank" rel="noopener">Start the intake — right here →</a>
+  <a class="intake-cta" id="get-quote" href="" rel="noopener">Start the Intake</a>
 </p>
 
 > [!NOTE]

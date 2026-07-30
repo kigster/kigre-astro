@@ -51,11 +51,16 @@ const blog = defineCollection({
     theme_article_title: z.string().optional(),
     // Optional author — must match an `id` in the authors collection.
     author: reference('authors').optional(),
-    // Per-post <head> scripts (paths/URLs rendered as <script src> tags right
-    // after <head> opens — see BaseLayout). For one-off third-party embeds,
-    // e.g. the qualified.at intake widget: ONLY a post that lists a script
-    // here gets it; every other page stays untouched.
-    headScripts: z.array(z.string()).default([])
+    // Per-post <head> scripts, rendered by BaseLayout just before </head>.
+    // Each entry is either a plain src string, or an object with `src` plus
+    // any extra attributes (data-trigger, data-element, …) rendered verbatim
+    // — e.g. the qualified.at embed. Scripts execute in list order. ONLY a
+    // post that lists a script here gets it; every other page stays untouched.
+    headScripts: z
+      .array(
+        z.union([z.string(), z.object({ src: z.string() }).catchall(z.string())])
+      )
+      .default([])
   })
 })
 
