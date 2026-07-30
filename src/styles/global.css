@@ -1068,6 +1068,26 @@ a.cat:hover {
   border-radius: 4px;
 }
 
+/* in-post intake CTA (qualified.at): looks like a button, is a plain link to
+   qualified.at until the per-post head script (headScripts frontmatter)
+   upgrades it into the embedded widget by its DOM id */
+.prose a.intake-cta {
+  display: inline-block;
+  padding: 12px 28px;
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  background: var(--o2);
+  color: var(--bg);
+  border-radius: 999px;
+  text-decoration: none;
+}
+.prose a.intake-cta:hover {
+  filter: brightness(1.12);
+  text-decoration: none;
+}
+
 /* byline author link */
 .article .byline .byline-author {
   color: var(--o2);

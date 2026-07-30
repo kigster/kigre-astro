@@ -40,7 +40,7 @@ const authorName = author ? author.data.name : 'Konstantin Gredeskoul';
 const pageTitle = `${post.data.title} — by ${authorName}, ${fmtSlash}`;
 const readMinutes = estimateReadTimeMinutes(post.body);
 ---
-<BaseLayout title={pageTitle} exactTitle description={post.data.description} canonical={fullUrl}>
+<BaseLayout title={pageTitle} exactTitle description={post.data.description} canonical={fullUrl} headScripts={post.data.headScripts}>
   <div class="post">
     <article class={isDigest ? 'article is-digest' : 'article'} data-pagefind-body>
       {isDigest ? (
