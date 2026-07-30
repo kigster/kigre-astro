@@ -68,7 +68,7 @@ Search is **Pagefind** via the `astro-pagefind` integration (`astro.config.mjs`)
 - `src/pages/` — `index.astro` (numbered archive), `[...permalink].astro` (post route), `tags/index.astro` + `tags/[tag].astro` (tag pages), `rss.xml.js`, and static pages (`about`, `speaking`, `open-source`).
 - `src/layouts/BaseLayout.astro` — the shared shell. `src/components/Comments.astro` — Disqus, keyed on the permalink so threads stay attached to legacy URLs.
 - `src/styles/global.css` + Tailwind v4 (via `@tailwindcss/vite`, configured in `astro.config.mjs` — there is no `tailwind.config`).
-- `public/assets/images/...` — post images, referenced by absolute path (`/assets/images/...`); they become click-to-zoom (medium-zoom) inside post bodies.
+- `public/assets/images/...` — post images, referenced by absolute path (`/assets/images/...`); they become click-to-zoom inside post bodies (a measurement-free lightbox in BaseLayout — medium-zoom was dropped because the :root zoom skewed its rect math).
 
 ## Design / rendering decisions (don't silently change)
 
