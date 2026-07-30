@@ -12,7 +12,7 @@ a fully static, client-side search.
 - **Comments:** Disqus (existing threads preserved by keeping legacy URLs).
 - **Code:** syntax highlighting via Shiki, Fantasque Sans Mono (self-hosted) → Cascadia Code.
 - **Callouts:** GitHub-style `> [!NOTE]` admonitions.
-- **Images:** click-to-zoom via medium-zoom.
+- **Images:** click-to-zoom via a built-in measurement-free lightbox.
 
 ______________________________________________________________________
 
@@ -90,7 +90,7 @@ def hello = puts "hi"   # syntax-highlighted by Shiki, in Fantasque Sans Mono
 > [!IMPORTANT]
 > This renders as a GitHub-style callout. Types: NOTE, TIP, IMPORTANT, WARNING, CAUTION.
 
-![alt text](/assets/images/posts/diagram.png)   <!-- click to zoom (medium-zoom) -->
+![alt text](/assets/images/posts/diagram.png)   <!-- click to zoom (lightbox) -->
 ````
 
 Put post images under `public/assets/images/...` and reference them with an absolute path
@@ -106,7 +106,7 @@ scripts/ai-digest.ts       # weekly AI paper digest generator
 src/
   content/blog/*.md        # posts (the content)
   content.config.ts        # schema enforcing the 3 content rules
-  layouts/BaseLayout.astro # nav, search box, theme dropdown, footer, medium-zoom
+  layouts/BaseLayout.astro # nav, search box, theme dropdown, footer, image lightbox
   components/Comments.astro # Disqus
   pages/
     index.astro            # the numbered editorial index (homepage)

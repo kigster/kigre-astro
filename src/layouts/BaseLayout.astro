@@ -210,10 +210,38 @@ const themeSwatches = [
       });
     </script>
 
-    <!-- medium-zoom: modern click-to-zoom replacing the old lightbox -->
+    <!-- click-to-zoom for post-body images: a measurement-free lightbox.
+         Replaces medium-zoom, whose getBoundingClientRect transform math
+         breaks under the site-wide :root zoom (zoomed images landed below
+         the fold). Fixed inset-0 + flex centering involves no JS geometry,
+         so the zoom has nothing to skew. -->
     <script>
-      import mediumZoom from 'medium-zoom';
-      mediumZoom('.prose img', { background: 'rgba(20,12,2,0.92)', margin: 24 });
+      const zoomables = document.querySelectorAll<HTMLImageElement>('.prose img');
+      if (zoomables.length > 0) {
+        const overlay = document.createElement('div');
+        overlay.className = 'img-lightbox';
+        overlay.setAttribute('role', 'dialog');
+        overlay.setAttribute('aria-modal', 'true');
+        overlay.setAttribute('aria-label', 'Zoomed image (click or press Escape to close)');
+        const full = document.createElement('img');
+        overlay.appendChild(full);
+        document.body.appendChild(overlay);
+        const close = () => {
+          overlay.classList.remove('is-open');
+          document.documentElement.classList.remove('lightbox-open');
+        };
+        overlay.addEventListener('click', close);
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+        zoomables.forEach((img) => {
+          img.classList.add('zoomable');
+          img.addEventListener('click', () => {
+            full.src = img.currentSrc || img.src;
+            full.alt = img.alt || '';
+            overlay.classList.add('is-open');
+            document.documentElement.classList.add('lightbox-open');
+          });
+        });
+      }
     </script>
     <script id="dsq-count-scr" src="//kiguino.disqus.com/count.js" async></script>
 
