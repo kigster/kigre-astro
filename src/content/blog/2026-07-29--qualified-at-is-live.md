@@ -91,9 +91,9 @@ There's a free tier — a thousand leads, no credit card — though the AI `extr
 
 Now, the fun part. This blog post is not just an announcement, it's a test bench. The button below starts an intake flow built specifically for this blog. Not a tax flow. Think of it as me qualifying *you*, dear reader, which seems only fair after everything we've been through together.
 
-<p style="text-align:center; margin: 36px 0 30px 0;">
-  <a class="intake-cta" id="get-quote" href="" rel="noopener">Start the Intake</a>
-</p>
+<div id="qualified-blog-intake" style="text-align:center; margin: 36px 0 30px 0; padding: 5px; background-color: #FFB020; color: black; font-weight: 800; font-size: 1.3em; border-radius: 10px; cursor: pointer;">
+  Start the Intake
+</div>
 
 > [!NOTE]
 >
