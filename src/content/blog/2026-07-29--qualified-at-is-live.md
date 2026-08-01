@@ -24,18 +24,51 @@ There is exactly one dignified exit from a hole like that. You do not climb out.
 
 So: **[qualified.at](https://qualified.at)** is live. It's the hosted version of the Inquirex engine, and its entire job is to make sure you never again spend 30 minutes on the phone asking a prospect whether they're married.
 
+But not to undersell my own first SaaS product, I realized that nobody except developers will bother writing a form definition in a DSL, even if it's easy, because for long forms it's not that easy to be completely honest.
+
+So, I decided to bite the bullet, and after a day of me and Claude fighting between each other and with the world of JavaScript, we got the Visual Editor that can build the DSL for you. And that, my friends, is a game changer.
+
+## Visual Editor FTW
+
+Here are two screenshots of a Visual Editor building the form that takes name and email, but only if you first consent to it:
+
+![visual-editor](/assets/images/posts/qualified/qualified-at-gui-inspector.png)
+
+Here you see the editor in full glory: one of the questions is selected, and the inspector window on the right alows you to configure in its entirety: where we go from there based on answers, and so on.
+
+At any moment, you can hit the DSL menu link up top, and it will show you the auto-generated DSL.
+
+![visual-editor](/assets/images/posts/qualified/qualified-at-gui-dsl.png)
+
+And what this post truly lacked is a screenshot of the actual copilot window in action:
+
+<p align="center">
+  <img src="/assets/images/posts/qualified/copilot.png" width="300"/>
+</p>
+
+
 ## Pricing
 
 There really are three levels of accounts:
 
-1. Free Forever accounts that are limited to up to two sites, and up to 1,000 leads total across the two. Once you reach that number, your account goes into hibernation until you bump it up to "Basic".
-2. "Basic" is the $29/month account, that also includes 1,000 leads, but since it's paid account — 1,000 leads **per months**. Any extra leads in any given month cost additional $10 per 1,000. Only the paid accounts have the `extract` LLM-based keyword, and a few other nice features. For details, please checkout the [pricing page](https://qualified.at/#pricing).
-3. "Pro" is the top tier account that includes up to 5,000 leads per month, with the same $10 per extra 1,000 overages as the Basic. But, being a Pro account, it includes Pro features such as:
+1. **Free Forever** accounts are limited to up to two sites, and up to the total of 1,000 leads across the two. Once you reach that number, your account continues taking leads, but until you upgrade they are not visible to you.
+
+<br />
+
+2. "Basic" is the $29/month account with practically every feature enabled. Not onlh it includes 1,000 leads, but since it's paid account — it's 1,000 leads **per month**. Any extra leads in any given month cost additional $10 per 1,000. Only the paid accounts have the `extract` LLM-based keyword, and a few other nice features. For details, please checkout the [pricing pages](https://qualified.at/#pricing).
+
+<br />
+
+3. "Pro" is the top tier, at $49/month, and this account includes up to 5,000 leads per month, with the same $10 per extra 1,000 overages as the Basic. But, being a Pro account, it includes some real Pro features such as:
    - White-label branding
-   - Your own Google Analytics
-   - CRM webhooks
+   - Automatic Theme Creator based on your site look and feel
+   - Your own Google Analytics ID
+   - CRM webhooks after completion of the form, and email sending within the form.
    - 24-hour turnaround support
-4. Finally, there is an "Enterprise" account, which is negotiated with the business whose volume is significantly higher than that.
+
+<br />
+
+4. And finally, there is an "Enterprise" level, which is negotiated case by case basis, with businesses whose volume is significantly higher than that, and that might need additional features developed.
 
 > [!TIP]
 >
@@ -49,7 +82,7 @@ You define your questions once, in the Inquirex Ruby DSL or plain JSON (the `inq
 
 What lands in your inbox is not "name and email," which is what most contact forms proudly deliver after 25 years of web innovation. It's the answers: filing status, dependents, income sources, case type, whatever your flow asks. A lead that is already qualified before anyone picks up a phone.
 
-## The Party Trick: the `extract` Keyword
+## The Party Trick or a Killer Feature? T he `extract` Keyword
 
 Here is the part I actually care about, and the reason the previous post existed. Nobody wants to click through 17 form controls. People do, however, love telling you their life story. So the widget leads with one big text box: *describe your situation*.
 
@@ -91,15 +124,15 @@ There's a free tier — a thousand leads, no credit card — though the AI `extr
 
 Now, the fun part. This blog post is not just an announcement, it's a test bench. The button below starts an intake flow built specifically for this blog. Not a tax flow. Think of it as me qualifying *you*, dear reader, which seems only fair after everything we've been through together.
 
-<div id="qualified-blog-intake" style="text-align:center; margin: 36px 0 30px 0; padding: 5px; background-color: #FFB020; color: black; font-weight: 800; font-size: 1.3em; border-radius: 10px; cursor: pointer;">
+<!-- <div id="qualified-blog-intake" style="text-align:center; margin: 36px 0 30px 0; padding: 5px; background-color: #FFB020; color: black; font-weight: 800; font-size: 1.3em; border-radius: 10px; cursor: hand;">
   Start the Intake
-</div>
+</div> -->
 
 > [!NOTE]
 >
 > Full disclosure: the widget embed for this post is being wired up as we speak. If the button opens the qualified.at homepage instead of a modal, I haven't flipped the switch yet. Come back tomorrow, or heckle me in the comments — both motivate me equally.
 
-Try to break it. Ramble at the text box. Describe your situation in the style of a 19th-century Russian novel. Paste in your grocery list and see what it extracts (a lead with `dependents: 0` and a concerning quantity of cheese, probably). The regex guard will bounce anything that looks like an SSN, so don't bother — several of you were absolutely going to try.
+<!-- Try to break it. Ramble at the text box. Describe your situation in the style of a 19th-century Russian novel. Paste in your grocery list and see what it extracts (a lead with `dependents: 0` and a concerning quantity of cheese, probably). The regex guard will bounce anything that looks like an SSN, so don't bother — several of you were absolutely going to try. -->
 
 ## The Honest Pitch
 
