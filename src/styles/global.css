@@ -2709,3 +2709,8 @@ html.toc-open .toc-panel {
     display: none !important;
   }
 }
+
+img[src$=".gif"] {
+  border-radius: 10px;
+  border: 3px solid #FF8000;
+}

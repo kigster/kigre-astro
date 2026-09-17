@@ -43,5 +43,8 @@
   "packageManager": "bun@1.3.14",
   "volta": {
     "node": "24.17.0"
+  },
+  "overrides": {
+    "vite": "^7.3.5"
   }
 }
