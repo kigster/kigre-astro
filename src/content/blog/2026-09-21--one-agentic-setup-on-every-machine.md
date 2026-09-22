@@ -1,10 +1,10 @@
 ---
-title: "One agentic setup, every machine, every project"
+title: "Agentic Software Factory, In Action"
 date: "2026-09-21"
 permalink: "/2026/09/21/one-agentic-setup-on-every-machine.html"
 category: "AI"
-tags: ["ai", "agents", "claude-code", "ruby", "gems", "cli", "skills", "plugins", "workflow", "locking", "agentilda", "agent-lock", "open-source"]
-description: "Three repos that keep my coding agents consistent on every computer, turn an ideal into spec, spec into a plan, plan into PRs, reviewed and passing on CI, and how to stop thirty agents from stepping on each each other's toes."
+tags: ["ai", "agents", "claude-code", "ruby", "gems", "cli", "skills", "plugins", "workflow", "locking", "agentilda", "agent-lock", "open-source", "agentic-factory", "automation"]
+description: "In this post I show you my agentic setup consisting of three repos, one of which is a completely self-contained software factory. It defines agents that complete specs, write plans, break them down into frontend and backend work, then pass it onto the agents specializing in that type of development, who are working concurrently and communicating between each other through a 'mailbox' mechanism. Once they are done, pull requests are submitted and another adversarial agent performs a PR review. Only after addressing the feedback, going green on CI, do the PRs become ready for merge and for human evaluation. I did this deliberately, but sooner or later the majority of PRs will auto-merge and auto-deploy."
 heroImage: "/assets/images/posts/factory/software-factory.avif"
 comments: true
 draft: false
@@ -21,11 +21,15 @@ So I did what any reasonable person does after the third archaeology project. I 
 
 Claude Code is great. Codex is fine. Cursor does things. That is not where the pain is. The pain is that a coding agent is only as good as the context it loads, and the context lives in a pile of dotfiles that no package manager owns.
 
+> [!IMPORTANT]
+>
+> There are no standard package managers yet for plugins, skills, commands, scripts, and so on. Everyone is winging it. So this is my version of winging it, although it is perhaps quite rigorous and consistent in it's design and implementation. 
+
 Nobody publishes `my-skills-as-of-tuesday` to a registry. You clone a repo, you copy a folder, you forget where it came from, and six weeks later the skill is stale and there is no way to tell which upstream it drifted from. Multiply by two laptops and a desktop.
 
 What I wanted was boring: one file that declares what my agentic environment is, and one command that makes any machine look like that.
 
-## Repo one: `agentilda-ai-setup`
+## Repo I: `agentilda-ai-setup`
 
 > [!IMPORTANT]
 > 
@@ -33,7 +37,7 @@ What I wanted was boring: one file that declares what my agentic environment is,
 
 [`agentilda-ai-setup`](https://github.com/kigster/agentilda-ai-setup) is the boring one, which means it's the one that actually solves the problem.
 
-It has a `configuration.yml`. The file lists which coding agents you want installed (with the vendor's own install line, because I am not in the business of reimplementing `npm i -g`), which extra executables should be on PATH, and then any number of GitHub repos to pull skills and plugins from.
+It has a crucial file: **[`configuration.yml`](https://github.com/kigster/agentilda-ai-setup/blob/main/configuration.example.yml)**. The file lists which coding agents you want installed (with the vendor's own install line, because I am not in the business of reimplementing `npm i -g`), which extra executables should be on PATH, and then any number of GitHub repos to pull skills and plugins from.
 
 ```yaml
   - name: pstack
@@ -41,16 +45,30 @@ It has a `configuration.yml`. The file lists which coding agents you want instal
     repo: git@github.com:cursor/plugins.git
     path: pstack
     include_skills: /\A(architect|unslop|why)\z/
+    exclude_skills: /\A(architect-slop)\z/
 ```
 
 That last line is the part I use constantly. Most skill repos ship forty skills and I want three. Regular expression, matched against the name the skill installs as, done. There is `exclude_skills` too, and the same pair for plugins, and an `agents:` key so a Claude-only source never gets installed for an agent that cannot read it.
 
-Then:
+As you can see, I added the `exclude_skills` above for demonstration purposes, but of course in this case it is completely unnecessary.
+
+> [!NOTE]
+> 
+> If you haven't checked out the Cursor's `/unslop` skill, you really should. It turns the wall of text that Claude likes to overwhelm you with into a much more structured bullet-point format that's way easier to read.
+
+Then you simply run:
 
 ```bash
-gem install agentilda agent-lock
 bin/install
 ```
+
+You run the installer. This installs everything into `~/.agents`, 
+does not overwrite anything unless you pass `--force`, and auto-symlinks 
+it into `~/.claude` so all the skills are available to all agents, Claude included.
+Plugins are a bit of a more proprietary story, but if you look how the TypeSafe Jev 
+plugin is installed, once for claude, once for the rest of the agents, you can see
+the flexibility this offers.
+
 
 Three steps happen. `scripts/install-sources` builds `skills/` and `plugins/` in the checkout from the config. `bin/install` copies that into `~/.agents` with every symlink resolved, so `~/.agents` holds real files. `bin/setup` links `~/.agents` into `~/.claude`.
 
@@ -58,12 +76,15 @@ Nothing under `skills/` or `plugins/` is committed. They are fully regenerable f
 
 My favorite property: tightening a filter takes skills *away*. Next run unlinks whatever it installed last time and no longer wants. The tree converges on what the file says instead of accumulating like a Downloads folder.
 
+### My Own skills
+
+The repo has a folder `src/skills` which contains skills I wrote myself. At some point I'll move them to a standalone repo that's installed the same way every other repo is. But for the time being, my own creations live with the repo and get installed together with the rest of the stuff defined in the `configuration.yml`
+
 Deliberate trade: editing `src/skills/foo` does not reach `~/.claude` until you run install again. Installed tree that keeps, rather than a live symlink into a checkout you might rename on a Tuesday.
 
-## Repo two: `agentilda`, or the part that does the work
+## Repo II: `agentilda`, or the part that does the work
 
 They say "picture is worth a thousand words" so here it is, in action:
-
 
 ![in-action](/assets/images/posts/factory/agentilda-two-plan-work.avif)
 
@@ -87,6 +108,8 @@ Number is permanent, branches and PR titles join on it. Emoji is the state. And 
 
 The cast, roughly:
 
+<div class="table-wide">
+
 | Agent | Does |
 | :--- | :--- |
 | `leah-researcher` | researches the brief in parallel, appends a Research chapter |
@@ -96,6 +119,8 @@ The cast, roughly:
 | `rey-frontend` | the interface against Luke's API, and proof the halves fit |
 | `hansolo-reviewer` | reviews the diff against the plan, rejects at most twice |
 | `lando-broker` | folds your answers to blocked questions back into spec and plan |
+
+</div>
 
 Yes, the names are what you think they are. No, I will not be taking questions.
 
@@ -112,7 +137,54 @@ tilda list-plans               # state and PRs for everything
 
 When an agent crashes, times out, or you press `q`, it writes a `RESUME:` note into the plan's mailbox and signs itself `Interrupted`. Every agent reads its mail before starting. A later run picks up instead of redoing fifteen minutes of research you already paid for.
 
-## Repo three: `agent-lock`, the unglamorous one
+## What it looks like with a dozen plans at once
+
+Talking about it is cheap, so I recorded one. The repo started with twelve plan folders under `.plans`, and each held only a `spec.md`. No `plan.md`, no code, no pull requests. A few specs already had Leah's research chapter appended from an earlier run, and two were already parked waiting on me. Then I ran `tilda run --commit` and went to make tea.
+
+<script src="https://asciinema.org/a/oXIAzNcERoB9vtou.js" id="asciicast-oXIAzNcERoB9vtou" async></script>
+
+<noscript>
+
+[Watch the recording on asciinema](https://asciinema.org/a/oXIAzNcERoB9vtou)
+
+</noscript>
+
+It opens with `tilda list-plans`, so you can see the starting line. What follows is every plan getting its own dedicated agent in its own worktree. Leah researches and signs off, and the harness hands the folder to Yoda. Yoda writes the real spec and passes to Palpatine, who plans and passes to Luke and Rey, and so on down the line. Some of them spin up their own sub-agents for parallel research or to split a build, which is exactly where `alock` earns its keep (more on that below). Each row in the dashboard is one agent on one plan, with its last few status lines underneath, newest first.
+
+It went on for about thirty five minutes of wall clock and **141 million tokens**, at which point every remaining agent died with `You've hit your session limit` and the factory went quiet in the middle of a shift. Very realistic, actually. Real factories also stop when nobody pays the electricity bill. The recording ends with the harness listing which agents got cut off, and a box saying six plans need a human decision, with the exact `tilda unblock` command to run once I answer them.
+
+But the project moved forward a lot. Here's `.plans` afterwards:
+
+![The .plans folder after the run: six plans building, six blocked](/assets/images/posts/factory/plan-folders.avif)
+
+Six plans are 🟡 **Building**: they made it through research, spec and planning, and Luke and Rey are writing code. The other six are ⭕️ **Technical Block**, which means an agent hit a question it had no business answering on its own and wrote it into `blocked.md` instead of guessing. Honestly, that is my favorite part of the screenshot. An agent that stops and asks is worth ten that confidently invent your architecture.
+
+To unstick those, I write my answers into each `blocked.md` and run `tilda unblock 008 --commit`. Lando folds the answers back into spec and plan, and the folder returns to ⭐️ Planned for the next run.
+
+`agentilda-state.json` next to the folders is the run's bookkeeping: process ids, token counts, who was doing what when everything stopped. It's git-ignored, and it is how the next `tilda run` picks up where this one died instead of starting over.
+
+### What the emoji mean
+
+Every emoji in a folder name is a state, and every arrow is a handover from one agent to the next:
+
+![The agentilda state diagram: which agent moves a plan from one state to the next](/assets/images/posts/factory/state-diagram.avif)
+
+Top to bottom:
+
+- ⚪️ **New**: you wrote a brief in `spec.md`. Leah picks it up.
+- 🔎 **Researched**: Leah appended her research chapter. Yoda picks it up.
+- 📋 **Ready for Planning**: Yoda wrote the full spec, with goals, non-goals and scope. Palpatine picks it up.
+- ⭐️ **Planned**: Palpatine split it into work units in `plan.md`. Luke starts.
+- 🟡 **Building**: Luke is on the backend. When he is done and Rey is still working on the frontend, it becomes 🎨 **Building UI**. Whichever of the two finishes last moves the plan on.
+- 🟢 **Ready for Review**: a PR exists. Han Solo starts reviewing, and the folder becomes 👀 **In Review**.
+- 🔴 **Changes Requested**: Han rejected it, so Luke and Rey go back to 🟡 and fix it. He rejects at most twice.
+- ✅ **Approved & Merged**: only a human gets to draw the last arrow. It says so right on the diagram.
+
+The blocked states (⭕️ technical, 🅱️ product) are not on the diagram because they are off the main road: any agent can park a plan there, and only you can get it back out. Same for the endings nobody wants, like 💩 Scrapped by Review and ❌ Discarded.
+
+The important part is that no agent ever renames a folder. It signs the document it owns with `Completed`, `Blocked` or `Interrupted`, and the harness checks that the files the next state requires actually exist before it moves anything. So when you see 🟡 in that screenshot, it's not an agent's opinion. It's a `plan.md` on disk.
+
+## Repo III: `agent-lock`, the least glamorous, but no less important one
 
 Here is the thing nobody tells you about running several agents in one checkout: git will not save you.
 
@@ -129,7 +201,7 @@ alock release-all
 
 A refusal tells you who, since when, and what they are doing, not merely that you lost:
 
-```
+```bash
 $ alock acquire lib/billing/tax.rb
 REFUSED, do not write here
 HELD  lib/billing/**  by luke-backend  since 2026-09-09T21:04:11Z
@@ -152,7 +224,7 @@ And the model is a family rather than a single holder. Your parent's scope does 
 
 Crash handling has a detail I like. When a holder is provably dead, a lock with no notes is deleted, because there is nothing to come back to. A lock *with* notes is orphaned instead: claim void, record kept, and `acquire` refuses to silently paper over it.
 
-```
+```bash
 $ alock acquire workflow/**
 INTERRUPTED WORK on workflow/**, left by luke-backend
   alock resume workflow/**   # take it back, notes and all
@@ -178,5 +250,16 @@ cd agentilda-ai-setup && cp configuration.example.yml configuration.yml
 # read it before you run it, seriously
 bin/install --dry-run
 ```
+
+And if you were curious about my PostgreSQL skills files, they are available to pick and choose right here:
+
+* [`postgres-schema`](https://github.com/kigster/agentilda-ai-setup/tree/main/src/skills/postgres-schema)
+* [`postgres-strict`](https://github.com/kigster/agentilda-ai-setup/tree/main/src/skills/postgres-strict)
+* [`postgres-lax`](https://github.com/kigster/agentilda-ai-setup/tree/main/src/skills/postgres-lax)
+* [`postgres-analytics`](https://github.com/kigster/agentilda-ai-setup/tree/main/src/skills/postgres-analytics)
+
+I should probably mention that these skills cross-reference each other, so you might want to grab them all to get the maximum benefit.
+
+---
 
 All three are MIT. If you run more than one agent at a time, at minimum steal `alock`. Ask me how I learned that one.

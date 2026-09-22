@@ -1291,6 +1291,15 @@ html.lightbox-open {
 .prose tbody tr:hover {
   background: color-mix(in srgb, var(--panel), transparent 35%);
 }
+/* opt-in per table: wrap it in <div class="table-wide"> in a post to span the
+   full post width and keep the first column (names, keys) on one line */
+.prose .table-wide table {
+  width: 100%;
+}
+.prose .table-wide td:first-child,
+.prose .table-wide th:first-child {
+  white-space: nowrap;
+}
 
 /* Interactive multiple-choice quiz (ported from the Jekyll site's
    _quizes.scss). Checkboxes are visually hidden and toggled by clicking
