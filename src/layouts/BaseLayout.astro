@@ -8,7 +8,17 @@ import Search from 'astro-pagefind/components/Search.astro';
 // data-trigger/data-element rendered verbatim). Declared per-post in
 // frontmatter for one-off embeds (qualified.at widget); empty everywhere else.
 // Rendered without defer so entries execute in list order (config before embed).
-const { title, description, canonical, exactTitle = false, headScripts = [] } = Astro.props;
+const {
+  title,
+  description = 'Engineering notes on scaling, Ruby, DevOps and questionable hardware - by Konstantin Gredeskoul.',
+  canonical,
+  exactTitle = false,
+  headScripts = [],
+  socialTitle = title,
+  socialType = 'website',
+} = Astro.props;
+const pageTitle = title ? (exactTitle ? title : `${title} - kig.re`) : 'kig.re';
+const socialImageURL = new URL('/assets/images/logos/kigre-v2-logo-07-round.png', Astro.site).href;
 const pathname = Astro.url.pathname;
 // Canonical URL: posts pass their exact legacy permalink; every other page
 // falls back to its own absolute URL so search engines see one canonical per page.
@@ -45,9 +55,25 @@ const themeSwatches = [
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{title ? (exactTitle ? title : `${title} — kig.re`) : 'kig.re'}</title>
+    <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalURL} />
+    <meta property="og:title" content={socialTitle || pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content={socialType} />
+    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:site_name" content="kig.re" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:image" content={socialImageURL} />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="444" />
+    <meta property="og:image:height" content="444" />
+    <meta property="og:image:alt" content="kig.re blog logo" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content={socialTitle || pageTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={socialImageURL} />
+    <meta name="twitter:image:alt" content="kig.re blog logo" />
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />

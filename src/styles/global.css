@@ -1249,8 +1249,15 @@ html.lightbox-open {
 }
 .prose img {
   max-width: 100%;
+  height: auto;
   border-radius: 4px;
   cursor: zoom-in;
+}
+.prose video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
 }
 .prose blockquote {
   border-left: 3px solid;
