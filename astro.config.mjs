@@ -7,6 +7,11 @@ import pagefind from "astro-pagefind";
 import tailwindcss from "@tailwindcss/vite";
 import { remarkAlert } from "remark-github-blockquote-alert";
 import remarkMermaid from "./src/lib/remark-mermaid.mjs";
+import { thinTags } from "./src/lib/tag-counts.mjs";
+
+// tag pages with a single post are noindex'd (tags/[tag].astro); keep them out
+// of the sitemap too so the two never send conflicting signals
+const thinTagSet = thinTags();
 
 // the pdf.js worker ships as an .mjs asset; nginx (which now serves kig.re)
 // has no MIME mapping for .mjs and answers application/octet-stream, which
@@ -92,6 +97,11 @@ export default defineConfig({
     // React powers exactly one island: the react-pdf slide viewer on /speaking
     react(),
     sitemap({
+      filter(page) {
+        const { pathname } = new URL(page);
+        if (!pathname.startsWith("/tags/")) return true;
+        return !thinTagSet.has(decodeURIComponent(pathname.slice("/tags/".length)));
+      },
       // [...permalink].astro registers its Astro route WITHOUT ".html" (see the
       // getStaticPaths comment there) so build.format:"file" can append it to
       // the physical file. Astro's route manifest — which this plugin reads —

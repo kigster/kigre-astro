@@ -1,4 +1,6 @@
 User-agent: *
 Allow: /
+# search-box index shards: nothing a search engine should list
+Disallow: /pagefind/
 
 Sitemap: https://kig.re/sitemap-index.xml

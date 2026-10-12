@@ -1,6 +1,7 @@
 ---
 import { getCollection } from 'astro:content';
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { MIN_POSTS_TO_INDEX_TAG } from '../../lib/tag-counts.mjs';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
@@ -20,7 +21,7 @@ export async function getStaticPaths() {
 const { tag, posts } = Astro.props;
 const fmt = (d) => `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
-<BaseLayout title={`#${tag}`} description={`Posts tagged ${tag}.`}>
+<BaseLayout title={`#${tag}`} description={`Posts tagged ${tag}.`} noindex={posts.length < MIN_POSTS_TO_INDEX_TAG}>
   <header class="ghead">
     <div class="eyebrow">// tag</div>
     <h1>#<em>{tag}</em></h1>
