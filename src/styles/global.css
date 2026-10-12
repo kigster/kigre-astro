@@ -2181,6 +2181,18 @@ html.lightbox-open {
   margin-top: 8px;
   line-height: 1.5;
 }
+/* a project's public repos, linked under its description */
+.oss .oss-gems {
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.oss .oss-gems a {
+  color: var(--o2);
+  text-decoration: none;
+}
+.oss .oss-gems a:hover {
+  text-decoration: underline;
+}
 
 @media (max-width: 1170px) {
   /* tighter side gutters so the reading column uses the full phone width */

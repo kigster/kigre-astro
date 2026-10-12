@@ -1,28 +1,23 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import TalkPdfModal from '../components/TalkPdfModal.tsx';
-import talks from '../data/talks.json';
+import { talkItems as items } from '../lib/talks.mjs';
+import { socialImageForAsset } from '../lib/social-image.mjs';
 
-// Talk data lives in src/data/talks.json (sourced from reinvent.one/#speaking —
-// edit it there to add new talks; bin/rasterize-talk-pdfs.sh reads the same file).
-// Each talk derives from its pdf filename: a slug (also the header anchor and
-// the ?talk= deep-link value), a local cover image, and the checked-in
-// same-origin PDF that react-pdf renders in the modal.
-const items = talks.map((t) => {
-  const slug = t.pdf.split('/').pop().replace(/\.pdf$/, '');
-  return {
-    ...t,
-    slug,
-    img: `/assets/images/talks/${slug}.jpg`,
-    localPdf: `/assets/talks/pdfs/${slug}.pdf`,
-  };
-});
+// the card shows the most recent talk (talks.json is newest first)
+const latest = items[0];
+const socialImage = await socialImageForAsset(latest.img, latest.title);
 ---
-<BaseLayout title="Speaking" description="Talks and presentations on software architecture, Ruby, DevOps, concurrency, and scaling distributed systems.">
+<BaseLayout
+  title="Speaking"
+  description="Talks and presentations on software architecture, Ruby, DevOps, concurrency, and scaling distributed systems."
+  socialTitle="Slides and Presentations from Konstantin Gredeskoul"
+  socialImage={socialImage}
+>
   <div class="page">
     <div class="eyebrow">// speaking</div>
     <h1>Talks & <em>Presentations</em></h1>
-    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to open the slides right here — or share a deck with <code>?talk=…</code> in the URL.</p>
+    <p class="lead">On software architecture, Ruby, DevOps, concurrency, and scaling distributed systems. Click any cover to open the slides right here — or share a deck by its own link, e.g. <code>/speaking/2026.inquirex</code>.</p>
   </div>
   <div class="talks">
     {items.map((t) => (

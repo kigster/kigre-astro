@@ -1,11 +1,16 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import { socialImageForAsset } from '../lib/social-image.mjs';
 
 // Top projects sourced from reinvent.one/#open-source (github.com/kigster).
 // Edit to feature different repos. A `url` is the project's dedicated site,
 // rendered as a prominent orange open-in-new-window pill on the card.
+// `href` replaces the default github.com/kigster/<name> title link — for a
+// project whose repo is private, so the title can't 404. `gems` lists the
+// project's public repos (names under github.com/kigster), linked below the text.
 const repos = [
   { name: 'sopsy', lang: 'Rust', stars: 3, url: 'https://sopsy-cli.dev', desc: 'Commit encrypted secrets straight into git: the private key lives in your Mac’s Secure Enclave and is released only by your fingerprint. Team members are approved as they join.' },
+  { name: 'dry-cli.tools', lang: 'Ruby', stars: 4, url: 'https://dry-cli.tools', href: 'https://dry-cli.tools', gems: ['dry-cli-help', 'dry-cli-ui', 'dry-cli-autocomplete'], desc: 'Three Ruby gems that extend dry-cli with shell completion, readable help screens and a terminal UI.' },
   { name: 'cmake-project-template', lang: 'C++', stars: 945, desc: 'Jump-start a C/C++ project that builds libraries, binaries, and a working unit-test suite. Uses CMake and is deliberately minimal.' },
   { name: 'puma-daemon', lang: 'Ruby', stars: 39, desc: 'Restores automatic daemonization to Puma v5/v6 after it was removed from the gem itself.' },
   { name: 'simple-feed', lang: 'Ruby', stars: 335, desc: 'Flexible time-ordered activity feeds for social apps. Events are pushed and fanned out to users, then returned as a pre-populated ordered list.' },
@@ -20,8 +25,13 @@ const repos = [
   { name: 'arli', lang: 'Ruby / C++', stars: 30, desc: 'Arduino library manager decoupled from any IDE, plus a project generator based on arduino-cmake.' },
 ];
 const totalStars = repos.reduce((s, r) => s + r.stars, 0);
+const socialImage = await socialImageForAsset('/assets/images/social/open-source.jpg', 'Open source');
 ---
-<BaseLayout title="Open Source" description="Open-source projects by Konstantin Gredeskoul — 200+ repos across Ruby, C++, Arduino, Shell and more.">
+<BaseLayout
+  title="Open Source"
+  description="Open-source projects by Konstantin Gredeskoul — 200+ repos across Ruby, C++, Arduino, Shell and more."
+  socialImage={socialImage}
+>
   <div class="page">
     <div class="eyebrow">// open source</div>
     <h1>Open <em>Source</em></h1>
@@ -53,12 +63,22 @@ const totalStars = repos.reduce((s, r) => s + r.stars, 0);
       return (
         <div class="oss">
           <div class="top">
-            <h3><a href={`https://github.com/${slug}`} target="_blank" rel="noopener">{r.name}</a></h3>
+            <h3><a href={r.href ?? `https://github.com/${slug}`} target="_blank" rel="noopener">{r.name}</a></h3>
             <span class="stars">★ {r.stars}</span>
           </div>
           <div class="lang">{r.lang}</div>
           <p>{r.desc}</p>
-          {r.url && (
+          {r.gems && (
+            <p class="oss-gems">
+              {r.gems.map((g, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={`https://github.com/kigster/${g}`} target="_blank" rel="noopener">{g}</a>
+                </>
+              ))}
+            </p>
+          )}
+          {r.url && r.url !== r.href && (
             <a class="oss-site" href={r.url} target="_blank" rel="noopener" aria-label={`${new URL(r.url).hostname} (opens in a new window)`}>
               {new URL(r.url).hostname}<span class="oss-site-arrow" aria-hidden="true">↗</span>
             </a>
