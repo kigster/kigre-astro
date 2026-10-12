@@ -11,11 +11,43 @@ const authorOf = (post) =>
 const fmt = (d) =>
   `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')}`;
 ---
-<BaseLayout title="Konstantin Gredeskoul - On Engineering, Life, and Everything Else." exactTitle description="Engineering notes on scaling, Ruby, DevOps and questionable hardware - by Konstantin Gredeskoul.">
+<BaseLayout
+  title="Konstantin Gredeskoul - On Engineering, Life, and Everything Else."
+  exactTitle
+  description="Engineering notes on scaling, Ruby, DevOps and questionable hardware - by Konstantin Gredeskoul."
+  socialImage={{
+    path: '/assets/images/authors/kig-mid-size.png',
+    width: 500,
+    height: 500,
+    alt: 'Konstantin Gredeskoul',
+  }}
+  jsonLd={[
+    {
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: 'kig.re',
+      url: 'https://kig.re/',
+      description: 'Engineering notes on scaling, Ruby, DevOps and questionable hardware - by Konstantin Gredeskoul.',
+      author: { '@type': 'Person', name: 'Konstantin Gredeskoul' },
+    },
+    {
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      name: 'Konstantin Gredeskoul',
+      url: 'https://kig.re/about',
+      image: 'https://kig.re/assets/images/authors/kig-mid-size.png',
+      sameAs: [
+        'https://github.com/kigster',
+        'https://linkedin.com/in/kigster',
+        'https://twitter.com/kig',
+      ],
+    },
+  ]}
+>
   <header class="ghead">
     <div class="eyebrow">// Konstantin Gredeskoul · loves coding in zero gravity</div>
     <h2>How Software Behaves. <em>And Why.</em></h2>
-    <h1>Thirty years building, debugging, and occasionaly rescuing production systems: from Ruby and PostgreSQL to AI, distributed systems, hardware, and open source.</h1>
+    <h1>Thirty years building, debugging, and occasionally rescuing production systems: from Ruby and PostgreSQL to AI, distributed systems, hardware, and open source.</h1>
     <div class="sub">{posts.length} essays on debugging, architecture, AI, open source, strange failures, and delightfully unnecessary projects. And on the art of building software that just works.</div>
   </header>
 
