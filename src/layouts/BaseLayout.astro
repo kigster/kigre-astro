@@ -8,17 +8,47 @@ import Search from 'astro-pagefind/components/Search.astro';
 // data-trigger/data-element rendered verbatim). Declared per-post in
 // frontmatter for one-off embeds (qualified.at widget); empty everywhere else.
 // Rendered without defer so entries execute in list order (config before embed).
+//
+// Social previews (og:* / twitter:*):
+//   socialTitle       defaults to the <title>.
+//   socialDescription defaults to the site-wide line; posts pass their own.
+//   socialImage       { path, width, height, alt } — defaults to the site logo;
+//                     the front page passes the author portrait, posts the hero.
+// `noindex` keeps a page out of search results (it stays crawlable so its links
+// are followed). `jsonLd` is one schema.org object or an array of them.
+// `article` ({ publishedTime, section, tags }) adds the og:article:* tags.
+// `disqusCount` loads Disqus' count.js — only pages with a comment link need it.
+const SOCIAL_DESCRIPTION = '(30+ deep technical posts, 50+ open source projects, 250M+ downloads)';
 const {
   title,
   description = 'Engineering notes on scaling, Ruby, DevOps and questionable hardware - by Konstantin Gredeskoul.',
   canonical,
   exactTitle = false,
   headScripts = [],
-  socialTitle = title,
+  socialTitle,
+  socialDescription = SOCIAL_DESCRIPTION,
   socialType = 'website',
+  socialImage = {
+    path: '/assets/images/logos/kigre-v2-logo-07-round.png',
+    width: 444,
+    height: 444,
+    alt: 'kig.re logo',
+  },
+  noindex = false,
+  jsonLd = [],
+  article,
+  disqusCount = false,
 } = Astro.props;
 const pageTitle = title ? (exactTitle ? title : `${title} - kig.re`) : 'kig.re';
-const socialImageURL = new URL('/assets/images/logos/kigre-v2-logo-07-round.png', Astro.site).href;
+const ogTitle = socialTitle || pageTitle;
+const socialImageURL = new URL(socialImage.path, Astro.site).href;
+const socialImageType = { png: 'image/png', jpg: 'image/jpeg', jpeg: 'image/jpeg', gif: 'image/gif', webp: 'image/webp' }[
+  socialImage.path.split('.').pop().toLowerCase()
+];
+// wide images get the big X/Twitter card; square ones (logo, portrait) the compact one
+const twitterCard = socialImage.width >= 600 && socialImage.width / socialImage.height >= 1.4 ? 'summary_large_image' : 'summary';
+// `<` is escaped so a title can never close the inline <script> early
+const jsonLdBlocks = [jsonLd].flat().filter(Boolean).map((b) => JSON.stringify(b).replaceAll('<', '\\u003c'));
 const pathname = Astro.url.pathname;
 // Canonical URL: posts pass their exact legacy permalink; every other page
 // falls back to its own absolute URL so search engines see one canonical per page.
@@ -58,22 +88,31 @@ const themeSwatches = [
     <title>{pageTitle}</title>
     {description && <meta name="description" content={description} />}
     <link rel="canonical" href={canonicalURL} />
-    <meta property="og:title" content={socialTitle || pageTitle} />
-    <meta property="og:description" content={description} />
+    <meta
+      name="robots"
+      content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1'}
+    />
+    <meta property="og:title" content={ogTitle} />
+    <meta property="og:description" content={socialDescription} />
     <meta property="og:type" content={socialType} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:site_name" content="kig.re" />
     <meta property="og:locale" content="en_US" />
     <meta property="og:image" content={socialImageURL} />
-    <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:width" content="444" />
-    <meta property="og:image:height" content="444" />
-    <meta property="og:image:alt" content="kig.re blog logo" />
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:title" content={socialTitle || pageTitle} />
-    <meta name="twitter:description" content={description} />
+    {socialImageType && <meta property="og:image:type" content={socialImageType} />}
+    <meta property="og:image:width" content={String(socialImage.width)} />
+    <meta property="og:image:height" content={String(socialImage.height)} />
+    <meta property="og:image:alt" content={socialImage.alt} />
+    {article?.publishedTime && <meta property="article:published_time" content={article.publishedTime} />}
+    {article?.section && <meta property="article:section" content={article.section} />}
+    {(article?.tags ?? []).map((t) => <meta property="article:tag" content={t} />)}
+    <meta name="twitter:card" content={twitterCard} />
+    <meta name="twitter:site" content="@kig" />
+    <meta name="twitter:title" content={ogTitle} />
+    <meta name="twitter:description" content={socialDescription} />
     <meta name="twitter:image" content={socialImageURL} />
-    <meta name="twitter:image:alt" content="kig.re blog logo" />
+    <meta name="twitter:image:alt" content={socialImage.alt} />
+    {jsonLdBlocks.map((b) => <script type="application/ld+json" set:html={b} />)}
     <link rel="icon" type="image/x-icon" href="/assets/images/favicon/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />
@@ -277,7 +316,7 @@ const themeSwatches = [
         });
       }
     </script>
-    <script id="dsq-count-scr" src="//kiguino.disqus.com/count.js" async></script>
+    {disqusCount && <script id="dsq-count-scr" src="//kiguino.disqus.com/count.js" async></script>}
 
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-C18VWPMEKR"></script>
