@@ -99,6 +99,8 @@ export default defineConfig({
     sitemap({
       filter(page) {
         const { pathname } = new URL(page);
+        // /speaking/<slug> are noindex share-card pages (speaking/[slug].astro)
+        if (pathname.startsWith("/speaking/")) return false;
         if (!pathname.startsWith("/tags/")) return true;
         return !thinTagSet.has(decodeURIComponent(pathname.slice("/tags/".length)));
       },

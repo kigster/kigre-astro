@@ -1,0 +1,41 @@
+---
+// Share page for one talk: /speaking/<slug>.
+//
+// A URL fragment (/speaking#2026.inquirex) never reaches a server, so link
+// unfurlers can't see it — every talk would unfurl as the generic /speaking
+// card. This page gives each deck its own URL, with the talk's title, blurb and
+// cover as the social card, and sends humans straight on to the open deck
+// (/speaking?talk=<slug>). It is noindex (search engines get /speaking) and is
+// kept out of the sitemap.
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { talkItems } from '../../lib/talks.mjs';
+import { socialImageForAsset } from '../../lib/social-image.mjs';
+
+export function getStaticPaths() {
+  return talkItems.map((talk) => ({ params: { slug: talk.slug }, props: { talk } }));
+}
+
+const { talk } = Astro.props;
+const deck = `/speaking?talk=${talk.slug}`;
+const socialImage = await socialImageForAsset(talk.img, talk.title);
+---
+<BaseLayout
+  title={talk.title}
+  description={talk.blurb}
+  socialTitle={talk.title}
+  socialDescription={talk.blurb}
+  socialImage={socialImage}
+  noindex
+>
+  <div class="page">
+    <div class="eyebrow">// speaking · {talk.year}</div>
+    <h1>{talk.title}</h1>
+    <p class="lead">{talk.blurb}</p>
+    <p><a class="pdf" href={deck}>Open the slides →</a></p>
+  </div>
+
+  <script is:inline define:vars={{ deck }}>
+    // humans go straight to the open deck; unfurlers don't run this
+    location.replace(deck);
+  </script>
+</BaseLayout>

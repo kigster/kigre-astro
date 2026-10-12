@@ -51,3 +51,12 @@ export async function socialImageForHero(heroPath, permalink) {
   }
   return { path: heroPath, ...(await heroSize(heroPath)) };
 }
+
+/**
+ * Social image for a page that is not a post: any site-relative asset the
+ * layout can use directly. Returns the `{ path, width, height, alt }` shape
+ * BaseLayout's `socialImage` prop expects.
+ */
+export async function socialImageForAsset(assetPath, alt) {
+  return { path: assetPath, ...(await heroSize(assetPath)), alt };
+}
