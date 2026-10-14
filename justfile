@@ -38,6 +38,15 @@ permissions: clean
 
 deploy: build
     @rsync -Pavz -e "ssh" ./dist/ kig@fastly-backend.kig.re:~/workspace/kigre-astro/dist
+    @just purge-fastly
+
+purge-fastly:
+    @bash -c 'source .env \
+      && curl -i -X POST "https://api.fastly.com/service/7WmHiHZeIIb5nhFl0ZBMne/purge_all" \
+        -H "Fastly-Key: ${FASTLY_API_PURGE_TOKEN}" \
+        -H "fastly-purge-environment: production" \
+        -H "Accept: application/json" \
+    '
 
 test:
     @bun test tools/
