@@ -2350,7 +2350,9 @@ html.lightbox-open {
    width before the scale is applied.
      • Phones  (≤760px)         → 100% (native)
      • Desktop (mouse, >760px)  → 120%
-     • Tablets (touch, >760px)  → 140%  (e.g. iPad Pro)
+     • Tablets (touch, >760px)  → 130%  portrait (e.g. iPad Pro)
+     • Tablets, landscape       → 115%  the screen is already wide, and
+                                  130% blew the body text up to ~21px
    ============================================================ */
 @media (max-width: 760px) {
   :root {
@@ -2367,6 +2369,13 @@ html.lightbox-open {
 @media (min-width: 761px) and (pointer: coarse) {
   :root {
     zoom: 1.3;
+  }
+}
+/* held sideways a tablet has far more width than it needs at 130%: ease off so
+   the text sits at a sane size (16px -> ~18px, 15px -> ~17px) */
+@media (min-width: 761px) and (pointer: coarse) and (orientation: landscape) {
+  :root {
+    zoom: 1.15;
   }
 }
 
@@ -2664,6 +2673,16 @@ html.toc-open .toc-panel {
     gap: 5px;
     font-size: 10.5px;
     letter-spacing: 0.1em;
+  }
+}
+
+/* tablets and narrow windows: the reading column runs nearly edge to edge
+   (18px gutters) and the closed grab tab, fixed to the left edge, sat on top of
+   the first word of every line. Reserve a strip for it on posts that have one.
+   Phones (<=760px) park the tab at the bottom instead. */
+@media (min-width: 761px) and (max-width: 1170px) {
+  html:has(.toc-tab) .post > .article {
+    padding-left: 30px;
   }
 }
 
