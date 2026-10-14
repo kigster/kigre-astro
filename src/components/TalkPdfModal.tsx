@@ -1,8 +1,10 @@
 // The /speaking slide modal (light half). Hydrated on page load, it:
 //   - intercepts clicks on any [data-talk] link and opens the deck in a modal
 //     (without JS the links still work — they point at the raw PDF);
-//   - keeps ?talk=<slug> in the URL, so an open deck is shareable
-//     (/speaking?talk=2026.inquirex) and back/forward re-open/close it;
+//   - shows /speaking/<slug> in the URL bar while a deck is open, so a copied
+//     link is the talk's share page (its own title and cover as the social
+//     card), and back/forward re-open/close it. The share page redirects to
+//     /speaking?talk=<slug>, which opens the deck and swaps the URL back;
 //   - lazy-loads the react-pdf viewer (TalkSlidesViewer) on first open.
 import { lazy, Suspense, useCallback, useEffect, useRef, useState } from "react";
 
@@ -19,8 +21,11 @@ export type Talk = {
 };
 
 const PARAM = "talk";
+const BASE = "/speaking";
 
+// /speaking/<slug>(.html), or the ?talk=<slug> the share page redirects to
 const slugFromLocation = () =>
+  window.location.pathname.match(/^\/speaking\/(.+?)(?:\.html)?$/)?.[1] ??
   new URLSearchParams(window.location.search).get(PARAM);
 
 export default function TalkPdfModal({ talks }: { talks: Talk[] }) {
@@ -30,28 +35,22 @@ export default function TalkPdfModal({ talks }: { talks: Talk[] }) {
 
   const open = useCallback((next: string, pushUrl = true) => {
     setSlug(next);
-    if (pushUrl) {
-      const url = new URL(window.location.href);
-      url.searchParams.set(PARAM, next);
-      history.pushState({}, "", url);
-    }
+    if (pushUrl) history.pushState({}, "", `${BASE}/${next}`);
   }, []);
 
   const close = useCallback((pushUrl = true) => {
     setSlug(null);
-    if (pushUrl) {
-      const url = new URL(window.location.href);
-      if (url.searchParams.has(PARAM)) {
-        url.searchParams.delete(PARAM);
-        history.pushState({}, "", url);
-      }
-    }
+    if (pushUrl && window.location.pathname !== BASE) history.pushState({}, "", BASE);
   }, []);
 
   useEffect(() => {
-    // deep link: /speaking?talk=<slug> opens that deck on load
+    // deep link: /speaking?talk=<slug> opens that deck on load, and the URL
+    // bar switches to the shareable /speaking/<slug>
     const initial = slugFromLocation();
-    if (initial && talks.some((t) => t.slug === initial)) setSlug(initial);
+    if (initial && talks.some((t) => t.slug === initial)) {
+      setSlug(initial);
+      history.replaceState({}, "", `${BASE}/${initial}`);
+    }
 
     const onClick = (e: MouseEvent) => {
       // let modified clicks keep their native open-in-new-tab behavior

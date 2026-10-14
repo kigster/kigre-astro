@@ -9,16 +9,17 @@ import { socialImageForAsset } from '../lib/social-image.mjs';
 // project whose repo is private, so the title can't 404. `gems` lists the
 // project's public repos (names under github.com/kigster), linked below the text.
 const repos = [
+  { name: 'makeabox', lang: 'Ruby', stars: 5, url: 'https://makeabox.io', desc: 'A Rails site that generates laser-cut templates for boxes with notched edges, so every side locks together.' },
   { name: 'sopsy', lang: 'Rust', stars: 3, url: 'https://sopsy-cli.dev', desc: 'Commit encrypted secrets straight into git: the private key lives in your Mac’s Secure Enclave and is released only by your fingerprint. Team members are approved as they join.' },
   { name: 'dry-cli.tools', lang: 'Ruby', stars: 4, url: 'https://dry-cli.tools', href: 'https://dry-cli.tools', gems: ['dry-cli-help', 'dry-cli-ui', 'dry-cli-autocomplete'], desc: 'Three Ruby gems that extend dry-cli with shell completion, readable help screens and a terminal UI.' },
-  { name: 'cmake-project-template', lang: 'C++', stars: 945, desc: 'Jump-start a C/C++ project that builds libraries, binaries, and a working unit-test suite. Uses CMake and is deliberately minimal.' },
+  { name: 'inquirex/inquirex', lang: 'Ruby', stars: 255, url: 'https://qualified.at', desc: 'Flexible, deterministic DSL for typed lead-qualification forms — with AST branching, TTY and HTML interfaces, and an LLM extracting answers from free-form text.' },
   { name: 'puma-daemon', lang: 'Ruby', stars: 39, desc: 'Restores automatic daemonization to Puma v5/v6 after it was removed from the gem itself.' },
   { name: 'simple-feed', lang: 'Ruby', stars: 335, desc: 'Flexible time-ordered activity feeds for social apps. Events are pushed and fanned out to users, then returned as a pre-populated ordered list.' },
   { name: 'gomoku-mono-repo', lang: 'C, Rust, Python, ReactJS', stars: 2, url: 'https://app.gomoku.games', desc: 'This mono repo contains the C99 terminal version of the game Gomoku as well as the HTTP network daemon capable of playing the game vi JSON with the ReactJS frontend. The FastAPI server with a PostgreSQL connection sits between for authentication, persistence, and routing. Finally, there is a Rust version of the gomoku-httpd daemon which parallelizes across available vCPU. This is still work in progressm.'},
   { name: 'bashmatic', lang: 'Shell', stars: 172, url: 'https://bashmatic.dev', desc: '900+ BASH DSL functions for UNIX command-line power users. Über toolkit optimized for humans.' },
   { name: 'dnsmadeeasy', lang: 'Ruby', stars: 6, url: 'https://rubygems.org/gems/dnsmadeeasy', desc: 'Ruby client and `dmez` CLI for the DNS Made Easy API. Version 1.0 manages entire zones as standard RFC zone files with a Terraform-style export → plan → apply loop, including ANAME flattening for RFC-portable exports.' },
   { name: 'sym', lang: 'Ruby', stars: 138, desc: 'CLI and Ruby API that makes encrypting and decrypting sensitive data trivial — usability-first symmetric encryption with keychain support.' },
-  { name: 'inquirex/inquirex', lang: 'Ruby', stars: 255, url: 'https://qualified.at', desc: 'Flexible, deterministic DSL for typed lead-qualification forms — with AST branching, TTY and HTML interfaces, and an LLM extracting answers from free-form text.' },
+  { name: 'cmake-project-template', lang: 'C++', stars: 945, desc: 'Jump-start a C/C++ project that builds libraries, binaries, and a working unit-test suite. Uses CMake and is deliberately minimal.' },
   { name: 'laser-cutter', lang: 'Ruby', stars: 98, desc: 'Generates PDFs for cutting notched boxes on a laser cutter. An extensible, well-tested framework for laser-cut box templates.' },
   { name: 'ventable', lang: 'Ruby', stars: 62, desc: 'Event/Observable support for plain Ruby, with grouping of observers and wrapping notifications in blocks like transaction handling.' },
   { name: 'warp-dir', lang: 'Ruby', stars: 41, desc: 'A drop-in superset of the nifty `wd` ZSH module — written in Ruby, works with any shell.' },
@@ -78,7 +79,7 @@ const socialImage = await socialImageForAsset('/assets/images/social/open-source
               ))}
             </p>
           )}
-          {r.url && r.url !== r.href && (
+          {r.url && (
             <a class="oss-site" href={r.url} target="_blank" rel="noopener" aria-label={`${new URL(r.url).hostname} (opens in a new window)`}>
               {new URL(r.url).hostname}<span class="oss-site-arrow" aria-hidden="true">↗</span>
             </a>
