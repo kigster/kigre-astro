@@ -3,10 +3,46 @@
    ============================================================ */
 
 /* --- fonts ---
-   All self-hosted, nothing fetched from Google. Body: Sprig Sans (regular).
-   Headings: Sprig Sans Black. Code: Maple Mono (semibold). */
+   All self-hosted, nothing fetched from Google. Body: Exo 2 (variable,
+   100-900, with italics). Headings: Sprig Sans Black. Code: Maple Mono (semibold). */
 
-/* Sprig Sans — body weights (regular + bold, with italics) */
+/* Exo 2 — body text. Variable font, latin + latin-ext subsets, downloaded
+   from Google Fonts (v26, SIL OFL) and served from /assets/fonts. */
+@font-face {
+  font-family: "Exo 2";
+  src: url("/assets/fonts/exo2-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/assets/fonts/exo2-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/assets/fonts/exo2-italic-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Exo 2";
+  src: url("/assets/fonts/exo2-italic-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: italic;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+
+/* Sprig Sans — fallback for body and headings (regular + bold, with italics) */
 @font-face {
   font-family: "Sprig Sans";
   src: url("/assets/fonts/faire-sprigsans-regular.woff2") format("woff2");
@@ -161,7 +197,7 @@
     var(--y1) 80%,
     var(--y2)
   );
-  --font-body: "Sprig Sans", system-ui, sans-serif;
+  --font-body: "Exo 2", "Sprig Sans", system-ui, sans-serif;
   --font-head: "Sprig Sans Black", "Sprig Sans", sans-serif;
   --font-mono:
     "Iosevka Charon Mono", "Maple Mono", "Cascadia Code", "JetBrains Mono",
