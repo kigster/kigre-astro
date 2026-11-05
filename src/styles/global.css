@@ -4,7 +4,7 @@
 
 /* --- fonts ---
    All self-hosted, nothing fetched from Google. Body: Exo 2 (variable,
-   100-900, with italics). Headings: Sprig Sans Black. Code: Maple Mono (semibold). */
+   100-900, with italics). Headings: Bungee. Code: Maple Mono (semibold). */
 
 /* Exo 2 — body text. Variable font, latin + latin-ext subsets, downloaded
    from Google Fonts (v26, SIL OFL) and served from /assets/fonts. */
@@ -72,7 +72,27 @@
   font-display: swap;
 }
 
-/* Sprig Sans Black — a distinct family for headings (always the black cut,
+/* Bungee — headings. A single-weight display face (Google Fonts v17, SIL OFL),
+   latin + latin-ext subsets. Declared for every weight so headings that ask
+   for bold never get a synthetic bold. */
+@font-face {
+  font-family: "Bungee";
+  src: url("/assets/fonts/bungee-latin-ext.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Bungee";
+  src: url("/assets/fonts/bungee-latin.woff2") format("woff2");
+  font-weight: 100 900;
+  font-style: normal;
+  font-display: swap;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Sprig Sans Black — fallback for headings (always the black cut,
    covering any requested weight so headers never get synthetically bolded) */
 @font-face {
   font-family: "Sprig Sans Black";
@@ -198,12 +218,12 @@
     var(--y2)
   );
   --font-body: "Exo 2", "Sprig Sans", system-ui, sans-serif;
-  --font-head: "Sprig Sans Black", "Sprig Sans", sans-serif;
+  --font-head: "Bungee", "Sprig Sans Black", "Sprig Sans", sans-serif;
   --font-mono:
     "Iosevka Charon Mono", "Maple Mono", "Cascadia Code", "JetBrains Mono",
     ui-monospace, monospace;
   --font-condensed: "Barlow Condensed", var(--font-body);
-  --maxw: 864px;
+  --maxw: 1400px;
 }
 
 :root {
@@ -215,12 +235,27 @@
   --muted2: #8a6a38;
 }
 [data-theme="light"] {
-  --bg: #fffcf5; /* brightened toward white (was #fdf6e6); rest untouched */
-  --fg: #1a1206;
+  --bg: #f8f8f8; /* near-white page */
+  --fg: #222222; /* body text */
   --panel: #fff3dc;
   --hair: #e6d6b4;
   --muted: #7a5e2e;
   --muted2: #a98a52;
+}
+
+/* Light: both sidebars warm white and flat (no shadow) */
+[data-theme="light"] :is(.toc-panel, .panel) {
+  background: #fffaf0;
+  box-shadow: none;
+}
+/* Light: every header a plain #666, no gradient or shine */
+[data-theme="light"] :is(.ghead h2, .page h1, .article h1, .prose :is(h2, h3, h4, h5, h6)),
+[data-theme="light"] :is(.ghead h2, .page h1, .article h1, .prose :is(h2, h3, h4, h5, h6)) * {
+  color: #666;
+  -webkit-text-fill-color: #666;
+  background: none;
+  animation: none;
+  filter: none;
 }
 
 /* --- extra accent themes (dropdown) ---
@@ -255,27 +290,32 @@
   animation: header-shine 7s ease-in-out infinite;
 }
 /* sidebar: sage block with dark text so it reads on the light-green surface */
+/* both sidebars: the code surface, 20% darker, with light text */
+[data-theme="azure"] :is(.toc-panel, .panel) {
+  background: color-mix(in srgb, #26334d, #000 20%);
+}
 [data-theme="azure"] .panel {
-  background: #94a378;
-  color: #233047;
-  padding: 26px 24px;
-  border-radius: 14px;
+  color: var(--fg);
 }
 [data-theme="azure"] .panel .pt {
   color: #d1855c; /* sidebar header — terracotta */
   font-weight: 800; /* extra bold so the low-contrast terracotta stays legible */
 }
 [data-theme="azure"] .panel .ritem {
-  border-bottom-color: #7e8c63;
+  border-bottom-color: var(--hair);
 }
 [data-theme="azure"] .panel .ritem .rn {
-  color: #2d3c59;
+  color: #e5ba41;
 }
 [data-theme="azure"] .panel .ritem h3 {
-  color: #1f2b40;
+  color: var(--fg);
 }
 [data-theme="azure"] .panel .ritem .rd {
-  color: #44502f;
+  color: var(--muted);
+}
+/* top nav: the page navy, about 30% darker, keeping the frosted transparency */
+[data-theme="azure"] .site-header {
+  background: color-mix(in srgb, color-mix(in srgb, var(--bg), #000 30%) 86%, transparent);
 }
 [data-theme="azure"] .nav-right #navLinks.links.open {
   background: #1a87ba;
@@ -305,8 +345,7 @@
   backdrop-filter: blur(10px) saturate(140%);
   -webkit-backdrop-filter: blur(10px) saturate(140%);
   border: 1px solid rgba(255, 140, 0, 0.18);
-  border-radius: 14px;
-  padding: 26px 24px;
+  border-right: 0;
 }
 /* headers: a shiny glass sweep — a bright band travels across the orange text */
 [data-theme="dark-glass"] :is(.ghead h2, .page h1, .article h1),
@@ -371,27 +410,28 @@
   color: transparent;
   animation: header-shine 7s ease-in-out infinite;
 }
-/* sidebar: brown block (9D6638) with cream text so items stay legible */
+/* sidebar: the same tan surface as the table of contents */
 [data-theme="light-earth"] .panel {
-  background: #9d6638;
-  color: #f7f1de;
-  padding: 26px 24px;
-  border-radius: 14px;
+  background: var(--panel);
+  color: var(--fg);
 }
 [data-theme="light-earth"] .panel .pt {
   color: #4e220f; /* sidebar header — darkest brown */
 }
 [data-theme="light-earth"] .panel .ritem {
-  border-bottom-color: #b07f50;
+  border-bottom-color: var(--hair);
 }
 [data-theme="light-earth"] .panel .ritem .rn {
-  color: #4e220f;
+  color: #9d6638;
 }
 [data-theme="light-earth"] .panel .ritem h3 {
-  color: #fbf6e8;
+  color: #4e220f;
+}
+[data-theme="light-earth"] .panel .ritem:hover h3 {
+  color: #9d6638;
 }
 [data-theme="light-earth"] .panel .ritem .rd {
-  color: #e6d4bf;
+  color: var(--muted);
 }
 [data-theme="light-earth"] .nav-right #navLinks.links.open {
   background: #e8ddae;
@@ -425,24 +465,25 @@
   color: transparent;
   animation: header-shine 7s ease-in-out infinite;
 }
-/* sidebar: yellow block (FFD400) with dark text */
+/* sidebar: the same mint surface as the table of contents */
 [data-theme="light-forest"] .panel {
-  background: #f0f331db;
+  background: var(--panel);
   color: #0a2a22;
-  padding: 26px 24px;
-  border-radius: 14px;
 }
 [data-theme="light-forest"] .panel .pt {
   color: #0055da; /* sidebar header — blue */
 }
 [data-theme="light-forest"] .panel .ritem {
-  border-bottom-color: #ffe30085;
+  border-bottom-color: var(--hair);
+}
+[data-theme="light-forest"] .panel .ritem:hover h3 {
+  color: var(--o2); /* full strength on hover */
 }
 [data-theme="light-forest"] .panel .ritem .rn {
   color: #7a5b00;
 }
 [data-theme="light-forest"] .panel .ritem h3 {
-  color: #0055da; /* sidebar post titles — blue (white on hover, via base rule) */
+  color: color-mix(in srgb, var(--o2) 80%, transparent); /* the post-link pink, at 80% */
 }
 [data-theme="light-forest"] .panel .ritem .rd {
   color: #6b5200;
@@ -505,6 +546,14 @@ button:focus-visible {
   max-width: var(--maxw);
   margin: 0 auto;
   padding: 0 32px;
+}
+/* every page's content is a 1050px column (home, About, Speaking, Open Source,
+   Categories, Tags…); only blog posts use the full --maxw width */
+main.wrap {
+  max-width: 1050px;
+}
+main.wrap:has(.post) {
+  max-width: var(--maxw);
 }
 
 /* --- fixed top header (shared) --- */
@@ -739,6 +788,30 @@ button:focus-visible {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+/* 950px and wider: the search box stretches to fill the middle of the nav
+   (capped so it never becomes a full-width bar), swatches centred under it */
+@media (min-width: 950px) {
+  .nav .search-wrap {
+    flex: 1 1 auto;
+    max-width: 640px;
+    margin: 0 24px;
+    align-items: stretch;
+  }
+  .nav .search-wrap .theme-swatches {
+    align-self: center;
+  }
+  .nav .search-wrap .pf-search {
+    width: 100%;
+    --pf-searchbox-max-width: 100%;
+  }
+}
+/* narrower: search box and swatches share one line, with a gap between them */
+@media (max-width: 949px) {
+  .nav .search-wrap {
+    flex-direction: row;
+    gap: 18px;
+  }
 }
 /* each swatch is a small two-tone disc previewing a palette (surface + accent) */
 .swatch {
@@ -1018,7 +1091,9 @@ button:focus-visible {
 /* ============ POST PAGE ============ */
 .post {
   display: grid;
-  grid-template-columns: 1fr 256px;
+  /* the recent-posts sidebar is a fixed overlay now, so the article owns the
+     whole grid (phones stack the sidebar underneath instead) */
+  grid-template-columns: 1fr;
   gap: 0;
   /* relative so the sidebar can be absolutely pinned (and slid off) when the
      reader collapses it; grid-template-columns animates the article re-flow */
@@ -1030,8 +1105,6 @@ button:focus-visible {
      stretching the grid track and forcing the whole page to scroll sideways */
   min-width: 0;
   padding: 34px 0 50px;
-  border-right: 1px solid var(--hair);
-  padding-right: 44px;
 }
 .article .cat {
   display: inline-block;
@@ -1085,6 +1158,11 @@ a.cat:hover {
   color: var(--bg);
   border-radius: 999px;
   text-align: center;
+}
+/* dark themes: a subtle badge, the page background lifted 15%, in white */
+:is([data-theme="azure"], [data-theme="dark-glass"]) .article .read-time {
+  background: color-mix(in srgb, var(--bg), #fff 15%);
+  color: #fff;
 }
 /* tags moved from the article footer up under the read-time badge */
 .article .read-time + .tags {
@@ -1202,7 +1280,8 @@ html.lightbox-open {
   margin-top: 19px;
 }
 .prose p {
-  max-width: 64ch;
+  /* paragraphs fill the reading column, like code blocks and tables do */
+  max-width: none;
 }
 .prose h2 {
   font-family: var(--font-head);
@@ -1289,6 +1368,28 @@ html.lightbox-open {
   height: auto;
   border-radius: 4px;
   cursor: zoom-in;
+  /* a dark halo around post images: 10px wide, 10px blur. Its strength steps
+     down with each theme in switcher order (see --img-shadow-alpha below). */
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, var(--img-shadow-alpha, 0.2));
+}
+/* the post's hero image sits above the body, but gets the same halo */
+.article .hero-img {
+  box-shadow: 0 0 10px 10px rgba(0, 0, 0, var(--img-shadow-alpha, 0.2));
+}
+[data-theme="dark-glass"] {
+  --img-shadow-alpha: 0.8;
+}
+[data-theme="azure"] {
+  --img-shadow-alpha: 0.6;
+}
+[data-theme="light-forest"] {
+  --img-shadow-alpha: 0.4;
+}
+[data-theme="light-earth"] {
+  --img-shadow-alpha: 0.3;
+}
+[data-theme="light"] {
+  --img-shadow-alpha: 0.2;
 }
 .prose video {
   display: block;
@@ -1597,13 +1698,20 @@ html.lightbox-open {
 
 /* recent panel */
 .panel {
-  padding: 34px 0 0 28px;
-  position: sticky;
-  /* clear the ~94px fixed header, then fill the rest of the viewport height and
-     scroll the sidebar independently of the body when content overflows */
-  top: 110px;
-  align-self: start;
-  height: calc(100vh - 110px);
+  /* a fixed panel glued to the right edge — the mirror of the TOC on the left,
+     same width, same offset below the header */
+  position: fixed;
+  top: 120px;
+  right: 0;
+  z-index: 95;
+  width: min(290px, 84vw);
+  max-height: calc(100dvh - 140px);
+  padding: 20px 18px 22px;
+  background: var(--panel);
+  border: 1px solid var(--hair);
+  border-right: 0;
+  border-radius: 14px 0 0 14px;
+  box-shadow: -8px 12px 34px rgba(0, 0, 0, 0.34);
   overflow-y: auto;
   /* scrollbar visible on hover only — keep the gutter reserved (thin) but make
      the thumb transparent until hovered/focused, so there's no layout shift */
@@ -1725,7 +1833,9 @@ html.lightbox-open {
   font-family: var(--font-mono);
   font-weight: 700;
   background-color: var(--hair);
-  padding-left: 0px !important;
+  padding: 2px 6px !important;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
   font-size: 0.84em !important; /* ~+1px over the old 0.78em */
 }
 
@@ -2341,13 +2451,19 @@ html.lightbox-open {
     border-right: 0;
     padding-right: 0;
   }
-  .panel {
+}
+/* phones: the sidebar stacks underneath the article instead of floating */
+@media (max-width: 760px) {
+  .post .panel {
     position: static;
+    width: auto;
     padding: 30px 0 0;
+    border: 0;
     border-top: 1px solid var(--hair);
+    border-radius: 0;
+    box-shadow: none;
+    background: transparent;
     margin-top: 30px;
-    /* sidebar flows naturally when stacked — no fixed height or scroll box */
-    height: auto;
     max-height: none;
     overflow: visible;
   }
@@ -2498,11 +2614,7 @@ html.sb-collapsed .article .prose .markdown-alert {
   max-width: none;
 }
 html.sb-collapsed .panel {
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 256px; /* keep its real width while it slides past the edge */
-  transform: translateX(110%); /* off to the right, clipped by overflow-x */
+  transform: translateX(102%); /* parked off the right edge */
   opacity: 0;
   pointer-events: none;
 }
@@ -2579,11 +2691,11 @@ html.toc-open .toc-tab {
 /* the sliding panel itself */
 .toc-panel {
   position: fixed;
-  top: 110px; /* clear the fixed header */
+  top: 120px; /* clear the fixed header, plus a little air */
   left: 0;
   z-index: 95;
   width: min(290px, 84vw);
-  max-height: calc(100dvh - 130px);
+  max-height: calc(100dvh - 140px);
   display: flex;
   flex-direction: column;
   padding: 20px 18px 22px;
@@ -2722,6 +2834,34 @@ html.toc-open .toc-panel {
   }
 }
 
+/* wide screens (>=1050px): the TOC opens by default and stays docked on the
+   left (see the script in [...permalink].astro). Push the centred column right
+   just far enough to clear the 290px panel, and no further when the window is
+   already wide enough for the two to sit side by side. */
+@media (min-width: 1050px) {
+  main.wrap {
+    transition: margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html.toc-open main.wrap {
+    margin-left: max(314px, calc((100% - var(--maxw)) / 2));
+    margin-right: auto;
+  }
+}
+/* from 1450px the recent-posts sidebar is open too: clear it on the right */
+@media (min-width: 1450px) {
+  main.wrap:has(.post) {
+    transition:
+      margin-left 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+      margin-right 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+  html:not(.sb-collapsed) main.wrap:has(.post) {
+    margin-right: max(314px, calc((100% - var(--maxw)) / 2));
+  }
+  html:not(.sb-collapsed):not(.toc-open) main.wrap:has(.post) {
+    margin-left: auto;
+  }
+}
+
 /* ============================================================
    Print — let the content use the full page width
    ============================================================ */
@@ -2797,4 +2937,227 @@ html.toc-open .toc-panel {
 img[src$=".gif"] {
   border-radius: 10px;
   border: 3px solid #FF8000;
+}
+
+/* --- Reading comfort: a roomier, easier-to-read post body ---
+   Prose sits in a ~72ch measure at 17px / 1.7; code, tables, images and
+   diagrams still use the full column. Bungee stays on h1/h2 only. */
+.prose {
+  font-size: 17px;
+  line-height: 1.7;
+}
+.prose > * + * {
+  margin-top: 1.25em;
+}
+.prose :is(p, li, blockquote, dd) {
+  max-width: 72ch;
+}
+.prose h2 {
+  font-size: 26px;
+  line-height: 1.25;
+  margin-top: 2.4em;
+  margin-bottom: 0.2em;
+}
+.prose :is(h3, h4, h5, h6) {
+  font-family: var(--font-body);
+  font-weight: 700;
+  line-height: 1.3;
+  margin-top: 1.9em;
+}
+.prose h3 {
+  font-size: 20px;
+}
+.prose li + li {
+  margin-top: 0.45em;
+}
+.prose :is(img, pre, table, .mermaid, figure) {
+  margin-top: 1.75em;
+  margin-bottom: 0.5em;
+}
+.prose blockquote {
+  font-size: 1.04em;
+  line-height: 1.65;
+}
+[data-theme="light"] .prose :is(h2, h3, h4, h5, h6),
+[data-theme="light"] .prose :is(h2, h3, h4, h5, h6) * {
+  color: #333;
+  -webkit-text-fill-color: #333;
+}
+
+/* Recent posts use the same face as the table of contents, so both
+   sidebars read alike and only the article title is loud. */
+.panel .ritem h3 {
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.35;
+  text-transform: none;
+  letter-spacing: 0;
+}
+.prose h2 {
+  font-size: 23px;
+}
+
+/* Desktop nav: three equal-weight columns so the search box sits on the
+   true center of the page, whatever the widths of the logo and the links. */
+@media (min-width: 1171px) {
+  .nav {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+  }
+  .nav .nav-left {
+    justify-self: start;
+  }
+  .nav .search-wrap {
+    justify-self: center;
+  }
+  .nav-right {
+    justify-self: end;
+  }
+}
+
+/* Terminal-table screenshots read at their natural size, not full column. */
+.prose img[src$="evals-weights.jpg"] {
+  max-width: min(100%, 440px);
+  height: auto;
+  margin-left: 0;
+}
+
+/* ===== Readability pass across the five themes =====
+   Quotes read close to body text, links clear the contrast bar on their
+   background, and headers and sidebars separate from the page. */
+
+/* every theme: quotes are the lead's own words; keep them legible */
+.prose blockquote {
+  color: color-mix(in srgb, var(--fg) 85%, var(--bg));
+}
+
+/* Azul: a header and sidebars that separate from the navy page */
+[data-theme="azure"] .site-header {
+  background: color-mix(in srgb, color-mix(in srgb, var(--bg), #000 30%) 92%, transparent);
+  border-bottom-color: var(--hair);
+}
+[data-theme="azure"] :is(.toc-panel, .panel) {
+  border-color: color-mix(in srgb, var(--hair) 60%, transparent);
+}
+
+/* Light Forest: soft mint page, deep green links, pink only on hover */
+[data-theme="light-forest"] {
+  --bg: #e6f7ef;
+  --fg: #10241c;
+  --hair: #9fd9c2;
+}
+[data-theme="light-forest"] .prose a,
+[data-theme="light-forest"] .panel .ritem h3 {
+  color: #0b6b4a;
+}
+[data-theme="light-forest"] .prose a:hover,
+[data-theme="light-forest"] .panel .ritem:hover h3 {
+  color: #d1004a;
+}
+[data-theme="light-forest"] .site-header {
+  background: color-mix(in srgb, #bfeedd 92%, transparent);
+  border-bottom-color: var(--hair);
+}
+[data-theme="light-forest"] :is(.toc-panel, .panel) {
+  background: #d3f2e5;
+}
+
+/* Light Earth: rust links, darker cream frame around the paper */
+[data-theme="light-earth"] .prose a {
+  color: #a8431a;
+}
+[data-theme="light-earth"] .site-header {
+  background: color-mix(in srgb, #ede3c6 92%, transparent);
+  border-bottom-color: var(--hair);
+}
+[data-theme="light-earth"] :is(.toc-panel, .panel) {
+  background: #efe6cb;
+}
+
+/* Light: deeper orange for small link text, white hairlined sidebars */
+[data-theme="light"] .prose a {
+  color: #c25e00;
+}
+[data-theme="light"] :is(.toc-panel, .panel) {
+  background: #ffffff;
+  border: 1px solid #e4e4e4;
+}
+
+/* Talks page: blurbs at a comfortable reading size, not caption size */
+.talk p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: color-mix(in srgb, var(--fg) 80%, var(--bg));
+  margin-top: 8px;
+}
+.talk .pdf {
+  font-size: 13px;
+}
+.talk p {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.talk .pdf {
+  font-size: 14px;
+}
+.talk-thumb {
+  width: 320px;
+  margin: 2px 0 14px 28px;
+}
+@media (max-width: 760px) {
+  .talk-thumb {
+    float: none;
+    width: 100%;
+    margin: 4px 0 14px;
+  }
+}
+
+/* Home index: excerpts and thumbnails sized like the Talks page.
+   Desktop only; the phone layout keeps its own sizes. */
+@media (min-width: 761px) {
+  .row .mid p {
+    font-size: 17px;
+    line-height: 1.6;
+    color: color-mix(in srgb, var(--fg) 80%, var(--bg));
+    max-width: 68ch;
+  }
+  .row .thumb {
+    width: 240px;
+    margin-left: 26px;
+  }
+}
+
+/* Talks: keep text in its own column beside the cover (no wrap under it) */
+@media (min-width: 761px) {
+  .talk-body > :not(.talk-thumb) {
+    margin-right: 348px; /* 320px thumb + 28px gap */
+  }
+}
+
+/* Index: keep text in its own column beside the thumbnail (no wrap under it) */
+@media (min-width: 761px) {
+  .row .mid > :not(.thumb) {
+    margin-right: 266px; /* 240px thumb + 26px gap */
+  }
+  .row .mid p { max-width: none; }
+}
+
+/* Admonitions span full width, so let their text flow to the edge too */
+.prose .markdown-alert p,
+.prose .markdown-alert li,
+.prose .markdown-alert blockquote {
+  max-width: none;
+}
+
+/* Admonition icons: tint to the alert's color and thicken the octicon strokes */
+.markdown-alert-title svg {
+  fill: currentColor;
+  stroke: currentColor;
+  stroke-width: 0.6px;
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  overflow: visible;
 }

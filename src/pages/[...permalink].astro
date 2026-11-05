@@ -71,6 +71,21 @@ const jsonLd = {
   jsonLd={jsonLd}
   disqusCount={post.data.comments}
 >
+  <script is:inline>
+    // Set the default sidebar states before first paint, so nothing slides on
+    // load: under 1450px the recent-posts sidebar starts collapsed; from 1050px
+    // up the table of contents starts open. The module scripts below keep both
+    // in sync as the window is resized.
+    (function () {
+      var d = document.documentElement;
+      d.classList.toggle('sb-collapsed', !matchMedia('(min-width: 1450px)').matches);
+    })();
+  </script>
+  {toc.length > 0 && (
+    <script is:inline>
+      document.documentElement.classList.toggle('toc-open', matchMedia('(min-width: 1050px)').matches);
+    </script>
+  )}
   <div class="post">
     <article class={isDigest ? 'article is-digest' : 'article'} data-pagefind-body>
       {isDigest ? (
@@ -205,7 +220,8 @@ const jsonLd = {
   <script>
     // Collapsible recent-posts sidebar. The "sb-collapsed" class on <html> is the
     // single source of truth. The state is intentionally NOT persisted — it lives
-    // only for the current page view, so every new blog page starts expanded.
+    // only for the current page view. It starts expanded from 1450px up and
+    // collapsed below, and follows the window across that width.
     const root = document.documentElement;
     const collapseBtn = document.getElementById('panelCollapse');
     const reopenBtn = document.getElementById('panelReopen');
@@ -213,7 +229,9 @@ const jsonLd = {
       root.classList.toggle('sb-collapsed', collapsed);
       collapseBtn?.setAttribute('aria-expanded', String(!collapsed));
     }
-    collapseBtn?.setAttribute('aria-expanded', String(!root.classList.contains('sb-collapsed')));
+    const roomy = window.matchMedia('(min-width: 1450px)');
+    setCollapsed(!roomy.matches);
+    roomy.addEventListener('change', (e) => setCollapsed(!e.matches));
     collapseBtn?.addEventListener('click', () => setCollapsed(true));
     reopenBtn?.addEventListener('click', () => setCollapsed(false));
   </script>
@@ -266,7 +284,9 @@ const jsonLd = {
   <script>
     // Left table-of-contents popup. "toc-open" on <html> is the single source of
     // truth (not persisted). Opens from the left edge; closes on the X, on a
-    // click outside, on Escape, or after jumping to a section.
+    // click outside, on Escape, or after jumping to a section. On wide screens
+    // (>=1050px) it opens by default and stays docked: only the X or Escape
+    // closes it there.
     const docEl = document.documentElement;
     const tocTab = document.getElementById('tocTab');
     const tocPanel = document.getElementById('tocPanel');
@@ -277,18 +297,25 @@ const jsonLd = {
         tocTab.setAttribute('aria-expanded', String(open));
         tocPanel.setAttribute('aria-hidden', String(!open));
       };
+      const wide = window.matchMedia('(min-width: 1050px)');
+      setTocOpen(wide.matches);
+      wide.addEventListener('change', (e) => setTocOpen(e.matches));
+      // growing past 1450px reopens both sidebars, even one closed by hand
+      window.matchMedia('(min-width: 1450px)').addEventListener('change', (e) => {
+        if (e.matches) setTocOpen(true);
+      });
       tocTab.addEventListener('click', () => setTocOpen(!docEl.classList.contains('toc-open')));
       tocClose?.addEventListener('click', () => setTocOpen(false));
       document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setTocOpen(false); });
       // click-outside: close when the click lands off both the panel and the tab
       document.addEventListener('click', (e) => {
-        if (!docEl.classList.contains('toc-open')) return;
+        if (!docEl.classList.contains('toc-open') || wide.matches) return;
         const t = e.target as Node;
         if (tocPanel.contains(t) || tocTab.contains(t)) return;
         setTocOpen(false);
       });
       const links = Array.from(tocPanel.querySelectorAll<HTMLAnchorElement>('.toc-link'));
-      links.forEach((a) => a.addEventListener('click', () => setTocOpen(false)));
+      links.forEach((a) => a.addEventListener('click', () => { if (!wide.matches) setTocOpen(false); }));
 
       // scroll-spy: highlight the TOC entry for the section currently in view
       const bySlug = new Map(links.map((a) => [a.dataset.tocSlug, a]));
