@@ -2,7 +2,7 @@
 //
 // A post's hero image is used as-is when social crawlers can render its
 // format and it is not portrait. SVG and AVIF cannot be rendered by Facebook,
-// X, LinkedIn or Slack, and a tall phone screenshot gets its middle centre-
+// X, LinkedIn or Slack, and a square or tall hero gets its middle centre-
 // cropped, so those posts point at a PNG that src/pages/og/[...slug].png.ts
 // letterboxes onto a landscape card at build time.
 import path from 'node:path';
@@ -15,8 +15,10 @@ const SOCIAL_SAFE = new Set(['png', 'jpg', 'jpeg', 'gif', 'webp']);
 export const OG_WIDTH = 1200;
 export const OG_HEIGHT = 630;
 
-// Narrower than this (width / height) and unfurlers crop a hero to a useless strip.
-const MIN_ASPECT = 0.8;
+// Narrower than this (width / height) and unfurlers crop a hero hard (LinkedIn,
+// Facebook) or X falls back to its small square card. Matches BaseLayout's
+// summary_large_image threshold, so every post gets the big card.
+const MIN_ASPECT = 1.4;
 
 const extOf = (p) => p.split('.').pop().toLowerCase();
 

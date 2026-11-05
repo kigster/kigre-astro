@@ -19,9 +19,22 @@ export async function getStaticPaths() {
 }
 
 export const GET: APIRoute = async ({ props }) => {
-  const png = await sharp(publicFile(props.hero), { density: 192 })
-    .resize(OG_WIDTH, OG_HEIGHT, { fit: 'contain', background: '#ffffff' })
-    .flatten({ background: '#ffffff' })
+  const src = publicFile(props.hero);
+  // backdrop: the hero itself, cover-cropped, blurred and dimmed, so the
+  // letterbox bars match the image instead of a flat white strip
+  const backdrop = await sharp(src, { density: 192 })
+    .resize(OG_WIDTH, OG_HEIGHT, { fit: 'cover' })
+    .blur(40)
+    .modulate({ brightness: 0.55 })
+    .toBuffer();
+  // foreground: the whole hero, fitted with a small margin
+  const pad = 24;
+  const fg = await sharp(src, { density: 192 })
+    .resize(OG_WIDTH - pad * 2, OG_HEIGHT - pad * 2, { fit: 'inside' })
+    .toBuffer();
+  const png = await sharp(backdrop)
+    .composite([{ input: fg, gravity: 'center' }])
+    .flatten({ background: '#000000' })
     .png()
     .toBuffer();
   return new Response(new Uint8Array(png), { headers: { 'Content-Type': 'image/png' } });
