@@ -10,6 +10,11 @@ heroImage: "/assets/images/posts/security/apple-enclave.jpg"
 draft: false
 author: kig
 ---
+> [!IMPORTANT]
+> **Update, November 2026: sopsy 2.0.0 is out.** It adds YubiKey and OS-keychain key stores with a per-repo store policy (which makes sopsy Linux-compatible, not just macOS), `sopsy run` (secrets go into one process, never onto disk), `sopsy set` / `unset`, key rotation, and data-key rotation. Some commands below still show the 1.x way of doing things. Jump to **[New in Sopsy 2.0](#new-in-sopsy-20)** for what changed, or see [What's new in 2.0](https://sopsy-cli.dev/new/) on sopsy-cli.dev.
+
+![sopsy 2.0: Any key store. Fewer prompts. No plaintext on disk.](/assets/images/posts/security/sopsy-2-og.png)
+
 Well, I did a thing I've wanted to do for a while: I published **[sopsy](https://github.com/kigster/sopsy)** — my **first open-source package written in Rust** — to [crates.io](https://crates.io/crates/sopsy) and to Homebrew. After a couple of decades of shipping Ruby, some C, and an unreasonable amount of Bash, watching `cargo publish` go green on a crate of my own felt genuinely great. I am allowing myself a small victory lap before Rust inevitably finds a new way to humble me.
 
 > And like all the "cool kids" these days, of course it has its own snazzy website, because apparently a CLI is not real until it has a domain name. Visit <a href="https://sopsy-cli.dev" target="_blank">sopsy-cli.dev</a> now, or after you're done reading.
@@ -215,9 +220,64 @@ The whole feature set, for the skimmers:
 - **A CI gate that bites** — `sopsy check` enforces hygiene invariants and exits non-zero on any tracked plaintext. It needs no key, so it runs on a Linux runner.
 - **`sopsy doctor`** — a grouped, colorful health report of your tools, Secure Enclave, Touch ID, and repo that you can paste straight into a GitHub issue.
 
+## New in Sopsy 2.0
+
+Version 2.0.0 shipped on November 3, 2026. The short version: **any key store, fewer prompts, no plaintext on disk.** Every member keeps their key where it suits them, inside bounds the repository sets; there are new commands to change one secret or feed secrets straight to a process; and rotation is now honest about what it does and doesn't change.
+
+### Four key stores, and a policy for the repo
+
+1.x had one answer: the Secure Enclave. 2.0 has four — the **Secure Enclave** (on-chip), a **YubiKey** (external hardware), the **OS keychain**, or a plaintext file. `sopsy init` records which stores members are allowed to use, **hardware only by default**, and `--store auto` picks the strongest one your machine has. Hardware always ranks above software, whatever order you list them in.
+
+That also means **sopsy is no longer macOS-only.** The Secure Enclave is Apple hardware, but YubiKeys, the OS keychain and the tools underneath (`sops`, `age`, `age-plugin-yubikey`, `ykman`) all run on Linux, so a Linux teammate can join the same repo with a YubiKey or a keychain-backed key.
+
+```bash
+sopsy init --allow-stores yubikey,enclave
+```
+
+### YubiKey, without the friction
+
+sopsy asks you to plug the YubiKey in instead of failing, reminds you to touch it after the PIN, and can cache the PIN for the session with `-c cached`. Minting a key without your YubiKey on you? Press `e` to fall back to the Secure Enclave. Several keys fit on one YubiKey; pick one with `--yubikey-slot`.
+```bash
+sopsy join "Alan Turing" -s yubikey -c cached -b cached
+```
+
+<img src="https://sopsy-cli.dev/sopsy-demo-yubikey.gif" alt="Terminal recording of sopsy 2.0 setting up a repository with a YubiKey-backed key" loading="lazy" />
+
+*sopsy 2.0 with a YubiKey. See the [YubiKey demo on sopsy-cli.dev](https://sopsy-cli.dev/start/#demo-yubikey).*
+
+### Secrets in a process, not on disk
+
+`sopsy run` decrypts into the environment of **one command** and writes nothing to disk. One Touch ID per launch, not one per shell or per worktree. Exit codes and signals are the command's own. This is the better answer to the `direnv` + `eval` trick from the tour above:
+
+```bash
+sopsy run -- bin/rails server
+```
+
+### Change one value, no editor
+
+`sopsy set KEY` asks for the value with hidden input, or reads it from stdin, so it never lands in your shell history or a process listing. `sopsy unset` removes a key. (`set` needs sops 3.11 or newer.)
+
+```bash
+sopsy set API_KEY
+op read op://dev/api/key | sopsy set API_KEY
+```
+
+### Rotation that tells the truth
+
+- **`sopsy recipient rotate`** swaps your key under the same name and approval — move to another store or YubiKey slot, change a PIN or touch policy. It changes *who can unwrap the data key*, not the data key itself.
+- **`sopsy rotate-data-key`** closes the gap 1.x left open: removing a recipient re-wraps the data key but keeps it, so anyone who decrypted before still could. This re-encrypts every managed file under a brand-new data key for the current recipients. Run it after offboarding, then commit. After a lost or stolen key, use `sopsy recipient rotate --new-data-key`, then change the secret values themselves.
+
+### Tooling installed for you
+
+`sopsy deps` installs whatever is missing — `sops`, `age`, `age-plugin-se`, `age-plugin-yubikey` and `ykman`. `init` runs it first (`--skip-deps` turns that off), and an interactive `init` now sets up the break-glass key by default, so the nagging I mentioned earlier mostly goes away. And `sopsy yubikey` / `sopsy enclave` pass arguments straight through to the underlying age plugins, so you never have to remember their names.
+
+The full list lives at [sopsy-cli.dev/new](https://sopsy-cli.dev/new/), and there are recorded demos of both the [Enclave](https://sopsy-cli.dev/start/#demo-enclave) and the [YubiKey](https://sopsy-cli.dev/start/#demo-yubikey) flows.
+
 ## Your turn
 
-If you keep secrets in git today — or you've been getting away with a shared `.env` and quietly worrying about it — I'd genuinely love to hear how your team handles this. What are you using? What would stop you from committing encrypted secrets right next to the code? Install it (`brew install kigster/tap/sopsy` or `cargo install sopsy`), point it at a throwaway repo, and tell me what breaks.
+If you keep secrets in git today — or you've been getting away with a shared `.env` and quietly worrying about it — I'd genuinely love to hear how your team handles this. What are you using? What would stop you from committing encrypted secrets right next to the code?
+
+With 2.0, "half my team is on Linux" and "I'd rather keep my key on a YubiKey" both finally get a yes — and `sopsy run` means your secrets don't even need to touch the disk in plaintext on the way to your app. Install it (`brew install kigster/tap/sopsy` or `cargo install sopsy`; already on 1.x? `brew upgrade sopsy`), point it at a throwaway repo, and tell me what breaks.
 
 **Leave a comment below** — bug reports, "you reinvented X," and "why not just use Y" are all equally welcome. And if it's useful to you, a star on [GitHub](https://github.com/kigster/sopsy) helps more people find it.
 
