@@ -283,9 +283,11 @@ With 2.0, "half my team is on Linux" and "I'd rather keep my key on a YubiKey" b
 
 Go encrypt something. Then try to commit it. That part is supposed to feel good now.
 
-— Konstantin Gredeskoul
+Best wishes!
+Konstantin Gredeskoul
 
-San Francisco, CA, June 28, 2026.
+* San Francisco, CA, June 28, 2026 (Version 1.0).
+* San Francisco, CA, November 05, 2026 (Version 2.0)
 
 
 > [!NOTE]
