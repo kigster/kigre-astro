@@ -5,6 +5,7 @@ permalink: "/2026/11/12/sharing-encrypted-documents-without-trusting-your-own-se
 category: "Software"
 tags: ["security", "encryption", "passkeys", "webauthn", "kms", "sops", "sopsy", "rails"]
 description: "So are running or you want to build secure SaaS product in 2026. I have some news for you. And not a good kind. In this post we discuss what it takes to provide truly secure architecture for this day and age, in comparison, say, with 2020."
+heroImage: "/assets/images/posts/security/hacking-02.jpg"
 comments: true
 author: kig
 draft: false
